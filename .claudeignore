@@ -1,0 +1,5 @@
+.env
+*.secrets
+appsettings.json
+appsettings.*.json
+data/dbs/*.sql
