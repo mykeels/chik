@@ -297,19 +297,19 @@ public static class AuthenticationExtensions
         httpContextAccessor ??= Provider.GetRequiredService<IHttpContextAccessor>();
         timeProvider ??= Provider.GetRequiredService<TimeProvider>();
         var logger = Provider.GetRequiredService<ILogger<Auth>>();
-        Guid id = Guid.Parse(principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
+        Guid fusionAuthId = Guid.Parse(principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
         // track id as a cache tag
-        string[] cacheTags = [ UserService.Cache.Tags.User(id) ];
+        string[] cacheTags = [ UserService.Cache.Tags.User(fusionAuthId) ];
         var auth = await fusionCache.GetOrSetAsync(
-            UserService.Cache.Keys.User(id),
+            UserService.Cache.Keys.User(fusionAuthId),
             async (_) =>
             {
                 long authenticatedAtOffset = long.Parse(principal.Claims.FirstOrDefault(c => c.Type == "auth_time")?.Value ?? throw new UnauthorizedAccessException());
                 DateTime authenticatedAt = DateTimeOffset.FromUnixTimeSeconds(authenticatedAtOffset).UtcDateTime;
                 string email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? throw new UnauthorizedAccessException();
 
-                logger.LogInformation($"Retrieving user: {id}");
-                var res = await fusionAuthClient.RetrieveUserAsync(id);
+                logger.LogInformation($"Retrieving user: {fusionAuthId}");
+                var res = await fusionAuthClient.RetrieveUserAsync(fusionAuthId);
                 if (res.errorResponse is not null)
                 {
                     string error = string.Join(
@@ -332,15 +332,19 @@ public static class AuthenticationExtensions
                 DateOnly dateOfBirth = DateOnly.Parse(res.successResponse.user.birthDate);
                 bool isVerified = res.successResponse.user.verified ?? false;
                 string username = email.Split('@')[0];
-                var auth = new Auth(
-                    id, 
-                    username,
-                    []
-                    authenticatedAt,
-                    isVerified,
-                    timeProvider.GetUtcNow().DateTime
-                );
-                await userService.Create(auth, new User.Create(username, "", [UserRole.Admin]));
+                
+                // Try to get or create user in local database
+                var existingUsers = await userService.Search(User.Admin, new User.Filter(Username: username), new PaginationOptions(1, 1));
+                Auth auth;
+                if (existingUsers.TotalCount > 0)
+                {
+                    auth = existingUsers.Items.First();
+                }
+                else
+                {
+                    // Create new user in local database
+                    auth = await userService.Create(User.Admin, new User.Create(username, "", [UserRole.Teacher]));
+                }
                 
                 await auth.TrackLogin();
                 return auth;
