@@ -1,0 +1,1 @@
+global using Auth = Chik.Exams.User;
