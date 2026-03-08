@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chik.ServiceDefaults", "Chi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chik.Exams", "Chik.Exams\Chik.Exams.csproj", "{012A25F9-2BDC-4E7E-BC85-413AB41AD087}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chik.Exams.Tests", "Chik.Exams.Tests\Chik.Exams.Tests.csproj", "{7EF47821-6905-4BA1-819D-8DB629AB5F2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{012A25F9-2BDC-4E7E-BC85-413AB41AD087}.Release|x64.Build.0 = Release|Any CPU
 		{012A25F9-2BDC-4E7E-BC85-413AB41AD087}.Release|x86.ActiveCfg = Release|Any CPU
 		{012A25F9-2BDC-4E7E-BC85-413AB41AD087}.Release|x86.Build.0 = Release|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Debug|x64.Build.0 = Debug|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Debug|x86.Build.0 = Debug|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Release|x64.ActiveCfg = Release|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Release|x64.Build.0 = Release|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Release|x86.ActiveCfg = Release|Any CPU
+		{7EF47821-6905-4BA1-819D-8DB629AB5F2B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

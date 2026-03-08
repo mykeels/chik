@@ -13,7 +13,7 @@ public static class ApplicationConstants
             }
             var assembly = System.Reflection.Assembly.GetEntryAssembly()
                 ?? System.Reflection.Assembly.GetExecutingAssembly();
-            _name = assembly.GetName().Name ?? "Under4Games";
+            _name = assembly.GetName().Name ?? "ChikExams";
             return _name;
         }
         set

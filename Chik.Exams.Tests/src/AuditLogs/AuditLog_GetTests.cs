@@ -1,0 +1,45 @@
+using Chik.Exams.AuditLogs.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+namespace Chik.Exams.Tests.AuditLogs;
+
+[TestFixture]
+public class AuditLog_GetTests
+{
+    private AuditLogRepository _repository = null!;
+    private IDbContextFactory<ChikExamsDbContext> _factory = null!;
+
+    [SetUp]
+    public void SetUp()
+    {
+        TestSetup.EnsureDatabaseReset();
+        _factory = TestSetup.DbContextFactory();
+        var logger = new Mock<ILogger<AuditLogRepository>>();
+        _repository = new AuditLogRepository(_factory, logger.Object, TestUtils.TimeProvider);
+    }
+
+    [Test]
+    public async Task Get_WithExistingId_ShouldReturnAuditLog()
+    {
+        // Arrange
+        var user = await TestUtils.CreateTestUser(_factory);
+        var created = await _repository.Create(new AuditLog.Create(user.Id, "User", 1, "{}", "{}", "{}"));
+
+        // Act
+        var result = await _repository.Get(created.Id);
+
+        // Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.Id, Is.EqualTo(created.Id));
+    }
+
+    [Test]
+    public async Task Get_WithNonExistingId_ShouldReturnNull()
+    {
+        // Act
+        var result = await _repository.Get(99999);
+
+        // Assert
+        Assert.That(result, Is.Null);
+    }
+}
