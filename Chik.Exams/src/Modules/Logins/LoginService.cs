@@ -27,7 +27,7 @@ public class LoginService(
         }
 
         // Note: Login recording should be done by the caller after obtaining IpAddressLocation
-        return (User)userDbo!;
+        return userDbo!.ToModel();
     }
 
     public async Task Create(Auth auth, Login.Create login)

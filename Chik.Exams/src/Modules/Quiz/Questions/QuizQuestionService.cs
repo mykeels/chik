@@ -27,7 +27,7 @@ internal class QuizQuestionService(
                 question
             )
         );
-        return (QuizQuestion)questionDbo!;
+        return questionDbo!.ToModel();
     }
 
     public async Task<QuizQuestion?> Get(Auth auth, long id)
@@ -38,7 +38,7 @@ internal class QuizQuestionService(
         if (questionDbo is null) return null;
 
         await AuthorizeQuizAccess(auth, questionDbo.QuizId);
-        return questionDbo;
+        return questionDbo!.ToModel();
     }
 
     public async Task<List<QuizQuestion>> GetByQuizId(Auth auth, long quizId, bool includeDeactivated = false)
@@ -48,7 +48,7 @@ internal class QuizQuestionService(
         await AuthorizeQuizAccess(auth, quizId);
 
         var questions = await repository.GetByQuizId(quizId, includeDeactivated);
-        return questions.Select(dbo => (QuizQuestion)dbo!).ToList();
+        return questions.Select(dbo => dbo!.ToModel()).ToList();
     }
 
     public async Task<QuizQuestion> Update(Auth auth, QuizQuestion.Update question)
@@ -72,7 +72,7 @@ internal class QuizQuestionService(
                 question
             )
         );
-        return (QuizQuestion)questionDbo!;
+        return questionDbo!.ToModel();
     }
 
     public async Task Deactivate(Auth auth, long id)
@@ -180,7 +180,7 @@ internal class QuizQuestionService(
 
         var paginated = await repository.Search(filter, pagination);
         return new Paginated<QuizQuestion>(
-            paginated.Items.Select(dbo => (QuizQuestion)dbo!).ToList(),
+            paginated.Items.Select(dbo => dbo!.ToModel()).ToList(),
             paginated.TotalCount,
             pagination,
             async options => await Search(auth, filter, options)

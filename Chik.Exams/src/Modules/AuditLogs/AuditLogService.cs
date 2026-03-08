@@ -26,7 +26,7 @@ internal class AuditLogService(
         }
 
         var auditLogDbo = await repository.Get(id);
-        return auditLogDbo;
+        return auditLogDbo!.ToModel();
     }
 
     public async Task<List<AuditLog>> GetByService(Auth auth, string service, long entityId)
@@ -40,7 +40,7 @@ internal class AuditLogService(
         }
 
         var auditLogs = await repository.GetByService(service, entityId);
-        return auditLogs.Select(dbo => (AuditLog)dbo!).ToList();
+        return auditLogs.Select(dbo => dbo!.ToModel()).ToList();
     }
 
     public async Task<List<AuditLog>> GetByUserId(Auth auth, long userId)
@@ -54,7 +54,7 @@ internal class AuditLogService(
         }
 
         var auditLogs = await repository.GetByUserId(userId);
-        return auditLogs.Select(dbo => (AuditLog)dbo!).ToList();
+        return auditLogs.Select(dbo => dbo!.ToModel()).ToList();
     }
 
     public async Task<Paginated<AuditLog>> Search(Auth auth, AuditLog.Filter? filter = null, PaginationOptions? pagination = null)
@@ -72,7 +72,7 @@ internal class AuditLogService(
 
         var paginated = await repository.Search(filter, pagination);
         return new Paginated<AuditLog>(
-            paginated.Items.Select(dbo => (AuditLog)dbo!).ToList(),
+            paginated.Items.Select(dbo => dbo!.ToModel()).ToList(),
             paginated.TotalCount,
             pagination,
             async options => await Search(auth, filter, options)

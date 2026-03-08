@@ -36,6 +36,6 @@ public class ServerErrorDbo
         dbo.ErrorAt,
         dbo.CreatedAt
     ) {
-        User = dbo.User,
+        User = dbo.User?.ToModel(),
     };
 }

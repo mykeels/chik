@@ -34,21 +34,21 @@ public class QuizQuestionDbo
         DeactivatedAt = question.DeactivatedAt
     };
 
-    public static implicit operator QuizQuestion?(QuizQuestionDbo? dbo) => dbo is null ? null : new(
-        dbo.Id,
-        dbo.QuizId,
-        dbo.Prompt,
-        dbo.TypeId,
-        DeserializeProperties(dbo.Properties),
-        dbo.Score,
-        dbo.Order,
-        dbo.CreatedAt,
-        dbo.UpdatedAt,
-        dbo.DeactivatedAt
+    public QuizQuestion ToModel() => new(
+        Id,
+        QuizId,
+        Prompt,
+        TypeId,
+        DeserializeProperties(Properties),
+        Score,
+        Order,
+        CreatedAt,
+        UpdatedAt,
+        DeactivatedAt
     )
     {
-        Quiz = dbo.Quiz,
-        Type = dbo.Type
+        Quiz = Quiz?.ToModel(),
+        Type = Type?.ToModel()
     };
 
     public static string SerializeProperties(QuizQuestion.QuestionType? properties)

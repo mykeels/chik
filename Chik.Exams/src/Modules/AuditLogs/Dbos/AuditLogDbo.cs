@@ -22,15 +22,15 @@ public class AuditLogDbo
         CreatedAt = auditLog.CreatedAt
     };
 
-    public static implicit operator AuditLog?(AuditLogDbo? dbo) => dbo is null ? null : new(
-        dbo.Id,
-        dbo.UserId,
-        dbo.Service,
-        dbo.EntityId,
-        dbo.Properties,
-        dbo.CreatedAt
+    public AuditLog ToModel() => new(
+        Id,
+        UserId,
+        Service,
+        EntityId,
+        Properties,
+        CreatedAt
     )
     {
-        User = dbo.User
+        User = User?.ToModel()
     };
 }

@@ -32,7 +32,7 @@ internal class ExamService(
                 exam
             )
         );
-        return (Exam)examDbo!;
+        return examDbo!.ToModel();
     }
 
     public async Task<Exam?> Get(Auth auth, long id, bool includeAnswers = false)
@@ -65,7 +65,7 @@ internal class ExamService(
             }
         }
 
-        return examDbo;
+        return examDbo!.ToModel();
     }
 
     public async Task<Exam> Update(Auth auth, Exam.Update exam)
@@ -100,7 +100,7 @@ internal class ExamService(
                 exam
             )
         );
-        return (Exam)examDbo!;
+        return examDbo!.ToModel();
     }
 
     public async Task<Exam> Start(Auth auth, long id)
@@ -133,7 +133,7 @@ internal class ExamService(
                 new { StartedExamId = id }
             )
         );
-        return (Exam)result!;
+        return result!.ToModel();
     }
 
     public async Task<Exam> End(Auth auth, long id)
@@ -171,7 +171,7 @@ internal class ExamService(
                 new { EndedExamId = id }
             )
         );
-        return (Exam)result!;
+        return result!.ToModel();
     }
 
     public async Task<Exam> Mark(Auth auth, long id, int score, string? comment = null)
@@ -211,7 +211,7 @@ internal class ExamService(
                 new { MarkedExamId = id, Score = score, Comment = comment }
             )
         );
-        return (Exam)result!;
+        return result!.ToModel();
     }
 
     public async Task AutoScore(Auth auth, long examId)
@@ -389,7 +389,7 @@ internal class ExamService(
             IncludeQuiz: true
         );
         var paginated = await repository.Search(filter, new PaginationOptions(1, 100));
-        return paginated.Items.Select(dbo => (Exam)dbo!).ToList();
+        return paginated.Items.Select(dbo => dbo!.ToModel()).ToList();
     }
 
     public async Task<List<Exam>> GetExamHistory(Auth auth, long? studentId = null)
@@ -413,7 +413,7 @@ internal class ExamService(
             IncludeQuiz: true
         );
         var paginated = await repository.Search(filter, new PaginationOptions(1, 100));
-        return paginated.Items.Select(dbo => (Exam)dbo!).ToList();
+        return paginated.Items.Select(dbo => dbo!.ToModel()).ToList();
     }
 
     public async Task<Paginated<Exam>> Search(Auth auth, Exam.Filter? filter = null, PaginationOptions? pagination = null)
@@ -442,7 +442,7 @@ internal class ExamService(
 
         var paginated = await repository.Search(filter, pagination);
         return new Paginated<Exam>(
-            paginated.Items.Select(dbo => (Exam)dbo!).ToList(),
+                paginated.Items.Select(dbo => dbo!.ToModel()).ToList(),
             paginated.TotalCount,
             pagination,
             async options => await Search(auth, filter, options)

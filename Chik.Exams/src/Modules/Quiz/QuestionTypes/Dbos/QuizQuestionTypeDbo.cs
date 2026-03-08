@@ -20,14 +20,14 @@ public class QuizQuestionTypeDbo
         UpdatedAt = type.UpdatedAt
     };
 
-    public static implicit operator QuizQuestionType?(QuizQuestionTypeDbo? dbo) => dbo is null ? null : new(
-        dbo.Id,
-        dbo.Name,
-        dbo.Description,
-        dbo.CreatedAt,
-        dbo.UpdatedAt
+    public QuizQuestionType ToModel() => new(
+        Id,
+        Name,
+        Description,
+        CreatedAt,
+        UpdatedAt
     )
     {
-        Questions = dbo.Questions?.Select(q => (QuizQuestion?)q).Where(q => q != null).Cast<QuizQuestion>().ToList()
+        Questions = Questions?.Select(q => q.ToModel()).ToList()
     };
 }

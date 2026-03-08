@@ -27,11 +27,11 @@ public class UserDbo
         UpdatedAt = user.UpdatedAt
     };
 
-    public static implicit operator User?(UserDbo? dbo) => dbo is null ? null : new(
-        dbo.Id,
-        dbo.Username,
-        UserRoleExtensions.FromInt32(dbo.Roles),
-        dbo.CreatedAt,
-        dbo.UpdatedAt
+    public Auth ToModel() => new(
+        Id,
+        Username,
+        UserRoleExtensions.FromInt32(Roles),
+        CreatedAt,
+        UpdatedAt
     );
 }

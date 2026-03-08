@@ -16,6 +16,12 @@ public static class ScriptGlobals
 {
     public static IUserService userService => Provider.GetRequiredService<IUserService>();
     public static ILoginService loginService => Provider.GetRequiredService<ILoginService>();
+    public static IQuizService quizService => Provider.GetRequiredService<IQuizService>();
+    public static IQuizQuestionService quizQuestionService => Provider.GetRequiredService<IQuizQuestionService>();
+    public static IExamService examService => Provider.GetRequiredService<IExamService>();
+    public static IExamAnswerService examAnswerService => Provider.GetRequiredService<IExamAnswerService>();
+    public static IAuditLogService auditLogService => Provider.GetRequiredService<IAuditLogService>();
+    public static IServerErrorService serverErrorService => Provider.GetRequiredService<IServerErrorService>();
     public static RemoteEnvironment remoteEnvironment => Provider.GetRequiredService<RemoteEnvironment>();
     public static ChikExamsDbContext dbContext => Provider.GetRequiredService<ChikExamsDbContext>();
     public static ILogger logger => Provider.GetRequiredService<ILogger<ScriptGlobalsLogger>>();
@@ -42,7 +48,7 @@ public static class ScriptGlobals
         {
             throw new KeyNotFoundException("Admin user not found");
         }
-        _admin = (Auth)user.Items.FirstOrDefault()!;
+        _admin = user.Items.FirstOrDefault()!.ToModel();
         var logins = await loginService.Repository.GetLastLogin(_admin.Id);
         _admin.LastLogin = logins?.CreatedAt;
         return _admin;
@@ -112,7 +118,7 @@ public static class ScriptGlobals
     {
         var paginated = await userService.Repository.Search(filter);
         var paginatedUsers = new Paginated<Auth>(
-            paginated.Items.Select(u => (Auth)u!).ToList(),
+            paginated.Items.Select(u => u!.ToModel()).ToList(),
             paginated.TotalCount,
             paginated.Page,
             paginated.PageSize,
@@ -131,7 +137,7 @@ public static class ScriptGlobals
     )
     {
         return async (UserDbo userDbo, int index) => {
-            var auth = (Auth)userDbo!;
+            var auth = userDbo!.ToModel();
             var logins = await loginService.Repository.GetLastLogin(auth.Id);
             auth.LastLogin = logins?.CreatedAt;
             await action(auth);
@@ -159,7 +165,7 @@ public static class ScriptGlobals
                 {
                     continue;
                 }
-                var auth = (Auth)user!;
+                var auth = user!.ToModel();
                 var logins = await loginService.Repository.GetLastLogin(auth.Id);
                 auth.LastLogin = logins?.CreatedAt;
                 await action(auth);

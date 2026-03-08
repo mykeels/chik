@@ -46,7 +46,7 @@ internal class ExamAnswerService(
                 new { ExamId = examId, QuestionId = questionId }
             )
         );
-        return (ExamAnswer)answerDbo!;
+        return answerDbo!.ToModel();
     }
 
     public async Task<ExamAnswer?> Get(Auth auth, long id)
@@ -57,7 +57,7 @@ internal class ExamAnswerService(
         if (answerDbo is null) return null;
 
         await AuthorizeExamAccess(auth, answerDbo.ExamId);
-        return answerDbo;
+        return answerDbo!.ToModel();
     }
 
     public async Task<List<ExamAnswer>> GetByExamId(Auth auth, long examId)
@@ -67,7 +67,7 @@ internal class ExamAnswerService(
         await AuthorizeExamAccess(auth, examId);
 
         var answers = await repository.GetByExamId(examId);
-        return answers.Select(dbo => (ExamAnswer)dbo!).ToList();
+        return answers.Select(dbo => dbo!.ToModel()).ToList();
     }
 
     public async Task<ExamAnswer> Update(Auth auth, ExamAnswer.Update answer)
@@ -106,7 +106,7 @@ internal class ExamAnswerService(
                 answer
             )
         );
-        return (ExamAnswer)answerDbo!;
+        return answerDbo!.ToModel();
     }
 
     public async Task<ExamAnswer> ExaminerScore(Auth auth, long answerId, int score, string? comment = null)
@@ -152,7 +152,7 @@ internal class ExamAnswerService(
                 new { AnswerId = answerId, Score = score, Comment = comment }
             )
         );
-        return (ExamAnswer)answerDbo!;
+        return answerDbo!.ToModel();
     }
 
     public async Task<Paginated<ExamAnswer>> Search(Auth auth, ExamAnswer.Filter? filter = null, PaginationOptions? pagination = null)
@@ -172,7 +172,7 @@ internal class ExamAnswerService(
 
         var paginated = await repository.Search(filter, pagination);
         return new Paginated<ExamAnswer>(
-            paginated.Items.Select(dbo => (ExamAnswer)dbo!).ToList(),
+            paginated.Items.Select(dbo => dbo!.ToModel()).ToList(),
             paginated.TotalCount,
             pagination,
             async options => await Search(auth, filter, options)

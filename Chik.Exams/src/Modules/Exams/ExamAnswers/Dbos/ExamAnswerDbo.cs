@@ -32,21 +32,21 @@ public class ExamAnswerDbo
         UpdatedAt = answer.UpdatedAt
     };
 
-    public static implicit operator ExamAnswer?(ExamAnswerDbo? dbo) => dbo is null ? null : new(
-        dbo.Id,
-        dbo.ExamId,
-        dbo.QuestionId,
-        dbo.Answer,
-        dbo.AutoScore,
-        dbo.ExaminerScore,
-        dbo.ExaminerId,
-        dbo.ExaminerComment,
-        dbo.CreatedAt,
-        dbo.UpdatedAt
+    public ExamAnswer ToModel() => new(
+        Id,
+        ExamId,
+        QuestionId,
+        Answer,
+        AutoScore,
+        ExaminerScore,
+        ExaminerId,
+        ExaminerComment,
+        CreatedAt,
+        UpdatedAt
     )
     {
-        Exam = dbo.Exam,
-        Question = dbo.Question,
-        Examiner = dbo.Examiner
+        Exam = Exam?.ToModel(),
+        Question = Question?.ToModel(),
+        Examiner = Examiner?.ToModel()
     };
 }

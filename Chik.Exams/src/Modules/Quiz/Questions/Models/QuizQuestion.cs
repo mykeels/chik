@@ -134,14 +134,18 @@ public record QuizQuestion(
             var jsonObject = Newtonsoft.Json.Linq.JObject.Load(reader);
             var type = (string?)jsonObject["type"];
 
+            // NOTE: Do NOT use jsonObject.ToObject<ConcreteType>(serializer) here.
+            // Since all concrete types inherit from QuestionType which has [JsonConverter],
+            // passing the serializer causes infinite recursion. Instead, manually construct
+            // each concrete type by reading the known fields directly from the JObject.
             return type switch
             {
-                "single-choice" => jsonObject.ToObject<SingleChoice>(serializer),
-                "multiple-choice" => jsonObject.ToObject<MultipleChoice>(serializer),
-                "fill-in-the-blank" => jsonObject.ToObject<FillInTheBlank>(serializer),
-                "essay" => jsonObject.ToObject<Essay>(serializer),
-                "short-answer" => jsonObject.ToObject<ShortAnswer>(serializer),
-                "true-or-false" => jsonObject.ToObject<TrueOrFalse>(serializer),
+                "single-choice" => new SingleChoice(jsonObject["options"].ToObject<List<Option>>(serializer)),
+                "multiple-choice" => new MultipleChoice(jsonObject["options"].ToObject<List<Option>>(serializer)),
+                "fill-in-the-blank" => new FillInTheBlank(jsonObject["acceptedAnswers"].ToObject<List<string>>(serializer)),
+                "essay" => new Essay(jsonObject["minWords"].ToObject<int>(serializer), jsonObject["maxWords"].ToObject<int>(serializer)),
+                "short-answer" => new ShortAnswer(jsonObject["acceptedAnswers"].ToObject<List<string>>(serializer), jsonObject["maxLength"].ToObject<int>(serializer)),
+                "true-or-false" => new TrueOrFalse(jsonObject["correctAnswer"].ToObject<bool>(serializer)),
                 _ => throw new Newtonsoft.Json.JsonSerializationException($"Unknown question type: {type}")
             };
         }

@@ -37,7 +37,7 @@ internal class UserService(
                 user
             )
         );
-        return (User)userDbo!;
+        return userDbo!.ToModel();
     }
 
     public async Task<User?> Get(Auth auth, long id)
@@ -51,7 +51,7 @@ internal class UserService(
         }
 
         var userDbo = await repository.Get(id);
-        return userDbo;
+        return userDbo!.ToModel();
     }
 
     public async Task<User> Update(Auth auth, User.Update user)
@@ -79,7 +79,7 @@ internal class UserService(
                 user
             )
         );
-        return (User)userDbo!;
+        return userDbo!.ToModel();
     }
 
     public async Task ChangePassword(Auth auth, long userId, string currentPassword, string newPassword)
@@ -160,7 +160,7 @@ internal class UserService(
 
         var paginated = await repository.Search(filter, pagination);
         return new Paginated<User>(
-            paginated.Items.Select(dbo => (User)dbo!).ToList(),
+            paginated.Items.Select(dbo => (User)dbo!.ToModel()).ToList(),
             paginated.TotalCount,
             pagination,
             async options => await Search(auth, filter, options)
