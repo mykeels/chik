@@ -19,6 +19,7 @@ public class QuizRepository(
             Title = quiz.Title,
             Description = quiz.Description,
             CreatorId = quiz.CreatorId,
+            ExaminerId = quiz.ExaminerId,
             Duration = quiz.Duration,
             CreatedAt = timeProvider.GetUtcNow().DateTime
         };
@@ -61,6 +62,10 @@ public class QuizRepository(
         if (quiz.Description is not null)
         {
             existingQuiz.Description = quiz.Description;
+        }
+        if (quiz.ExaminerId is not null)
+        {
+            existingQuiz.ExaminerId = quiz.ExaminerId;
         }
         if (quiz.Duration is not null)
         {
@@ -110,6 +115,11 @@ public class QuizRepository(
             query = query.Where(q => q.CreatorId == filter.CreatorId);
         }
 
+        if (filter.ExaminerId is not null)
+        {
+            query = query.Where(q => q.ExaminerId == filter.ExaminerId);
+        }
+
         if (filter.QuizIds is not null && filter.QuizIds.Count > 0)
         {
             query = query.Where(q => filter.QuizIds.Contains(q.Id));
@@ -118,6 +128,11 @@ public class QuizRepository(
         if (filter.IncludeCreator == true)
         {
             query = query.Include(q => q.Creator);
+        }
+
+        if (filter.IncludeExaminer == true)
+        {
+            query = query.Include(q => q.Examiner);
         }
 
         if (filter.IncludeQuestions == true)

@@ -86,9 +86,12 @@ public class ChikExamsDbContext : DbContext
             entity.Property(e => e.Title).HasColumnName("title").IsRequired().HasMaxLength(500);
             entity.Property(e => e.Description).HasColumnName("description").IsRequired();
             entity.Property(e => e.CreatorId).HasColumnName("creator_id").IsRequired();
+            entity.Property(e => e.ExaminerId).HasColumnName("examiner_id");
             entity.Property(e => e.Duration).HasColumnName("duration");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at").IsRequired();
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+
+            entity.HasIndex(e => e.ExaminerId);
         });
     }
 
@@ -234,6 +237,12 @@ public class ChikExamsDbContext : DbContext
             entity.HasMany(e => e.CreatedQuizzes)
                 .WithOne(e => e.Creator)
                 .HasForeignKey(e => e.CreatorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // User -> Quizzes (examined)
+            entity.HasMany(e => e.ExaminedQuizzes)
+                .WithOne(e => e.Examiner)
+                .HasForeignKey(e => e.ExaminerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // User -> Exams (created)

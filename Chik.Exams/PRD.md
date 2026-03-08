@@ -10,6 +10,7 @@ A Quiz has properties:
 - Title (string)
 - Description (string)
 - CreatorId (long)
+- ExaminerId (long?) - the teacher responsible for examining this quiz
 - Duration (timespan?)
 - CreatedAt (DateTime)
 - UpdatedAt (DateTime)
@@ -18,6 +19,7 @@ A Quiz has properties:
 
 - A quiz is created by a user
 - A quiz can have multiple questions
+- When an admin creates a quiz, they can assign an examiner (teacher) who will be responsible for the quiz
 
 ## 2. User
 
@@ -227,15 +229,59 @@ An Audit Log represents a log of an action taken by a user.
 
 - Id (long)
 - UserId (long)
-- Entity (string)
+- Service (string)
 - EntityId (long)
-- ApplicationContext (JSON string)
-- OldValue (string)
-- NewValue (string)
 - CreatedAt (DateTime)
 
 The audit log is a JSON string that contains the audit log properties.
 
-## What to expect
+## User Stories
 
-- We should be able to create an admin user
+### 1. Admin User
+
+- We create an admin user on startup
+- An admin user can create teacher users and student users
+- can do everything a teacher user can do
+- can update/delete any user
+- can view audit logs
+- can view all quizzes and exams in the system
+
+### 2. Teacher User
+
+- can create student users
+- can create quizzes and quiz questions
+- can create exams i.e. assign a quiz to a student
+- can examine exams i.e. review the answers of a student
+- can score exams i.e. manually score the answers of a student
+- can view the scores of:
+  - a student
+  - an exam
+- can update/delete quizzes they created
+- can deactivate/reactivate quiz questions
+- can view all quizzes they created
+- can update/cancel exams they created
+
+### 3. Student User
+
+- A student user can take exams
+- can view the scores of:
+  - an exam they have taken
+  - can review the answers of an exam they have taken, including the auto-scored and examiner-scored answers, where examiner-scored answers override auto-scored answers
+- can view pending exams assigned to them
+- can view their exam history
+- can start an exam (sets StartedAt)
+- can submit an exam (sets EndedAt)
+
+### 4. All Users
+
+- can log in with username/password
+- can change their password
+- can log out
+
+## Implementation Notes
+
+- Quiz question types are seeded on startup
+- When `ExamService.AutoScore(auth, examId)` is called, it will auto-score exam answers where possible
+- When `ExamService.GetScores(auth, examId)` is called, it will return the score of the exam, which is an aggregate of the auto-scored and examiner-scored answers, where examiner-scored answers override auto-scored answers
+- Every service method should have `Auth auth` as its first parameter. This is used to determine whether the user has the required roles to perform the action.
+- Every service method that mutates data should create an audit log.

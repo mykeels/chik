@@ -16,6 +16,7 @@ erDiagram
         varchar title
         text description
         bigint creator_id FK
+        bigint examiner_id FK
         interval duration
         timestamp created_at
         timestamp updated_at
@@ -93,6 +94,7 @@ erDiagram
 
     %% User relationships
     users ||--o{ quizzes : "creates"
+    users ||--o{ quizzes : "examines"
     users ||--o{ exams : "creates"
     users ||--o{ exams : "takes"
     users ||--o{ exams : "examines"
@@ -120,6 +122,7 @@ erDiagram
 | From | To | Relationship | Foreign Key | On Delete |
 |------|-----|--------------|-------------|-----------|
 | `users` | `quizzes` | One-to-Many | `creator_id` | Restrict |
+| `users` | `quizzes` | One-to-Many | `examiner_id` | Restrict |
 | `users` | `exams` | One-to-Many | `creator_id` | Restrict |
 | `users` | `exams` | One-to-Many | `user_id` | Restrict |
 | `users` | `exams` | One-to-Many | `examiner_id` | Restrict |
@@ -138,6 +141,7 @@ erDiagram
 | Table | Columns | Unique |
 |-------|---------|--------|
 | `users` | `username` | ✓ |
+| `quizzes` | `examiner_id` | |
 | `quiz_question_types` | `name` | ✓ |
 | `quiz_questions` | `quiz_id`, `order` | |
 | `exams` | `user_id`, `quiz_id` | |

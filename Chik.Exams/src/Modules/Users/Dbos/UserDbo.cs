@@ -11,6 +11,7 @@ public class UserDbo
 
     // Navigation properties
     public virtual List<QuizDbo>? CreatedQuizzes { get; set; }
+    public virtual List<QuizDbo>? ExaminedQuizzes { get; set; }
     public virtual List<ExamDbo>? CreatedExams { get; set; }
     public virtual List<ExamDbo>? TakenExams { get; set; }
     public virtual List<ExamDbo>? ExaminedExams { get; set; }

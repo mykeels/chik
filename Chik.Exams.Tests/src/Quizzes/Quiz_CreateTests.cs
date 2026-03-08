@@ -35,12 +35,25 @@ public class Quiz_CreateTests
     public async Task Create_WithDuration_ShouldCreateQuizWithDuration()
     {
         // Arrange
-        var create = new Quiz.Create("Timed Quiz", "A timed quiz", 1, TimeSpan.FromMinutes(30));
+        var create = new Quiz.Create("Timed Quiz", "A timed quiz", 1, Duration: TimeSpan.FromMinutes(30));
 
         // Act
         var result = await _repository.Create(create);
 
         // Assert
         Assert.That(result.Duration, Is.EqualTo(TimeSpan.FromMinutes(30)));
+    }
+
+    [Test]
+    public async Task Create_WithExaminer_ShouldCreateQuizWithExaminer()
+    {
+        // Arrange
+        var create = new Quiz.Create("Quiz with Examiner", "A quiz with assigned examiner", 1, ExaminerId: 2);
+
+        // Act
+        var result = await _repository.Create(create);
+
+        // Assert
+        Assert.That(result.ExaminerId, Is.EqualTo(2));
     }
 }
