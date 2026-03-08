@@ -4,7 +4,7 @@ using Chik.Exams.Data;
 namespace Chik.Exams.Logins.Repositories;
 
 public class LoginRepository(
-    IDbContextFactory<Chik.ExamsDbContext> _dbContextFactory,
+    IDbContextFactory<ChikExamsDbContext> _dbContextFactory,
     ILogger<LoginRepository> logger,
     TimeProvider timeProvider
 ): ILoginRepository
@@ -53,7 +53,7 @@ public class LoginRepository(
         return new Paginated<LoginDbo>(items, totalCount, pagination, async options => await Search(filter, options));
     }
 
-    private IQueryable<LoginDbo> GetQuery(Chik.ExamsDbContext dbContext, Login.Filter filter)
+    private IQueryable<LoginDbo> GetQuery(ChikExamsDbContext dbContext, Login.Filter filter)
     {
         logger.LogInformation($"{nameof(LoginRepository)}.{nameof(GetQuery)} ({filter})");
         var query = dbContext.Logins.AsNoTracking();

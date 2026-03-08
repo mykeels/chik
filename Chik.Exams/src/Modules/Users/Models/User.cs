@@ -1,67 +1,52 @@
-using System.Text.RegularExpressions;
-
 namespace Chik.Exams;
 
 public record User(
     long Id,
-    string UserName,
-    List<UserRole> Roles,
+    string Username,
+    string Password,
+    int Roles,
     DateTime CreatedAt,
     DateTime? UpdatedAt
 )
 {
-    public Login? LastLogin { get; set; }
-    public static Auth Admin => new Auth(
-        Guid.Empty,
-        "admin@mykeels.com",
-        "Admin",
-        DateOnly.FromDateTime(DateTime.UtcNow), 
-        DateTime.UtcNow,
-        true,
-        DateTime.UtcNow
-    );
-    
-    public bool IsAdmin()
+    public List<UserRole> GetRoles()
     {
-        string[] adminEmails = ["admin@mykeels.com"];
-        return adminEmails.Contains(this.Email);
-    }
-
-    public bool IsInternal()
-    {
-        bool isInternal = this.IsAdmin();
-        var mykehell123 = new Regex(@"^mykehell123(\+.+)?@gmail\.com$");
-        var graceama56 = new Regex(@"^graceama56(\+.+)?@gmail\.com$");
-        var mikechifamily = new Regex(@"^mikechifamily(\+.+)?@gmail\.com$");
-        var michaelikechim = new Regex(@"^michaelikechim(\+.+)?@gmail\.com$");
-        var under4games = new Regex(@"@under4\.games$");
-        isInternal |= mykehell123.IsMatch(this.Email);
-        isInternal |= graceama56.IsMatch(this.Email);
-        isInternal |= mikechifamily.IsMatch(this.Email);
-        isInternal |= michaelikechim.IsMatch(this.Email);
-        isInternal |= under4games.IsMatch(this.Email) && this.Email.Contains("internal");
-        return isInternal;
-    }
-
-    public static async Task<Auth> FromUserName(string userName)
-    {
-        var userService = Provider.GetRequiredService<IUserService>();
-        var user = await userService.Get(new UserFilter(Email: email));
-        if (user is null)
+        var roles = new List<UserRole>();
+        foreach (UserRole role in Enum.GetValues<UserRole>())
         {
-            throw new KeyNotFoundException($"User not found with email {email}");
+            if ((Roles & (int)role) == (int)role)
+            {
+                roles.Add(role);
+            }
         }
-        var auth = (Auth)user!;
-        return auth;
+        return roles;
     }
+
+    public bool HasRole(UserRole role) => (Roles & (int)role) == (int)role;
+
+    public bool IsAdmin() => HasRole(UserRole.Admin);
+
+    public bool IsTeacher() => HasRole(UserRole.Teacher);
+
+    public bool IsStudent() => HasRole(UserRole.Student);
+
+    public record Create(
+        string Username,
+        string Password,
+        int Roles
+    );
+
+    public record Update(
+        long Id,
+        string? Username = null,
+        string? Password = null,
+        int? Roles = null
+    );
 
     public record Filter(
-        string? UserName = null,
-        List<UserRole>? Roles = null,
+        string? Username = null,
+        int? Roles = null,
         DateTimeRange? DateRange = null,
-        List<long>? UserIds = null,
-        List<UserRole>? UserRoles = null,
-        List<long>? QuizIds = null,
-        List<long>? ExamIds = null
+        List<long>? UserIds = null
     );
 }

@@ -18,7 +18,7 @@ public interface IIpAddressLocationRepository
 }
 
 public class IpAddressLocationRepository(
-    IDbContextFactory<Chik.ExamsDbContext> _dbContextFactory, 
+    IDbContextFactory<ChikExamsDbContext> _dbContextFactory, 
     ILogger<IpAddressLocationRepository> logger, 
     TimeProvider timeProvider) : IIpAddressLocationRepository
 {
