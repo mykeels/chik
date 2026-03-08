@@ -13,12 +13,12 @@ public record QuizQuestionType(
     // Predefined question type IDs
     public static class Types
     {
-        public const long MultipleChoice = 1;
-        public const long SingleChoice = 2;
-        public const long FillInTheBlank = 3;
-        public const long Essay = 4;
-        public const long ShortAnswer = 5;
-        public const long TrueOrFalse = 6;
+        public const int MultipleChoice = 1;
+        public const int SingleChoice = 2;
+        public const int FillInTheBlank = 3;
+        public const int Essay = 4;
+        public const int ShortAnswer = 5;
+        public const int TrueOrFalse = 6;
     }
 
     public record Create(

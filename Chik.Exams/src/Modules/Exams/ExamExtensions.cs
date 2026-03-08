@@ -6,8 +6,10 @@ public static class ExamExtensions
 {
     public static IServiceCollection AddExam(this IServiceCollection services)
     {
-        services.AddScoped<IExamRepository, ExamRepository>();
-        services.AddScoped<IExamService, ExamService>();
+        services.TrackScoped<IExamAnswerRepository, ExamAnswerRepository>();
+        services.TrackScoped<IExamAnswerService, ExamAnswerService>();
+        services.TrackScoped<IExamRepository, ExamRepository>();
+        services.TrackScoped<IExamService, ExamService>();
         return services;
     }
 }

@@ -27,11 +27,8 @@
     "emails": "npx concurrently \"npm run emails:watch\" \"npm run emails:preview\"",
     "post": "bun ./scripts/new-post.script.ts",
     "db:restore": "bun ./scripts/restore-db.script.ts data/dbs/Under4Games.sql",
-    "repl": "cd Under4Games.Jobs && dotnet run --db false --jobs false repl",
-    "repl:db": "cd Under4Games.Jobs && dotnet run --db true --jobs false repl",
-    "report:weekly": "bun ./scripts/mixpanel-weekly-report.script.ts",
-    "report:monthly": "bun ./scripts/mixpanel-monthly-report.script.ts",
-    "report:logout": "bun -e \"import { clearCachedAuth } from './scripts/lib/mixpanel-auth.ts'; clearCachedAuth();\""
+    "repl": "cd Chik.Exams && ASPNETCORE_ENVIRONMENT=Development SkipOpenApiGeneration=true dotnet run --db false repl",
+    "repl:db": "cd Chik.Exams && ASPNETCORE_ENVIRONMENT=Development SkipOpenApiGeneration=true dotnet run --db true repl"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,md,json}": [

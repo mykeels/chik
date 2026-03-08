@@ -7,8 +7,8 @@ public static class LoginExtensions
 {
     public static IServiceCollection AddLogin(this IServiceCollection services)
     {
-        services.AddScoped<ILoginService, LoginService>();
-        services.AddScoped<ILoginRepository, LoginRepository>();
+        services.TrackScoped<ILoginService, LoginService>();
+        services.TrackScoped<ILoginRepository, LoginRepository>();
         return services;
     }
 }

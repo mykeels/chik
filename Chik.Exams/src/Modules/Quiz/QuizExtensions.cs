@@ -6,8 +6,12 @@ public static class QuizExtensions
 {
     public static IServiceCollection AddQuiz(this IServiceCollection services)
     {
-        services.AddScoped<IQuizRepository, QuizRepository>();
-        services.AddScoped<IQuizService, QuizService>();
+        services.TrackScoped<IQuizRepository, QuizRepository>();
+        services.TrackScoped<IQuizService, QuizService>();
+        services.TrackScoped<IQuizQuestionRepository, QuizQuestionRepository>();
+        services.TrackScoped<IQuizQuestionService, QuizQuestionService>();
+        services.TrackScoped<IQuizQuestionTypeRepository, QuizQuestionTypeRepository>();
+        services.TrackScoped<IQuizQuestionTypeRepository, QuizQuestionTypeRepository>();
         return services;
     }
 }

@@ -142,8 +142,14 @@ public class Startup
                     {
                         await dbContext.Database.MigrateAsync();
                     }
-                    await Seeder.Seed();
                 }
+            }
+            else
+            {
+               using (var scope = app.Services.CreateScope())
+               {
+                    await Seeder.Seed(scope.ServiceProvider);
+               }
             }
             if (!_shouldConnectToDb)
             {

@@ -6,8 +6,8 @@ public static class AuditLogExtensions
 {
     public static IServiceCollection AddAuditLog(this IServiceCollection services)
     {
-        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
-        services.AddScoped<IAuditLogService, AuditLogService>();
+        services.TrackScoped<IAuditLogRepository, AuditLogRepository>();
+        services.TrackScoped<IAuditLogService, AuditLogService>();
         return services;
     }
 }

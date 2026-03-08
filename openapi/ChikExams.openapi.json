@@ -12,9 +12,7 @@
   "paths": {
     "/": {
       "get": {
-        "tags": [
-          "AlwaysOn"
-        ],
+        "tags": ["AlwaysOn"],
         "operationId": "AlwaysOn_Get",
         "responses": {
           "200": {
@@ -25,9 +23,7 @@
     },
     "/api/audit-logs/{id}": {
       "get": {
-        "tags": [
-          "AuditLogs"
-        ],
+        "tags": ["AuditLogs"],
         "operationId": "AuditLogs_Get",
         "parameters": [
           {
@@ -66,9 +62,7 @@
     },
     "/api/audit-logs/by-service/{service}": {
       "get": {
-        "tags": [
-          "AuditLogs"
-        ],
+        "tags": ["AuditLogs"],
         "operationId": "AuditLogs_GetByService",
         "parameters": [
           {
@@ -123,9 +117,7 @@
     },
     "/api/audit-logs/by-user/{userId}": {
       "get": {
-        "tags": [
-          "AuditLogs"
-        ],
+        "tags": ["AuditLogs"],
         "operationId": "AuditLogs_GetByUserId",
         "parameters": [
           {
@@ -173,9 +165,7 @@
     },
     "/api/audit-logs": {
       "get": {
-        "tags": [
-          "AuditLogs"
-        ],
+        "tags": ["AuditLogs"],
         "operationId": "AuditLogs_Search",
         "parameters": [
           {
@@ -306,9 +296,7 @@
     },
     "/api/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "operationId": "Auth_Login",
         "requestBody": {
           "content": {
@@ -355,9 +343,7 @@
     },
     "/api/auth/logout": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "operationId": "Auth_Logout",
         "responses": {
           "200": {
@@ -368,9 +354,7 @@
     },
     "/api/auth/change-password": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "operationId": "Auth_ChangePassword",
         "requestBody": {
           "content": {
@@ -400,9 +384,7 @@
     },
     "/api/auth/me": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "operationId": "Auth_GetCurrentUser",
         "responses": {
           "200": {
@@ -430,9 +412,7 @@
     },
     "/api/exam-answers/{id}": {
       "get": {
-        "tags": [
-          "ExamAnswers"
-        ],
+        "tags": ["ExamAnswers"],
         "operationId": "ExamAnswers_Get",
         "parameters": [
           {
@@ -469,9 +449,7 @@
         }
       },
       "put": {
-        "tags": [
-          "ExamAnswers"
-        ],
+        "tags": ["ExamAnswers"],
         "operationId": "ExamAnswers_Update",
         "parameters": [
           {
@@ -529,9 +507,7 @@
     },
     "/api/exam-answers/{id}/score": {
       "post": {
-        "tags": [
-          "ExamAnswers"
-        ],
+        "tags": ["ExamAnswers"],
         "operationId": "ExamAnswers_ExaminerScore",
         "parameters": [
           {
@@ -589,9 +565,7 @@
     },
     "/api/exam-answers": {
       "get": {
-        "tags": [
-          "ExamAnswers"
-        ],
+        "tags": ["ExamAnswers"],
         "operationId": "ExamAnswers_Search",
         "parameters": [
           {
@@ -748,9 +722,7 @@
     },
     "/api/exams": {
       "post": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_Create",
         "requestBody": {
           "content": {
@@ -797,9 +769,7 @@
     },
     "/api/exams/{id}": {
       "get": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_Get",
         "parameters": [
           {
@@ -844,9 +814,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_Update",
         "parameters": [
           {
@@ -902,9 +870,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_Delete",
         "parameters": [
           {
@@ -926,9 +892,7 @@
     },
     "/api/exams/{id}/start": {
       "post": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_Start",
         "parameters": [
           {
@@ -967,9 +931,7 @@
     },
     "/api/exams/{id}/submit": {
       "post": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_Submit",
         "parameters": [
           {
@@ -1008,9 +970,7 @@
     },
     "/api/exams/{id}/mark": {
       "post": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_Mark",
         "parameters": [
           {
@@ -1068,9 +1028,7 @@
     },
     "/api/exams/{id}/auto-score": {
       "post": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_AutoScore",
         "parameters": [
           {
@@ -1092,9 +1050,7 @@
     },
     "/api/exams/{id}/scores": {
       "get": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_GetScores",
         "parameters": [
           {
@@ -1133,9 +1089,7 @@
     },
     "/api/exams/{id}/cancel": {
       "post": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_Cancel",
         "parameters": [
           {
@@ -1157,9 +1111,7 @@
     },
     "/api/exams/pending": {
       "get": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_GetPendingExams",
         "parameters": [
           {
@@ -1206,9 +1158,7 @@
     },
     "/api/exams/history": {
       "get": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_GetExamHistory",
         "parameters": [
           {
@@ -1255,9 +1205,7 @@
     },
     "/api/exams/search": {
       "get": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_Search",
         "parameters": [
           {
@@ -1443,9 +1391,7 @@
     },
     "/api/exams/{examId}/answers": {
       "get": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_GetAnswers",
         "parameters": [
           {
@@ -1491,9 +1437,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Exams"
-        ],
+        "tags": ["Exams"],
         "operationId": "Exams_SubmitAnswer",
         "parameters": [
           {
@@ -1551,9 +1495,7 @@
     },
     "/api/quiz-questions/{id}": {
       "get": {
-        "tags": [
-          "QuizQuestions"
-        ],
+        "tags": ["QuizQuestions"],
         "operationId": "QuizQuestions_Get",
         "parameters": [
           {
@@ -1590,9 +1532,7 @@
         }
       },
       "put": {
-        "tags": [
-          "QuizQuestions"
-        ],
+        "tags": ["QuizQuestions"],
         "operationId": "QuizQuestions_Update",
         "parameters": [
           {
@@ -1648,9 +1588,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "QuizQuestions"
-        ],
+        "tags": ["QuizQuestions"],
         "operationId": "QuizQuestions_Delete",
         "parameters": [
           {
@@ -1672,9 +1610,7 @@
     },
     "/api/quiz-questions/{id}/deactivate": {
       "post": {
-        "tags": [
-          "QuizQuestions"
-        ],
+        "tags": ["QuizQuestions"],
         "operationId": "QuizQuestions_Deactivate",
         "parameters": [
           {
@@ -1696,9 +1632,7 @@
     },
     "/api/quiz-questions/{id}/reactivate": {
       "post": {
-        "tags": [
-          "QuizQuestions"
-        ],
+        "tags": ["QuizQuestions"],
         "operationId": "QuizQuestions_Reactivate",
         "parameters": [
           {
@@ -1720,9 +1654,7 @@
     },
     "/api/quiz-questions": {
       "get": {
-        "tags": [
-          "QuizQuestions"
-        ],
+        "tags": ["QuizQuestions"],
         "operationId": "QuizQuestions_Search",
         "parameters": [
           {
@@ -1857,9 +1789,7 @@
     },
     "/api/quizzes": {
       "post": {
-        "tags": [
-          "Quizzes"
-        ],
+        "tags": ["Quizzes"],
         "operationId": "Quizzes_Create",
         "requestBody": {
           "content": {
@@ -1904,9 +1834,7 @@
         }
       },
       "get": {
-        "tags": [
-          "Quizzes"
-        ],
+        "tags": ["Quizzes"],
         "operationId": "Quizzes_Search",
         "parameters": [
           {
@@ -2048,9 +1976,7 @@
     },
     "/api/quizzes/{id}": {
       "get": {
-        "tags": [
-          "Quizzes"
-        ],
+        "tags": ["Quizzes"],
         "operationId": "Quizzes_Get",
         "parameters": [
           {
@@ -2095,9 +2021,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Quizzes"
-        ],
+        "tags": ["Quizzes"],
         "operationId": "Quizzes_Update",
         "parameters": [
           {
@@ -2153,9 +2077,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Quizzes"
-        ],
+        "tags": ["Quizzes"],
         "operationId": "Quizzes_Delete",
         "parameters": [
           {
@@ -2177,9 +2099,7 @@
     },
     "/api/quizzes/{quizId}/questions": {
       "get": {
-        "tags": [
-          "Quizzes"
-        ],
+        "tags": ["Quizzes"],
         "operationId": "Quizzes_GetQuestions",
         "parameters": [
           {
@@ -2233,9 +2153,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Quizzes"
-        ],
+        "tags": ["Quizzes"],
         "operationId": "Quizzes_CreateQuestion",
         "parameters": [
           {
@@ -2293,9 +2211,7 @@
     },
     "/api/quizzes/{quizId}/questions/reorder": {
       "post": {
-        "tags": [
-          "Quizzes"
-        ],
+        "tags": ["Quizzes"],
         "operationId": "Quizzes_ReorderQuestions",
         "parameters": [
           {
@@ -2336,9 +2252,7 @@
     },
     "/api/users": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "operationId": "Users_Create",
         "requestBody": {
           "content": {
@@ -2383,9 +2297,7 @@
         }
       },
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "operationId": "Users_Search",
         "parameters": [
           {
@@ -2498,9 +2410,7 @@
     },
     "/api/users/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "operationId": "Users_Get",
         "parameters": [
           {
@@ -2537,9 +2447,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "operationId": "Users_Update",
         "parameters": [
           {
@@ -2595,9 +2503,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "operationId": "Users_Delete",
         "parameters": [
           {
@@ -2619,9 +2525,7 @@
     },
     "/api/users/{id}/change-password": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "operationId": "Users_ChangePassword",
         "parameters": [
           {
@@ -2664,11 +2568,7 @@
   "components": {
     "schemas": {
       "AnswerScore": {
-        "required": [
-          "finalScore",
-          "maxScore",
-          "questionId"
-        ],
+        "required": ["finalScore", "maxScore", "questionId"],
         "type": "object",
         "properties": {
           "questionId": {
@@ -2696,10 +2596,7 @@
         }
       },
       "Api.ChangePasswordRequest": {
-        "required": [
-          "currentPassword",
-          "newPassword"
-        ],
+        "required": ["currentPassword", "newPassword"],
         "type": "object",
         "properties": {
           "currentPassword": {
@@ -2713,10 +2610,7 @@
         }
       },
       "Api.CreateExamRequest": {
-        "required": [
-          "quizId",
-          "userId"
-        ],
+        "required": ["quizId", "userId"],
         "type": "object",
         "properties": {
           "userId": {
@@ -2730,13 +2624,7 @@
         }
       },
       "Api.CreateQuizQuestionRequest": {
-        "required": [
-          "order",
-          "prompt",
-          "properties",
-          "score",
-          "typeId"
-        ],
+        "required": ["order", "prompt", "properties", "score", "typeId"],
         "type": "object",
         "properties": {
           "prompt": {
@@ -2762,10 +2650,7 @@
         }
       },
       "Api.CreateQuizRequest": {
-        "required": [
-          "description",
-          "title"
-        ],
+        "required": ["description", "title"],
         "type": "object",
         "properties": {
           "title": {
@@ -2789,11 +2674,7 @@
         }
       },
       "Api.CreateUserRequest": {
-        "required": [
-          "password",
-          "roles",
-          "username"
-        ],
+        "required": ["password", "roles", "username"],
         "type": "object",
         "properties": {
           "username": {
@@ -2814,10 +2695,7 @@
         }
       },
       "Api.LoginRequest": {
-        "required": [
-          "password",
-          "username"
-        ],
+        "required": ["password", "username"],
         "type": "object",
         "properties": {
           "username": {
@@ -2831,12 +2709,7 @@
         }
       },
       "Api.LoginResponse": {
-        "required": [
-          "id",
-          "message",
-          "roles",
-          "username"
-        ],
+        "required": ["id", "message", "roles", "username"],
         "type": "object",
         "properties": {
           "id": {
@@ -2861,9 +2734,7 @@
         }
       },
       "Api.MarkExamRequest": {
-        "required": [
-          "score"
-        ],
+        "required": ["score"],
         "type": "object",
         "properties": {
           "score": {
@@ -2877,9 +2748,7 @@
         }
       },
       "Api.ReorderQuestionsRequest": {
-        "required": [
-          "questionIdsInOrder"
-        ],
+        "required": ["questionIdsInOrder"],
         "type": "object",
         "properties": {
           "questionIdsInOrder": {
@@ -2893,9 +2762,7 @@
         }
       },
       "Api.ScoreAnswerRequest": {
-        "required": [
-          "score"
-        ],
+        "required": ["score"],
         "type": "object",
         "properties": {
           "score": {
@@ -2909,10 +2776,7 @@
         }
       },
       "Api.SubmitAnswerRequest": {
-        "required": [
-          "answer",
-          "questionId"
-        ],
+        "required": ["answer", "questionId"],
         "type": "object",
         "properties": {
           "questionId": {
@@ -3195,13 +3059,7 @@
         }
       },
       "ExamAnswer": {
-        "required": [
-          "answer",
-          "createdAt",
-          "examId",
-          "id",
-          "questionId"
-        ],
+        "required": ["answer", "createdAt", "examId", "id", "questionId"],
         "type": "object",
         "properties": {
           "id": {
@@ -3321,13 +3179,7 @@
         }
       },
       "Quiz": {
-        "required": [
-          "createdAt",
-          "creatorId",
-          "description",
-          "id",
-          "title"
-        ],
+        "required": ["createdAt", "creatorId", "description", "id", "title"],
         "type": "object",
         "properties": {
           "id": {
@@ -3472,9 +3324,7 @@
         }
       },
       "QuizQuestion.QuestionType": {
-        "required": [
-          "type"
-        ],
+        "required": ["type"],
         "type": "object",
         "properties": {
           "type": {
@@ -3484,12 +3334,7 @@
         }
       },
       "QuizQuestionType": {
-        "required": [
-          "createdAt",
-          "description",
-          "id",
-          "name"
-        ],
+        "required": ["createdAt", "description", "id", "name"],
         "type": "object",
         "properties": {
           "id": {
@@ -3523,12 +3368,7 @@
         }
       },
       "User": {
-        "required": [
-          "createdAt",
-          "id",
-          "roles",
-          "username"
-        ],
+        "required": ["createdAt", "id", "roles", "username"],
         "type": "object",
         "properties": {
           "id": {
@@ -3563,19 +3403,11 @@
         }
       },
       "UserRole": {
-        "enum": [
-          1,
-          2,
-          4
-        ],
+        "enum": [1, 2, 4],
         "type": "integer",
         "description": "",
         "format": "int32",
-        "x-enum-varnames": [
-          "Admin",
-          "Teacher",
-          "Student"
-        ]
+        "x-enum-varnames": ["Admin", "Teacher", "Student"]
       }
     }
   }

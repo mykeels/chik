@@ -7,8 +7,8 @@ public static class ServerErrorExtensions
 {
     public static IServiceCollection AddServerError(this IServiceCollection services)
     {
-        services.AddScoped<IServerErrorRepository, ServerErrorRepository>();
-        services.AddScoped<IServerErrorService, ServerErrorService>();
+        services.TrackScoped<IServerErrorRepository, ServerErrorRepository>();
+        services.TrackScoped<IServerErrorService, ServerErrorService>();
         return services;
     }
 }
