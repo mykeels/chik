@@ -72,24 +72,22 @@ erDiagram
     audit_logs {
         bigint id PK
         bigint user_id FK
-        varchar entity
+        varchar service
         bigint entity_id
-        jsonb application_context
-        jsonb old_value
-        jsonb new_value
+        jsonb properties
         timestamp created_at
     }
 
     ip_address_locations {
-        uuid id PK
+        bigint id PK
         varchar ip_address UK
         varchar country_code
     }
 
     logins {
-        uuid id PK
+        bigint id PK
         bigint user_id FK
-        uuid ip_address_location_id FK
+        bigint ip_address_location_id FK
         timestamp created_at
     }
 
@@ -145,7 +143,7 @@ erDiagram
 | `exams` | `user_id`, `quiz_id` | |
 | `exams` | `creator_id` | |
 | `exam_answers` | `exam_id`, `question_id` | ✓ |
-| `audit_logs` | `entity`, `entity_id` | |
+| `audit_logs` | `service`, `entity_id` | |
 | `audit_logs` | `user_id` | |
 | `audit_logs` | `created_at` | |
 | `ip_address_locations` | `ip_address` | ✓ |
