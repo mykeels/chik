@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Chik.Exams.Data;
 
 public class QuizQuestionDbo
@@ -24,7 +26,7 @@ public class QuizQuestionDbo
         QuizId = question.QuizId,
         Prompt = question.Prompt,
         TypeId = question.TypeId,
-        Properties = question.Properties,
+        Properties = SerializeProperties(question.Properties),
         Score = question.Score,
         Order = question.Order,
         CreatedAt = question.CreatedAt,
@@ -37,7 +39,7 @@ public class QuizQuestionDbo
         dbo.QuizId,
         dbo.Prompt,
         dbo.TypeId,
-        dbo.Properties,
+        DeserializeProperties(dbo.Properties),
         dbo.Score,
         dbo.Order,
         dbo.CreatedAt,
@@ -48,4 +50,16 @@ public class QuizQuestionDbo
         Quiz = dbo.Quiz,
         Type = dbo.Type
     };
+
+    private static string SerializeProperties(QuizQuestion.QuestionType? properties)
+    {
+        if (properties is null) return "{}";
+        return JsonConvert.SerializeObject(properties);
+    }
+
+    private static QuizQuestion.QuestionType? DeserializeProperties(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return null;
+        return JsonConvert.DeserializeObject<QuizQuestion.QuestionType>(json);
+    }
 }
