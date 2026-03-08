@@ -181,14 +181,12 @@ public class ChikExamsDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
             entity.Property(e => e.UserId).HasColumnName("user_id").IsRequired();
-            entity.Property(e => e.Entity).HasColumnName("entity").IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Service).HasColumnName("service").IsRequired().HasMaxLength(100);
             entity.Property(e => e.EntityId).HasColumnName("entity_id").IsRequired();
-            entity.Property(e => e.ApplicationContext).HasColumnName("application_context").IsRequired();
-            entity.Property(e => e.OldValue).HasColumnName("old_value").IsRequired();
-            entity.Property(e => e.NewValue).HasColumnName("new_value").IsRequired();
+            entity.Property(e => e.Properties).HasColumnName("properties").IsRequired();
             entity.Property(e => e.CreatedAt).HasColumnName("created_at").IsRequired();
 
-            entity.HasIndex(e => new { e.Entity, e.EntityId });
+            entity.HasIndex(e => new { e.Service, e.EntityId });
             entity.HasIndex(e => e.UserId);
             entity.HasIndex(e => e.CreatedAt);
         });

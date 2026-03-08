@@ -3,29 +3,30 @@ namespace Chik.Exams;
 public record AuditLog(
     long Id,
     long UserId,
-    string Entity,
+    string Service,
     long EntityId,
-    string ApplicationContext,
-    string OldValue,
-    string NewValue,
+    string Properties,
     DateTime CreatedAt
 )
 {
     public User? User { get; set; }
 
-    public record Create(
-        long UserId,
-        string Entity,
+    public record Create<T>(
+        string Service,
         long EntityId,
-        string ApplicationContext,
-        string OldValue,
-        string NewValue
+        T Properties
+    );
+
+    public record Create(
+        string Service,
+        long EntityId,
+        string Properties
     );
 
     public record Filter(
         long? UserId = null,
-        string? Entity = null,
-        long? EntityId = null,
+        string? Service = null,
+        List<long>? EntityIds = null,
         DateTimeRange? DateRange = null,
         List<long>? AuditLogIds = null,
         bool? IncludeUser = null

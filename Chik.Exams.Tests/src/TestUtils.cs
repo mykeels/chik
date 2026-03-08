@@ -18,7 +18,6 @@ public static class TestUtils
     public static User SampleUser => new User(
         Id: 1,
         "user@chik.com",
-        "User",
         (int)UserRole.Admin,
         DateTime.UtcNow,
         DateTime.UtcNow

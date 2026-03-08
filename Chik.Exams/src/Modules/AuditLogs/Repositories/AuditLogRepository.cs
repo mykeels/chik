@@ -9,19 +9,17 @@ public class AuditLogRepository(
     TimeProvider timeProvider
 ) : IAuditLogRepository
 {
-    public async Task<AuditLogDbo> Create(AuditLog.Create auditLog)
+    public async Task<AuditLogDbo> Create(long actorId, AuditLog.Create auditLog)
     {
-        logger.LogInformation($"{nameof(AuditLogRepository)}.{nameof(Create)} (Entity: {auditLog.Entity}, EntityId: {auditLog.EntityId})");
+        logger.LogInformation($"{nameof(AuditLogRepository)}.{nameof(Create)} (ActorId: {actorId}, Service: {auditLog.Service}, EntityId: {auditLog.EntityId})");
         using var dbContext = _dbContextFactory.CreateDbContext();
 
         var auditLogDbo = new AuditLogDbo
         {
-            UserId = auditLog.UserId,
-            Entity = auditLog.Entity,
+            UserId = actorId,
+            Service = auditLog.Service,
             EntityId = auditLog.EntityId,
-            ApplicationContext = auditLog.ApplicationContext,
-            OldValue = auditLog.OldValue,
-            NewValue = auditLog.NewValue,
+            Properties = auditLog.Properties,
             CreatedAt = timeProvider.GetUtcNow().DateTime
         };
 
@@ -39,12 +37,12 @@ public class AuditLogRepository(
             .FirstOrDefaultAsync(a => a.Id == id);
     }
 
-    public async Task<List<AuditLogDbo>> GetByEntity(string entity, long entityId)
+    public async Task<List<AuditLogDbo>> GetByService(string service, long entityId)
     {
-        logger.LogInformation($"{nameof(AuditLogRepository)}.{nameof(GetByEntity)} ({entity}, {entityId})");
+        logger.LogInformation($"{nameof(AuditLogRepository)}.{nameof(GetByService)} ({service}, {entityId})");
         using var dbContext = _dbContextFactory.CreateDbContext();
         return await dbContext.AuditLogs.AsNoTracking()
-            .Where(a => a.Entity == entity && a.EntityId == entityId)
+            .Where(a => a.Service == service && a.EntityId == entityId)
             .Include(a => a.User)
             .OrderByDescending(a => a.CreatedAt)
             .ToListAsync();
@@ -80,14 +78,14 @@ public class AuditLogRepository(
             query = query.Where(a => a.UserId == filter.UserId);
         }
 
-        if (filter.Entity is not null)
+        if (filter.Service is not null)
         {
-            query = query.Where(a => a.Entity == filter.Entity);
+            query = query.Where(a => a.Service == filter.Service);
         }
 
-        if (filter.EntityId is not null)
+        if (filter.EntityIds is not null)
         {
-            query = query.Where(a => a.EntityId == filter.EntityId);
+            query = query.Where(a => filter.EntityIds.Contains(a.EntityId));
         }
 
         if (filter.AuditLogIds is not null && filter.AuditLogIds.Count > 0)

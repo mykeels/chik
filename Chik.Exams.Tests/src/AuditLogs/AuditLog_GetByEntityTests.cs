@@ -23,12 +23,12 @@ public class AuditLog_GetByEntityTests
     {
         // Arrange
         var user = await TestUtils.CreateTestUser(_factory);
-        await _repository.Create(new AuditLog.Create(user.Id, "User", 1, "{}", "{}", "{}"));
-        await _repository.Create(new AuditLog.Create(user.Id, "User", 1, "{}", "{}", "{}"));
-        await _repository.Create(new AuditLog.Create(user.Id, "Quiz", 2, "{}", "{}", "{}"));
+        await _repository.Create(user.Id, new AuditLog.Create("User", 1, "{}"));
+        await _repository.Create(user.Id, new AuditLog.Create("User", 1, "{}"));
+        await _repository.Create(user.Id, new AuditLog.Create("Quiz", 2, "{}"));
 
         // Act
-        var result = await _repository.GetByEntity("User", 1);
+        var result = await _repository.GetByService("User", 1);
 
         // Assert
         Assert.That(result, Has.Count.EqualTo(2));
@@ -38,7 +38,7 @@ public class AuditLog_GetByEntityTests
     public async Task GetByEntity_WithNonExistingEntity_ShouldReturnEmptyList()
     {
         // Act
-        var result = await _repository.GetByEntity("NonExistent", 99999);
+        var result = await _repository.GetByService("NonExistent", 99999);
 
         // Assert
         Assert.That(result, Is.Empty);

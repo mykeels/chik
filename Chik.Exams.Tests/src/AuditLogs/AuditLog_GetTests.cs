@@ -23,7 +23,7 @@ public class AuditLog_GetTests
     {
         // Arrange
         var user = await TestUtils.CreateTestUser(_factory);
-        var created = await _repository.Create(new AuditLog.Create(user.Id, "User", 1, "{}", "{}", "{}"));
+        var created = await _repository.Create(user.Id, new AuditLog.Create("User", 1, "{}"));
 
         // Act
         var result = await _repository.Get(created.Id);

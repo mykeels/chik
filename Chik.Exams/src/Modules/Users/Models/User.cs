@@ -3,7 +3,6 @@ namespace Chik.Exams;
 public record User(
     long Id,
     string Username,
-    string Password,
     int Roles,
     DateTime CreatedAt,
     DateTime? UpdatedAt
@@ -32,7 +31,7 @@ public record User(
 
     public record Create(
         string Username,
-        string Password,
+        [property: Newtonsoft.Json.JsonIgnore] string Password,
         int Roles
     );
 

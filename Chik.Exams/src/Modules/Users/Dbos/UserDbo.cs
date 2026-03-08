@@ -21,7 +21,6 @@ public class UserDbo
     {
         Id = user.Id,
         Username = user.Username,
-        Password = user.Password,
         Roles = user.Roles,
         CreatedAt = user.CreatedAt,
         UpdatedAt = user.UpdatedAt
@@ -30,7 +29,6 @@ public class UserDbo
     public static implicit operator User?(UserDbo? dbo) => dbo is null ? null : new(
         dbo.Id,
         dbo.Username,
-        dbo.Password,
         dbo.Roles,
         dbo.CreatedAt,
         dbo.UpdatedAt
