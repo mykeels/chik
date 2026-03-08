@@ -20,4 +20,8 @@
         <Content Include="Data\docker-entrypoint.sh" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include="Styles\custom.css" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
 </Project>

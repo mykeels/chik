@@ -38,8 +38,10 @@ public static class ChikExamsExtensions
         var qstFilesPath = Path.Combine(homeDirectory, "chik_exams_qst_files");
         Directory.CreateDirectory(qstFilesPath);
         
-        // Path to custom entrypoint
-        var entrypointPath = Path.Combine(AppContext.BaseDirectory, "Data", "docker-entrypoint.sh");
+        // Path to custom entrypoint and assets
+        var dataPath = Path.Combine(AppContext.BaseDirectory, "Data");
+        var stylesPath = Path.Combine(AppContext.BaseDirectory, "Styles");
+        var entrypointPath = Path.Combine(dataPath, "docker-entrypoint.sh");
         
         return builder.AddContainer("chik-exams", "elquimista/qst", "3.11.01")
             .WithReference(db)
@@ -51,6 +53,7 @@ public static class ChikExamsExtensions
             .WithEnvironment("DB_NAME", DbName)
             .WithEnvironment("DB_DATABASE", DbName)
             .WithBindMount(entrypointPath, "/custom-entrypoint.sh", isReadOnly: true)
+            .WithBindMount(stylesPath, "/Styles", isReadOnly: true)
             .WithBindMount(qstFilesPath, "/var/www/qst/schools/qst_files")
             .WithEntrypoint("/bin/sh")
             .WithArgs("/custom-entrypoint.sh")

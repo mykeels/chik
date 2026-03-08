@@ -26,6 +26,24 @@ PerlSetEnv DB_NAME $DB_NAME
 PerlSetEnv DB_DATABASE $DB_DATABASE
 EOF
 
+# Copy custom CSS if it exists
+if [ -f /Styles/custom.css ]; then
+    cp /Styles/custom.css /var/www/qst/custom.css
+    echo "Custom CSS installed"
+fi
+
+# Enable mod_substitute for CSS injection
+a2enmod substitute > /dev/null 2>&1 || true
+
+# Configure Apache to inject custom CSS into all HTML responses
+cat > /etc/apache2/conf-enabled/qst-css-inject.conf << 'EOF'
+# Inject custom CSS into HTML responses
+<Location />
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute "s|</head>|<link rel=\"stylesheet\" href=\"/custom.css\" type=\"text/css\"></head>|i"
+</Location>
+EOF
+
 # Update admin password using Perl's Crypt::PBKDF2 (same as QST uses)
 perl -MCrypt::PBKDF2 -MDBI -e '
     my $pbkdf2 = Crypt::PBKDF2->new(
