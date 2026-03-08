@@ -5,7 +5,7 @@ public class QuizQuestionDbo
     public long Id { get; set; }
     public long QuizId { get; set; }
     public string Prompt { get; set; } = string.Empty;
-    public long TypeId { get; set; }
+    public int TypeId { get; set; }
     public string Properties { get; set; } = string.Empty;
     public int Score { get; set; }
     public int Order { get; set; }

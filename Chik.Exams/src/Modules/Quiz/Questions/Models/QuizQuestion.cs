@@ -4,7 +4,7 @@ public record QuizQuestion(
     long Id,
     long QuizId,
     string Prompt,
-    long TypeId,
+    int TypeId,
     string Properties,
     int Score,
     int Order,

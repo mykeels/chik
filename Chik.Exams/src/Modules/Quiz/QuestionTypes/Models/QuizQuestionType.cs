@@ -1,7 +1,7 @@
 namespace Chik.Exams;
 
 public record QuizQuestionType(
-    long Id,
+    int Id,
     string Name,
     string Description,
     DateTime CreatedAt,
