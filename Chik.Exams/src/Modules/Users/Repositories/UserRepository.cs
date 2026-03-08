@@ -24,7 +24,7 @@ public class UserRepository(
         {
             Username = user.Username,
             Password = user.Password,
-            Roles = user.Roles,
+            Roles = user.Roles.ToInt32(),
             CreatedAt = timeProvider.GetUtcNow().DateTime
         };
         
@@ -68,7 +68,7 @@ public class UserRepository(
         }
         if (user.Roles is not null)
         {
-            existingUser.Roles = user.Roles.Value;
+            existingUser.Roles = user.Roles.ToInt32();
         }
         existingUser.UpdatedAt = timeProvider.GetUtcNow().DateTime;
 

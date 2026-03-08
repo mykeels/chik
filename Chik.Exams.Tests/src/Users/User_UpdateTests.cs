@@ -20,7 +20,7 @@ public class User_UpdateTests
     public async Task Update_WithValidData_ShouldUpdateUser()
     {
         // Arrange
-        var created = await _repository.Create(new User.Create("testuser", "password123", (int)UserRole.Student));
+        var created = await _repository.Create(new User.Create("testuser", "password123", User.RolesOf(UserRole.Student)));
 
         // Act
         var result = await _repository.Update(created.Id, new User.Update(created.Id, Username: "updateduser"));
@@ -41,10 +41,10 @@ public class User_UpdateTests
     public async Task Update_Roles_ShouldUpdateRoles()
     {
         // Arrange
-        var created = await _repository.Create(new User.Create("testuser", "password123", (int)UserRole.Student));
+        var created = await _repository.Create(new User.Create("testuser", "password123", User.RolesOf(UserRole.Student)));
 
         // Act
-        var result = await _repository.Update(created.Id, new User.Update(created.Id, Roles: (int)(UserRole.Student | UserRole.Teacher)));
+        var result = await _repository.Update(created.Id, new User.Update(created.Id, Roles: User.RolesOf(UserRole.Student, UserRole.Teacher)));
 
         // Assert
         Assert.That(result.Roles, Is.EqualTo((int)(UserRole.Student | UserRole.Teacher)));

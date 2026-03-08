@@ -20,7 +20,7 @@ public class User_CreateTests
     public async Task Create_WithValidData_ShouldCreateUser()
     {
         // Arrange
-        var create = new User.Create("testuser", "password123", (int)UserRole.Student);
+        var create = new User.Create("testuser", "password123", User.RolesOf(UserRole.Student));
 
         // Act
         var result = await _repository.Create(create);
@@ -35,10 +35,10 @@ public class User_CreateTests
     public async Task Create_WithDuplicateUsername_ShouldThrowException()
     {
         // Arrange
-        await _repository.Create(new User.Create("testuser", "password123", (int)UserRole.Student));
+        await _repository.Create(new User.Create("testuser", "password123", User.RolesOf(UserRole.Student)));
 
         // Act & Assert
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            await _repository.Create(new User.Create("testuser", "password456", (int)UserRole.Teacher)));
+            await _repository.Create(new User.Create("testuser", "password456", User.RolesOf(UserRole.Teacher))));
     }
 }

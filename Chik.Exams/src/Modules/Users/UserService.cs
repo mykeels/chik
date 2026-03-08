@@ -22,6 +22,6 @@ internal class UserService(
                 user
             )
         );
-        return new User(userDbo.Id, userDbo.Username, userDbo.Roles, userDbo.CreatedAt, userDbo.UpdatedAt);
+        return new User(userDbo.Id, userDbo.Username, UserRoleExtensions.FromInt32(userDbo.Roles), userDbo.CreatedAt, userDbo.UpdatedAt);
     }
 }

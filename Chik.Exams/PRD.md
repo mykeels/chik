@@ -235,3 +235,7 @@ An Audit Log represents a log of an action taken by a user.
 - CreatedAt (DateTime)
 
 The audit log is a JSON string that contains the audit log properties.
+
+## What to expect
+
+- We should be able to create an admin user

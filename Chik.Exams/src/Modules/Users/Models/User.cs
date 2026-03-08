@@ -3,25 +3,17 @@ namespace Chik.Exams;
 public record User(
     long Id,
     string Username,
-    int Roles,
+    List<UserRole> Roles,
     DateTime CreatedAt,
     DateTime? UpdatedAt
 )
 {
-    public List<UserRole> GetRoles()
+    public static List<UserRole> RolesOf(params UserRole[] roles)
     {
-        var roles = new List<UserRole>();
-        foreach (UserRole role in Enum.GetValues<UserRole>())
-        {
-            if ((Roles & (int)role) == (int)role)
-            {
-                roles.Add(role);
-            }
-        }
-        return roles;
+        return roles.ToList();
     }
 
-    public bool HasRole(UserRole role) => (Roles & (int)role) == (int)role;
+    public bool HasRole(UserRole role) => this.Roles.Contains(role);
 
     public bool IsAdmin() => HasRole(UserRole.Admin);
 
@@ -32,14 +24,14 @@ public record User(
     public record Create(
         string Username,
         [property: Newtonsoft.Json.JsonIgnore] string Password,
-        int Roles
+        List<UserRole> Roles
     );
 
     public record Update(
         long Id,
         string? Username = null,
         string? Password = null,
-        int? Roles = null
+        List<UserRole>? Roles = null
     );
 
     public record Filter(

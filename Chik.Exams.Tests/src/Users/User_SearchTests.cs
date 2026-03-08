@@ -20,8 +20,8 @@ public class User_SearchTests
     public async Task Search_WithNoFilter_ShouldReturnAllUsers()
     {
         // Arrange
-        await _repository.Create(new User.Create("user1", "password", (int)UserRole.Student));
-        await _repository.Create(new User.Create("user2", "password", (int)UserRole.Teacher));
+        await _repository.Create(new User.Create("user1", "password", User.RolesOf(UserRole.Student)));
+        await _repository.Create(new User.Create("user2", "password", User.RolesOf(UserRole.Teacher)));
 
         // Act
         var result = await _repository.Search();
@@ -34,8 +34,8 @@ public class User_SearchTests
     public async Task Search_WithRoleFilter_ShouldReturnFilteredUsers()
     {
         // Arrange
-        await _repository.Create(new User.Create("student", "password", (int)UserRole.Student));
-        await _repository.Create(new User.Create("teacher", "password", (int)UserRole.Teacher));
+        await _repository.Create(new User.Create("student", "password", User.RolesOf(UserRole.Student)));
+        await _repository.Create(new User.Create("teacher", "password", User.RolesOf(UserRole.Teacher)));
 
         // Act
         var result = await _repository.Search(new User.Filter(Roles: (int)UserRole.Student));
@@ -51,7 +51,7 @@ public class User_SearchTests
         // Arrange
         for (int i = 0; i < 10; i++)
         {
-            await _repository.Create(new User.Create($"user{i}", "password", (int)UserRole.Student));
+            await _repository.Create(new User.Create($"user{i}", "password", User.RolesOf(UserRole.Student)));
         }
 
         // Act

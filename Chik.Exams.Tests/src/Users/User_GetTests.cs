@@ -20,7 +20,7 @@ public class User_GetTests
     public async Task Get_ById_WithExistingId_ShouldReturnUser()
     {
         // Arrange
-        var created = await _repository.Create(new User.Create("testuser", "password123", (int)UserRole.Student));
+        var created = await _repository.Create(new User.Create("testuser", "password123", User.RolesOf(UserRole.Student)));
 
         // Act
         var result = await _repository.Get(created.Id);
@@ -44,7 +44,7 @@ public class User_GetTests
     public async Task Get_ByUsername_WithExistingUsername_ShouldReturnUser()
     {
         // Arrange
-        await _repository.Create(new User.Create("testuser", "password123", (int)UserRole.Student));
+        await _repository.Create(new User.Create("testuser", "password123", User.RolesOf(UserRole.Student)));
 
         // Act
         var result = await _repository.Get("testuser");

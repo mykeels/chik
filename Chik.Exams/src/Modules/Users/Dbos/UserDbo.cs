@@ -21,7 +21,7 @@ public class UserDbo
     {
         Id = user.Id,
         Username = user.Username,
-        Roles = user.Roles,
+        Roles = user.Roles.ToInt32(),
         CreatedAt = user.CreatedAt,
         UpdatedAt = user.UpdatedAt
     };
@@ -29,7 +29,7 @@ public class UserDbo
     public static implicit operator User?(UserDbo? dbo) => dbo is null ? null : new(
         dbo.Id,
         dbo.Username,
-        dbo.Roles,
+        UserRoleExtensions.FromInt32(dbo.Roles),
         dbo.CreatedAt,
         dbo.UpdatedAt
     );

@@ -20,7 +20,7 @@ public class User_DeleteTests
     public async Task Delete_WithExistingId_ShouldDeleteUser()
     {
         // Arrange
-        var created = await _repository.Create(new User.Create("testuser", "password123", (int)UserRole.Student));
+        var created = await _repository.Create(new User.Create("testuser", "password123", User.RolesOf(UserRole.Student)));
 
         // Act
         await _repository.Delete(created.Id);
