@@ -15,6 +15,7 @@ public class UserDbo
     public virtual List<ExamDbo>? TakenExams { get; set; }
     public virtual List<ExamDbo>? ExaminedExams { get; set; }
     public virtual List<ExamAnswerDbo>? ExaminedAnswers { get; set; }
+    public virtual List<LoginDbo>? Logins { get; set; }
 
     public static implicit operator UserDbo(User user) => new()
     {

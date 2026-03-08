@@ -349,8 +349,14 @@ public class ChikExamsDbContext : DbContext
 
     private void AddLoginRelationships(ModelBuilder modelBuilder)
     {
-        // Relationships already configured via IpAddressLocation
-        // Note: Login.UserId is a Guid, separate from UserDbo which uses long Id
+        modelBuilder.Entity<LoginDbo>(entity =>
+        {
+            // Login -> User
+            entity.HasOne(e => e.User)
+                .WithMany(e => e.Logins)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 
     #endregion

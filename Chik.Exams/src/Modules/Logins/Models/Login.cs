@@ -6,7 +6,7 @@ public record Login(
     Guid IpAddressLocationId,
     DateTime CreatedAt
 ) {
-    public Auth? User { get; set; }
+    public User? User { get; set; }
     public IpAddressLocation? IpAddressLocation { get; set; }
 
     public record Create(

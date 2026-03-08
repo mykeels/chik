@@ -23,7 +23,7 @@ public class LoginDbo
         dbo.IpAddressLocationId,
         dbo.CreatedAt
     ) {
-        User = dbo.User,
+        User = (User?)dbo.User,
         IpAddressLocation = dbo.IpAddressLocation
     };
 }
