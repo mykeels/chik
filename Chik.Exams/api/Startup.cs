@@ -53,6 +53,7 @@ public class Startup
             )
         );
         services.AddAuthenticationServices(_configuration);
+        services.AddRoleAuthorization();
         services.Configure<ApiBehaviorOptions>(options =>
         {
             options.SuppressModelStateInvalidFilter = false;

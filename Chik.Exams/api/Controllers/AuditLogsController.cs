@@ -8,14 +8,10 @@ namespace Chik.Exams.Api;
 public class AuditLogsController : ControllerBase
 {
     private readonly IAuditLogService _auditLogService;
-    private readonly ILogger<AuditLogsController> _logger;
 
-    public AuditLogsController(
-        IAuditLogService auditLogService,
-        ILogger<AuditLogsController> logger)
+    public AuditLogsController(IAuditLogService auditLogService)
     {
         _auditLogService = auditLogService;
-        _logger = logger;
     }
 
     /// <summary>
@@ -24,19 +20,12 @@ public class AuditLogsController : ControllerBase
     [HttpGet("{id:long}")]
     public async Task<ActionResult<AuditLog>> Get(long id, [FromServices] Auth auth)
     {
-        try
+        var auditLog = await _auditLogService.Get(auth, id);
+        if (auditLog is null)
         {
-            var auditLog = await _auditLogService.Get(auth, id);
-            if (auditLog is null)
-            {
-                return NotFound(new { Message = "Audit log not found" });
-            }
-            return Ok(auditLog);
+            return NotFound(new { Message = "Audit log not found" });
         }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        return Ok(auditLog);
     }
 
     /// <summary>
@@ -48,15 +37,8 @@ public class AuditLogsController : ControllerBase
         [FromQuery] long entityId,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var auditLogs = await _auditLogService.GetByService(auth, service, entityId);
-            return Ok(auditLogs);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var auditLogs = await _auditLogService.GetByService(auth, service, entityId);
+        return Ok(auditLogs);
     }
 
     /// <summary>
@@ -65,15 +47,8 @@ public class AuditLogsController : ControllerBase
     [HttpGet("by-user/{userId:long}")]
     public async Task<ActionResult<List<AuditLog>>> GetByUserId(long userId, [FromServices] Auth auth)
     {
-        try
-        {
-            var auditLogs = await _auditLogService.GetByUserId(auth, userId);
-            return Ok(auditLogs);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var auditLogs = await _auditLogService.GetByUserId(auth, userId);
+        return Ok(auditLogs);
     }
 
     /// <summary>
@@ -90,24 +65,17 @@ public class AuditLogsController : ControllerBase
         [FromQuery] int pageSize = 20,
         [FromServices] Auth auth = null!)
     {
-        try
-        {
-            var filter = new AuditLog.Filter(
-                UserId: userId,
-                Service: service,
-                DateRange: startDate.HasValue || endDate.HasValue 
-                    ? new DateTimeRange(startDate, endDate) 
-                    : null,
-                IncludeUser: includeUser ? true : null);
-            
-            var pagination = new PaginationOptions(page, pageSize);
-            var result = await _auditLogService.Search(auth, filter, pagination);
-            
-            return Ok(result);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var filter = new AuditLog.Filter(
+            UserId: userId,
+            Service: service,
+            DateRange: startDate.HasValue || endDate.HasValue
+                ? DateTimeRange.Between(startDate, endDate)
+                : null,
+            IncludeUser: includeUser ? true : null);
+
+        var pagination = new PaginationOptions(page, pageSize);
+        var result = await _auditLogService.Search(auth, filter, pagination);
+
+        return Ok(result);
     }
 }

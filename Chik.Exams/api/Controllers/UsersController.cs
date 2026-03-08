@@ -24,24 +24,13 @@ public class UsersController : ControllerBase
         [FromBody] CreateUserRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var user = await _userService.Create(auth, new User.Create(
-                request.Username,
-                request.Password,
-                request.Roles));
-            
-            _logger.LogInformation("User {Username} created by {Creator}", user.Username, auth.Username);
-            return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
+        var user = await _userService.Create(auth, new User.Create(
+            request.Username,
+            request.Password,
+            request.Roles));
+
+        _logger.LogInformation("User {Username} created by {Creator}", user.Username, auth.Username);
+        return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
     }
 
     /// <summary>
@@ -50,19 +39,12 @@ public class UsersController : ControllerBase
     [HttpGet("{id:long}")]
     public async Task<ActionResult<User>> Get(long id, [FromServices] Auth auth)
     {
-        try
+        var user = await _userService.Get(auth, id);
+        if (user is null)
         {
-            var user = await _userService.Get(auth, id);
-            if (user is null)
-            {
-                return NotFound(new { Message = "User not found" });
-            }
-            return Ok(user);
+            return NotFound(new { Message = "User not found" });
         }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        return Ok(user);
     }
 
     /// <summary>
@@ -74,24 +56,13 @@ public class UsersController : ControllerBase
         [FromBody] UpdateUserRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var user = await _userService.Update(auth, new User.Update(
-                id,
-                request.Username,
-                request.Password,
-                request.Roles));
-            
-            return Ok(user);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "User not found" });
-        }
+        var user = await _userService.Update(auth, new User.Update(
+            id,
+            request.Username,
+            request.Password,
+            request.Roles));
+
+        return Ok(user);
     }
 
     /// <summary>
@@ -103,19 +74,8 @@ public class UsersController : ControllerBase
         [FromBody] ChangePasswordRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            await _userService.ChangePassword(auth, id, request.CurrentPassword, request.NewPassword);
-            return Ok(new { Message = "Password changed successfully" });
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
+        await _userService.ChangePassword(auth, id, request.CurrentPassword, request.NewPassword);
+        return Ok(new { Message = "Password changed successfully" });
     }
 
     /// <summary>
@@ -125,19 +85,8 @@ public class UsersController : ControllerBase
     [AdminOnly]
     public async Task<ActionResult> Delete(long id, [FromServices] Auth auth)
     {
-        try
-        {
-            await _userService.Delete(auth, id);
-            return NoContent();
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "User not found" });
-        }
+        await _userService.Delete(auth, id);
+        return NoContent();
     }
 
     /// <summary>
@@ -145,32 +94,13 @@ public class UsersController : ControllerBase
     /// </summary>
     [HttpGet]
     public async Task<ActionResult<Paginated<User>>> Search(
-        [FromQuery] string? username,
-        [FromQuery] int? roles,
-        [FromQuery] DateTime? startDate,
-        [FromQuery] DateTime? endDate,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromServices] Auth auth = null!)
+        [FromServices] Auth auth,
+        [FromQuery] User.Filter? filter,
+        [FromQuery] PaginationOptions? pagination)
     {
-        try
-        {
-            var filter = new User.Filter(
-                Username: username,
-                Roles: roles,
-                DateRange: startDate.HasValue || endDate.HasValue 
-                    ? new DateTimeRange(startDate, endDate) 
-                    : null);
-            
-            var pagination = new PaginationOptions(page, pageSize);
-            var result = await _userService.Search(auth, filter, pagination);
-            
-            return Ok(result);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var result = await _userService.Search(auth, filter, pagination);
+
+        return Ok(result);
     }
 }
 

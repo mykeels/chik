@@ -30,26 +30,15 @@ public class QuizzesController : ControllerBase
         [FromBody] CreateQuizRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var quiz = await _quizService.Create(auth, new Quiz.Create(
-                request.Title,
-                request.Description,
-                auth.Id,
-                request.ExaminerId,
-                request.Duration));
-            
-            _logger.LogInformation("Quiz '{Title}' created by {Creator}", quiz.Title, auth.Username);
-            return CreatedAtAction(nameof(Get), new { id = quiz.Id }, quiz);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
+        var quiz = await _quizService.Create(auth, new Quiz.Create(
+            request.Title,
+            request.Description,
+            auth.Id,
+            request.ExaminerId,
+            request.Duration));
+
+        _logger.LogInformation("Quiz '{Title}' created by {Creator}", quiz.Title, auth.Username);
+        return CreatedAtAction(nameof(Get), new { id = quiz.Id }, quiz);
     }
 
     /// <summary>
@@ -62,19 +51,12 @@ public class QuizzesController : ControllerBase
         [FromQuery] bool includeQuestions = false,
         [FromServices] Auth auth = null!)
     {
-        try
+        var quiz = await _quizService.Get(auth, id, includeQuestions);
+        if (quiz is null)
         {
-            var quiz = await _quizService.Get(auth, id, includeQuestions);
-            if (quiz is null)
-            {
-                return NotFound(new { Message = "Quiz not found" });
-            }
-            return Ok(quiz);
+            return NotFound(new { Message = "Quiz not found" });
         }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        return Ok(quiz);
     }
 
     /// <summary>
@@ -87,25 +69,14 @@ public class QuizzesController : ControllerBase
         [FromBody] UpdateQuizRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var quiz = await _quizService.Update(auth, new Quiz.Update(
-                id,
-                request.Title,
-                request.Description,
-                request.ExaminerId,
-                request.Duration));
-            
-            return Ok(quiz);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Quiz not found" });
-        }
+        var quiz = await _quizService.Update(auth, new Quiz.Update(
+            id,
+            request.Title,
+            request.Description,
+            request.ExaminerId,
+            request.Duration));
+
+        return Ok(quiz);
     }
 
     /// <summary>
@@ -115,19 +86,8 @@ public class QuizzesController : ControllerBase
     [AdminOrTeacher]
     public async Task<ActionResult> Delete(long id, [FromServices] Auth auth)
     {
-        try
-        {
-            await _quizService.Delete(auth, id);
-            return NoContent();
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Quiz not found" });
-        }
+        await _quizService.Delete(auth, id);
+        return NoContent();
     }
 
     /// <summary>
@@ -148,28 +108,21 @@ public class QuizzesController : ControllerBase
         [FromQuery] int pageSize = 20,
         [FromServices] Auth auth = null!)
     {
-        try
-        {
-            var filter = new Quiz.Filter(
-                Title: title,
-                CreatorId: creatorId,
-                ExaminerId: examinerId,
-                DateRange: startDate.HasValue || endDate.HasValue 
-                    ? new DateTimeRange(startDate, endDate) 
-                    : null,
-                IncludeCreator: includeCreator ? true : null,
-                IncludeExaminer: includeExaminer ? true : null,
-                IncludeQuestions: includeQuestions ? true : null);
-            
-            var pagination = new PaginationOptions(page, pageSize);
-            var result = await _quizService.Search(auth, filter, pagination);
-            
-            return Ok(result);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var filter = new Quiz.Filter(
+            Title: title,
+            CreatorId: creatorId,
+            ExaminerId: examinerId,
+            DateRange: startDate.HasValue || endDate.HasValue
+                ? new DateTimeRange(startDate, endDate)
+                : null,
+            IncludeCreator: includeCreator ? true : null,
+            IncludeExaminer: includeExaminer ? true : null,
+            IncludeQuestions: includeQuestions ? true : null);
+
+        var pagination = new PaginationOptions(page, pageSize);
+        var result = await _quizService.Search(auth, filter, pagination);
+
+        return Ok(result);
     }
 
     #region Quiz Questions
@@ -184,15 +137,8 @@ public class QuizzesController : ControllerBase
         [FromQuery] bool includeDeactivated = false,
         [FromServices] Auth auth = null!)
     {
-        try
-        {
-            var questions = await _quizQuestionService.GetByQuizId(auth, quizId, includeDeactivated);
-            return Ok(questions);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var questions = await _quizQuestionService.GetByQuizId(auth, quizId, includeDeactivated);
+        return Ok(questions);
     }
 
     /// <summary>
@@ -205,30 +151,19 @@ public class QuizzesController : ControllerBase
         [FromBody] CreateQuizQuestionRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var question = await _quizQuestionService.Create(auth, new QuizQuestion.Create(
-                quizId,
-                request.Prompt,
-                request.TypeId,
-                request.Properties,
-                request.Score,
-                request.Order));
-            
-            return CreatedAtAction(
-                nameof(QuizQuestionsController.Get), 
-                "QuizQuestions",
-                new { id = question.Id }, 
-                question);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
+        var question = await _quizQuestionService.Create(auth, new QuizQuestion.Create(
+            quizId,
+            request.Prompt,
+            request.TypeId,
+            request.Properties,
+            request.Score,
+            request.Order));
+
+        return CreatedAtAction(
+            nameof(QuizQuestionsController.Get),
+            "QuizQuestions",
+            new { id = question.Id },
+            question);
     }
 
     /// <summary>
@@ -241,19 +176,8 @@ public class QuizzesController : ControllerBase
         [FromBody] ReorderQuestionsRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            await _quizQuestionService.ReorderQuestions(auth, quizId, request.QuestionIdsInOrder);
-            return Ok(new { Message = "Questions reordered successfully" });
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
+        await _quizQuestionService.ReorderQuestions(auth, quizId, request.QuestionIdsInOrder);
+        return Ok(new { Message = "Questions reordered successfully" });
     }
 
     #endregion

@@ -29,24 +29,13 @@ public class ExamsController : ControllerBase
         [FromBody] CreateExamRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var exam = await _examService.Create(auth, new Exam.Create(
-                request.UserId,
-                request.QuizId,
-                auth.Id));
-            
-            _logger.LogInformation("Exam created for user {UserId} by {Creator}", request.UserId, auth.Username);
-            return CreatedAtAction(nameof(Get), new { id = exam.Id }, exam);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
+        var exam = await _examService.Create(auth, new Exam.Create(
+            request.UserId,
+            request.QuizId,
+            auth.Id));
+
+        _logger.LogInformation("Exam created for user {UserId} by {Creator}", request.UserId, auth.Username);
+        return CreatedAtAction(nameof(Get), new { id = exam.Id }, exam);
     }
 
     /// <summary>
@@ -58,19 +47,12 @@ public class ExamsController : ControllerBase
         [FromQuery] bool includeAnswers = false,
         [FromServices] Auth auth = null!)
     {
-        try
+        var exam = await _examService.Get(auth, id, includeAnswers);
+        if (exam is null)
         {
-            var exam = await _examService.Get(auth, id, includeAnswers);
-            if (exam is null)
-            {
-                return NotFound(new { Message = "Exam not found" });
-            }
-            return Ok(exam);
+            return NotFound(new { Message = "Exam not found" });
         }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        return Ok(exam);
     }
 
     /// <summary>
@@ -83,26 +65,15 @@ public class ExamsController : ControllerBase
         [FromBody] UpdateExamRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var exam = await _examService.Update(auth, new Exam.Update(
-                id,
-                request.StartedAt,
-                request.EndedAt,
-                request.Score,
-                request.ExaminerId,
-                request.ExaminerComment));
-            
-            return Ok(exam);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Exam not found" });
-        }
+        var exam = await _examService.Update(auth, new Exam.Update(
+            id,
+            request.StartedAt,
+            request.EndedAt,
+            request.Score,
+            request.ExaminerId,
+            request.ExaminerComment));
+
+        return Ok(exam);
     }
 
     /// <summary>
@@ -111,24 +82,9 @@ public class ExamsController : ControllerBase
     [HttpPost("{id:long}/start")]
     public async Task<ActionResult<Exam>> Start(long id, [FromServices] Auth auth)
     {
-        try
-        {
-            var exam = await _examService.Start(auth, id);
-            _logger.LogInformation("Exam {ExamId} started by {User}", id, auth.Username);
-            return Ok(exam);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Exam not found" });
-        }
+        var exam = await _examService.Start(auth, id);
+        _logger.LogInformation("Exam {ExamId} started by {User}", id, auth.Username);
+        return Ok(exam);
     }
 
     /// <summary>
@@ -137,24 +93,9 @@ public class ExamsController : ControllerBase
     [HttpPost("{id:long}/submit")]
     public async Task<ActionResult<Exam>> Submit(long id, [FromServices] Auth auth)
     {
-        try
-        {
-            var exam = await _examService.End(auth, id);
-            _logger.LogInformation("Exam {ExamId} submitted by {User}", id, auth.Username);
-            return Ok(exam);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Exam not found" });
-        }
+        var exam = await _examService.End(auth, id);
+        _logger.LogInformation("Exam {ExamId} submitted by {User}", id, auth.Username);
+        return Ok(exam);
     }
 
     /// <summary>
@@ -167,24 +108,9 @@ public class ExamsController : ControllerBase
         [FromBody] MarkExamRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var exam = await _examService.Mark(auth, id, request.Score, request.Comment);
-            _logger.LogInformation("Exam {ExamId} marked by {Examiner} with score {Score}", id, auth.Username, request.Score);
-            return Ok(exam);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Exam not found" });
-        }
+        var exam = await _examService.Mark(auth, id, request.Score, request.Comment);
+        _logger.LogInformation("Exam {ExamId} marked by {Examiner} with score {Score}", id, auth.Username, request.Score);
+        return Ok(exam);
     }
 
     /// <summary>
@@ -194,19 +120,8 @@ public class ExamsController : ControllerBase
     [AdminOrTeacher]
     public async Task<ActionResult> AutoScore(long id, [FromServices] Auth auth)
     {
-        try
-        {
-            await _examService.AutoScore(auth, id);
-            return Ok(new { Message = "Auto-scoring completed" });
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Exam not found" });
-        }
+        await _examService.AutoScore(auth, id);
+        return Ok(new { Message = "Auto-scoring completed" });
     }
 
     /// <summary>
@@ -216,19 +131,8 @@ public class ExamsController : ControllerBase
     [HttpGet("{id:long}/scores")]
     public async Task<ActionResult<ExamScores>> GetScores(long id, [FromServices] Auth auth)
     {
-        try
-        {
-            var scores = await _examService.GetScores(auth, id);
-            return Ok(scores);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Exam not found" });
-        }
+        var scores = await _examService.GetScores(auth, id);
+        return Ok(scores);
     }
 
     /// <summary>
@@ -238,19 +142,8 @@ public class ExamsController : ControllerBase
     [AdminOrTeacher]
     public async Task<ActionResult> Cancel(long id, [FromServices] Auth auth)
     {
-        try
-        {
-            await _examService.Cancel(auth, id);
-            return Ok(new { Message = "Exam cancelled successfully" });
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Exam not found" });
-        }
+        await _examService.Cancel(auth, id);
+        return Ok(new { Message = "Exam cancelled successfully" });
     }
 
     /// <summary>
@@ -260,19 +153,8 @@ public class ExamsController : ControllerBase
     [AdminOnly]
     public async Task<ActionResult> Delete(long id, [FromServices] Auth auth)
     {
-        try
-        {
-            await _examService.Delete(auth, id);
-            return NoContent();
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Exam not found" });
-        }
+        await _examService.Delete(auth, id);
+        return NoContent();
     }
 
     /// <summary>
@@ -284,15 +166,8 @@ public class ExamsController : ControllerBase
         [FromQuery] long? studentId,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var exams = await _examService.GetPendingExams(auth, studentId);
-            return Ok(exams);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var exams = await _examService.GetPendingExams(auth, studentId);
+        return Ok(exams);
     }
 
     /// <summary>
@@ -304,15 +179,8 @@ public class ExamsController : ControllerBase
         [FromQuery] long? studentId,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var exams = await _examService.GetExamHistory(auth, studentId);
-            return Ok(exams);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var exams = await _examService.GetExamHistory(auth, studentId);
+        return Ok(exams);
     }
 
     /// <summary>
@@ -338,34 +206,27 @@ public class ExamsController : ControllerBase
         [FromQuery] int pageSize = 20,
         [FromServices] Auth auth = null!)
     {
-        try
-        {
-            var filter = new Exam.Filter(
-                UserId: userId,
-                QuizId: quizId,
-                CreatorId: creatorId,
-                ExaminerId: examinerId,
-                IsStarted: isStarted,
-                IsEnded: isEnded,
-                IsMarked: isMarked,
-                DateRange: startDate.HasValue || endDate.HasValue 
-                    ? new DateTimeRange(startDate, endDate) 
-                    : null,
-                IncludeUser: includeUser ? true : null,
-                IncludeQuiz: includeQuiz ? true : null,
-                IncludeCreator: includeCreator ? true : null,
-                IncludeExaminer: includeExaminer ? true : null,
-                IncludeAnswers: includeAnswers ? true : null);
-            
-            var pagination = new PaginationOptions(page, pageSize);
-            var result = await _examService.Search(auth, filter, pagination);
-            
-            return Ok(result);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var filter = new Exam.Filter(
+            UserId: userId,
+            QuizId: quizId,
+            CreatorId: creatorId,
+            ExaminerId: examinerId,
+            IsStarted: isStarted,
+            IsEnded: isEnded,
+            IsMarked: isMarked,
+            DateRange: startDate.HasValue || endDate.HasValue
+                ? new DateTimeRange(startDate, endDate)
+                : null,
+            IncludeUser: includeUser ? true : null,
+            IncludeQuiz: includeQuiz ? true : null,
+            IncludeCreator: includeCreator ? true : null,
+            IncludeExaminer: includeExaminer ? true : null,
+            IncludeAnswers: includeAnswers ? true : null);
+
+        var pagination = new PaginationOptions(page, pageSize);
+        var result = await _examService.Search(auth, filter, pagination);
+
+        return Ok(result);
     }
 
     #region Exam Answers
@@ -378,15 +239,8 @@ public class ExamsController : ControllerBase
         long examId,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var answers = await _examAnswerService.GetByExamId(auth, examId);
-            return Ok(answers);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var answers = await _examAnswerService.GetByExamId(auth, examId);
+        return Ok(answers);
     }
 
     /// <summary>
@@ -398,19 +252,8 @@ public class ExamsController : ControllerBase
         [FromBody] SubmitAnswerRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var answer = await _examAnswerService.SubmitAnswer(auth, examId, request.QuestionId, request.Answer);
-            return Ok(answer);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
+        var answer = await _examAnswerService.SubmitAnswer(auth, examId, request.QuestionId, request.Answer);
+        return Ok(answer);
     }
 
     #endregion

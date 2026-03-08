@@ -7,14 +7,10 @@ namespace Chik.Exams.Api;
 public class QuizQuestionsController : ControllerBase
 {
     private readonly IQuizQuestionService _quizQuestionService;
-    private readonly ILogger<QuizQuestionsController> _logger;
 
-    public QuizQuestionsController(
-        IQuizQuestionService quizQuestionService,
-        ILogger<QuizQuestionsController> logger)
+    public QuizQuestionsController(IQuizQuestionService quizQuestionService)
     {
         _quizQuestionService = quizQuestionService;
-        _logger = logger;
     }
 
     /// <summary>
@@ -24,19 +20,12 @@ public class QuizQuestionsController : ControllerBase
     [AdminOrTeacher]
     public async Task<ActionResult<QuizQuestion>> Get(long id, [FromServices] Auth auth)
     {
-        try
+        var question = await _quizQuestionService.Get(auth, id);
+        if (question is null)
         {
-            var question = await _quizQuestionService.Get(auth, id);
-            if (question is null)
-            {
-                return NotFound(new { Message = "Question not found" });
-            }
-            return Ok(question);
+            return NotFound(new { Message = "Question not found" });
         }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        return Ok(question);
     }
 
     /// <summary>
@@ -49,26 +38,15 @@ public class QuizQuestionsController : ControllerBase
         [FromBody] UpdateQuizQuestionRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var question = await _quizQuestionService.Update(auth, new QuizQuestion.Update(
-                id,
-                request.Prompt,
-                request.TypeId,
-                request.Properties,
-                request.Score,
-                request.Order));
-            
-            return Ok(question);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Question not found" });
-        }
+        var question = await _quizQuestionService.Update(auth, new QuizQuestion.Update(
+            id,
+            request.Prompt,
+            request.TypeId,
+            request.Properties,
+            request.Score,
+            request.Order));
+
+        return Ok(question);
     }
 
     /// <summary>
@@ -78,19 +56,8 @@ public class QuizQuestionsController : ControllerBase
     [AdminOrTeacher]
     public async Task<ActionResult> Deactivate(long id, [FromServices] Auth auth)
     {
-        try
-        {
-            await _quizQuestionService.Deactivate(auth, id);
-            return Ok(new { Message = "Question deactivated successfully" });
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Question not found" });
-        }
+        await _quizQuestionService.Deactivate(auth, id);
+        return Ok(new { Message = "Question deactivated successfully" });
     }
 
     /// <summary>
@@ -100,19 +67,8 @@ public class QuizQuestionsController : ControllerBase
     [AdminOrTeacher]
     public async Task<ActionResult> Reactivate(long id, [FromServices] Auth auth)
     {
-        try
-        {
-            await _quizQuestionService.Reactivate(auth, id);
-            return Ok(new { Message = "Question reactivated successfully" });
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Question not found" });
-        }
+        await _quizQuestionService.Reactivate(auth, id);
+        return Ok(new { Message = "Question reactivated successfully" });
     }
 
     /// <summary>
@@ -122,19 +78,8 @@ public class QuizQuestionsController : ControllerBase
     [AdminOnly]
     public async Task<ActionResult> Delete(long id, [FromServices] Auth auth)
     {
-        try
-        {
-            await _quizQuestionService.Delete(auth, id);
-            return NoContent();
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Question not found" });
-        }
+        await _quizQuestionService.Delete(auth, id);
+        return NoContent();
     }
 
     /// <summary>
@@ -154,27 +99,20 @@ public class QuizQuestionsController : ControllerBase
         [FromQuery] int pageSize = 20,
         [FromServices] Auth auth = null!)
     {
-        try
-        {
-            var filter = new QuizQuestion.Filter(
-                QuizId: quizId,
-                TypeId: typeId,
-                IsActive: isActive,
-                DateRange: startDate.HasValue || endDate.HasValue 
-                    ? new DateTimeRange(startDate, endDate) 
-                    : null,
-                IncludeQuiz: includeQuiz ? true : null,
-                IncludeType: includeType ? true : null);
-            
-            var pagination = new PaginationOptions(page, pageSize);
-            var result = await _quizQuestionService.Search(auth, filter, pagination);
-            
-            return Ok(result);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var filter = new QuizQuestion.Filter(
+            QuizId: quizId,
+            TypeId: typeId,
+            IsActive: isActive,
+            DateRange: startDate.HasValue || endDate.HasValue
+                ? new DateTimeRange(startDate, endDate)
+                : null,
+            IncludeQuiz: includeQuiz ? true : null,
+            IncludeType: includeType ? true : null);
+
+        var pagination = new PaginationOptions(page, pageSize);
+        var result = await _quizQuestionService.Search(auth, filter, pagination);
+
+        return Ok(result);
     }
 }
 

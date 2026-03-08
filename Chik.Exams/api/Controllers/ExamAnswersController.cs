@@ -23,19 +23,12 @@ public class ExamAnswersController : ControllerBase
     [HttpGet("{id:long}")]
     public async Task<ActionResult<ExamAnswer>> Get(long id, [FromServices] Auth auth)
     {
-        try
+        var answer = await _examAnswerService.Get(auth, id);
+        if (answer is null)
         {
-            var answer = await _examAnswerService.Get(auth, id);
-            if (answer is null)
-            {
-                return NotFound(new { Message = "Answer not found" });
-            }
-            return Ok(answer);
+            return NotFound(new { Message = "Answer not found" });
         }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        return Ok(answer);
     }
 
     /// <summary>
@@ -47,26 +40,11 @@ public class ExamAnswersController : ControllerBase
         [FromBody] UpdateExamAnswerRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var answer = await _examAnswerService.Update(auth, new ExamAnswer.Update(
-                id,
-                request.Answer));
-            
-            return Ok(answer);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Answer not found" });
-        }
+        var answer = await _examAnswerService.Update(auth, new ExamAnswer.Update(
+            id,
+            request.Answer));
+
+        return Ok(answer);
     }
 
     /// <summary>
@@ -80,20 +58,9 @@ public class ExamAnswersController : ControllerBase
         [FromBody] ScoreAnswerRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            var answer = await _examAnswerService.ExaminerScore(auth, id, request.Score, request.Comment);
-            _logger.LogInformation("Answer {AnswerId} scored by {Examiner} with score {Score}", id, auth.Username, request.Score);
-            return Ok(answer);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(new { Message = "Answer not found" });
-        }
+        var answer = await _examAnswerService.ExaminerScore(auth, id, request.Score, request.Comment);
+        _logger.LogInformation("Answer {AnswerId} scored by {Examiner} with score {Score}", id, auth.Username, request.Score);
+        return Ok(answer);
     }
 
     /// <summary>
@@ -115,30 +82,23 @@ public class ExamAnswersController : ControllerBase
         [FromQuery] int pageSize = 20,
         [FromServices] Auth auth = null!)
     {
-        try
-        {
-            var filter = new ExamAnswer.Filter(
-                ExamId: examId,
-                QuestionId: questionId,
-                ExaminerId: examinerId,
-                IsAutoScored: isAutoScored,
-                IsExaminerScored: isExaminerScored,
-                DateRange: startDate.HasValue || endDate.HasValue 
-                    ? new DateTimeRange(startDate, endDate) 
-                    : null,
-                IncludeExam: includeExam ? true : null,
-                IncludeQuestion: includeQuestion ? true : null,
-                IncludeExaminer: includeExaminer ? true : null);
-            
-            var pagination = new PaginationOptions(page, pageSize);
-            var result = await _examAnswerService.Search(auth, filter, pagination);
-            
-            return Ok(result);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid(ex.Message);
-        }
+        var filter = new ExamAnswer.Filter(
+            ExamId: examId,
+            QuestionId: questionId,
+            ExaminerId: examinerId,
+            IsAutoScored: isAutoScored,
+            IsExaminerScored: isExaminerScored,
+            DateRange: startDate.HasValue || endDate.HasValue
+                ? DateTimeRange.Between(startDate, endDate)
+                : null,
+            IncludeExam: includeExam ? true : null,
+            IncludeQuestion: includeQuestion ? true : null,
+            IncludeExaminer: includeExaminer ? true : null);
+
+        var pagination = new PaginationOptions(page, pageSize);
+        var result = await _examAnswerService.Search(auth, filter, pagination);
+
+        return Ok(result);
     }
 }
 

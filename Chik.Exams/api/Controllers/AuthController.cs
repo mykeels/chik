@@ -28,30 +28,22 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
     {
-        try
-        {
-            var ipAddress = Request.GetClientIpAddress();
-            var userAgent = Request.Headers.UserAgent.FirstOrDefault();
-            
-            var user = await _loginService.Authenticate(
-                request.Username, 
-                request.Password, 
-                ipAddress, 
-                userAgent);
-            
-            _logger.LogInformation("User {Username} logged in successfully", user.Username);
-            
-            return Ok(new LoginResponse(
-                user.Id,
-                user.Username,
-                user.Roles,
-                "Login successful"));
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            _logger.LogWarning("Failed login attempt for username: {Username}", request.Username);
-            return Unauthorized(new { Message = ex.Message });
-        }
+        var ipAddress = Request.GetClientIpAddress();
+        var userAgent = Request.Headers.UserAgent.FirstOrDefault();
+
+        var user = await _loginService.Authenticate(
+            request.Username,
+            request.Password,
+            ipAddress,
+            userAgent);
+
+        _logger.LogInformation("User {Username} logged in successfully", user.Username);
+
+        return Ok(new LoginResponse(
+            user.Id,
+            user.Username,
+            user.Roles,
+            "Login successful"));
     }
 
     /// <summary>
@@ -60,16 +52,8 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     public async Task<ActionResult> Logout()
     {
-        try
-        {
-            await AuthenticationExtensions.Logout();
-            return Ok(new { Message = "Logged out successfully" });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error during logout");
-            return StatusCode(500, new { Message = "Error during logout" });
-        }
+        await AuthenticationExtensions.Logout();
+        return Ok(new { Message = "Logged out successfully" });
     }
 
     /// <summary>
@@ -80,24 +64,13 @@ public class AuthController : ControllerBase
         [FromBody] ChangePasswordRequest request,
         [FromServices] Auth auth)
     {
-        try
-        {
-            await _userService.ChangePassword(
-                auth, 
-                auth.Id, 
-                request.CurrentPassword, 
-                request.NewPassword);
-            
-            return Ok(new { Message = "Password changed successfully" });
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Unauthorized(new { Message = ex.Message });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
+        await _userService.ChangePassword(
+            auth,
+            auth.Id,
+            request.CurrentPassword,
+            request.NewPassword);
+
+        return Ok(new { Message = "Password changed successfully" });
     }
 
     /// <summary>
