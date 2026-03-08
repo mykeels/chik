@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Chik.Exams.Data;
 
-namespace Chik.Exams.Quizzes.QuestionTypes.Repositories;
+namespace Chik.Exams.Data;
 
 public class QuizQuestionTypeRepository(
     IDbContextFactory<ChikExamsDbContext> _dbContextFactory,

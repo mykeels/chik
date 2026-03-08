@@ -8,6 +8,7 @@ public record User(
     DateTime? UpdatedAt
 )
 {
+    public DateTime? LastLogin { get; set; }
     public static List<UserRole> RolesOf(params UserRole[] roles)
     {
         return roles.ToList();
@@ -40,4 +41,14 @@ public record User(
         DateTimeRange? DateRange = null,
         List<long>? UserIds = null
     );
+
+    public static Auth Admin => new(
+        Id: 1,
+        Username: "admin",
+        Roles: [UserRole.Admin],
+        CreatedAt: DateTime.UtcNow,
+        UpdatedAt: DateTime.UtcNow
+    );
+
+    public string Email = $"{Username}@chik.ng";
 }

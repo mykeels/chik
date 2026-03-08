@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Chik.Exams.Data;
 
-namespace Chik.Exams.Users.Repositories;
+namespace Chik.Exams.Data;
 
 public class UserRepository(
     IDbContextFactory<ChikExamsDbContext> _dbContextFactory,

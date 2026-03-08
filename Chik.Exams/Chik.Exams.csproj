@@ -1,9 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(SkipOpenApiGeneration)' == 'true'">
+    <GenerateOpenApiDocuments>false</GenerateOpenApiDocuments>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,20 +16,56 @@
   </ItemGroup>
 
   <ItemGroup>
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Aspire.Microsoft.Data.SqlClient" Version="9.4.0" />
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.4.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Bogus" Version="35.6.3" />
+    <PackageReference Include="FusionAuth.Client" Version="1.59.0" />
+    <PackageReference Include="Markdig" Version="0.38.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="9.0.7">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7" />
+    <PackageReference Include="Mykeels.CSharpRepl" Version="0.0.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="NodaTime" Version="3.2.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7" />
     <PackageReference Include="PreMailer.Net" Version="2.7.2" />
     <PackageReference Include="Serilog" Version="4.2.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
-    <PackageReference Include="Markdig" Version="0.38.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageReference Include="Spectre.Console" Version="0.49.1" />
+    <PackageReference Include="Spectre.Console.Json" Version="0.49.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.6" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="TextCopy" Version="6.2.1" />
     <PackageReference Include="ZiggyCreatures.FusionCache" Version="2.4.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="src/Mails/Templates/EmailTemplate.css" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="src/Mails/Templates/Images/*.png" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chik.ServiceDefaults\Chik.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(SkipOpenApiGeneration)' != 'true'">
+    <Exec Command="dotnet tool restore" />
+    <Exec Command="dotnet swagger tofile --output ../openapi/ChikExams.openapi.json $(OutputPath)$(AssemblyName).dll v1" EnvironmentVariables="OPENAPI=true" />
+    <Exec Command="bun ../scripts/update-openapi-version.script.ts ../openapi/ChikExams.openapi.json --base-branch-name origin/master --csproj-file-path $(MSBuildProjectFullPath)" />
+    <Exec Command="npx prettier --write ../openapi/ChikExams.openapi.json" />
+  </Target>
 
 </Project>

@@ -27,6 +27,7 @@ public class ChikExamsDbContext : DbContext
     public DbSet<UserDbo> Users { get; set; }
     public DbSet<IpAddressLocationDbo> IpAddressLocations { get; set; }
     public DbSet<LoginDbo> Logins { get; set; }
+    public DbSet<ServerErrorDbo> ServerErrors { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -42,6 +43,7 @@ public class ChikExamsDbContext : DbContext
         AddAuditLog(modelBuilder);
         AddIpAddressLocation(modelBuilder);
         AddLogin(modelBuilder);
+        AddServerError(modelBuilder);
 
         // Configure relationships
         AddUserRelationships(modelBuilder);
@@ -53,6 +55,7 @@ public class ChikExamsDbContext : DbContext
         AddAuditLogRelationships(modelBuilder);
         AddIpAddressLocationRelationships(modelBuilder);
         AddLoginRelationships(modelBuilder);
+        AddServerErrorRelationships(modelBuilder);
 
         ApplyUTCToDateTimeProperties(modelBuilder);
     }
@@ -225,6 +228,56 @@ public class ChikExamsDbContext : DbContext
         });
     }
 
+    private void AddServerError(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasKey(se => se.Id);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .Property(se => se.OperationId)
+            .IsRequired();
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(se => se.OperationId);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .Property(se => se.UserId)
+            .HasColumnType("bigint")
+            .IsRequired(false);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(se => se.UserId);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .Property(se => se.RequestPath)
+            .IsRequired(false);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(se => se.RequestPath);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .Property(se => se.RequestMethod)
+            .IsRequired(false);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(se => se.RequestMethod);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .Property(se => se.Error)
+            .HasMaxLength(512)
+            .IsRequired();
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(se => se.Error);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .Property(se => se.ErrorJson)
+            .HasMaxLength(4096)
+            .IsRequired();
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(se => se.ErrorJson);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .Property(se => se.ErrorAt)
+            .IsRequired();
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(se => se.ErrorAt);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .Property(se => se.CreatedAt)
+            .IsRequired()
+            .HasDefaultValueSql("now()");
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(se => se.CreatedAt);
+    }
+
     #endregion
 
     #region Relationship Configurations
@@ -364,6 +417,31 @@ public class ChikExamsDbContext : DbContext
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
+    }
+
+    private void AddServerErrorRelationships(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasOne(e => e.User)
+            .WithMany()
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(e => e.OperationId);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(e => e.UserId);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(e => e.RequestPath);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(e => e.RequestMethod);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(e => e.Error);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(e => e.ErrorJson);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(e => e.ErrorAt);
+        modelBuilder.Entity<ServerErrorDbo>()
+            .HasIndex(e => e.CreatedAt);
     }
 
     #endregion

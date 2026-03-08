@@ -166,4 +166,17 @@ internal class UserService(
             async options => await Search(auth, filter, options)
         );
     }
+
+    public class Cache
+    {
+        public class Keys
+        {
+            public static string User(Guid userId) => $"user:id={userId}";
+        }
+
+        public class Tags
+        {
+            public static string User(Guid id) => $"user:id={id}";
+        }
+    }
 }

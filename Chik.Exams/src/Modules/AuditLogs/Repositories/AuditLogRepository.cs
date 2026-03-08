@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Chik.Exams.Data;
 
-namespace Chik.Exams.AuditLogs.Repositories;
+namespace Chik.Exams.Data;
 
 public class AuditLogRepository(
     IDbContextFactory<ChikExamsDbContext> _dbContextFactory,
