@@ -14,6 +14,11 @@ A Quiz has properties:
 - CreatedAt (DateTime)
 - UpdatedAt (DateTime)
 
+### How it works
+
+- A quiz is created by a user
+- A quiz can have multiple questions
+
 ## 2. User
 
 A User has properties:
