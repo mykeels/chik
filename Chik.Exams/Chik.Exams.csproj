@@ -64,7 +64,7 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(SkipOpenApiGeneration)' != 'true'">
     <Exec Command="dotnet tool restore" />
     <Exec Command="dotnet swagger tofile --output ../openapi/ChikExams.openapi.json $(OutputPath)$(AssemblyName).dll v1" EnvironmentVariables="OPENAPI=true" />
-    <Exec Command="bun ../scripts/update-openapi-version.script.ts ../openapi/ChikExams.openapi.json --base-branch-name origin/master --csproj-file-path $(MSBuildProjectFullPath)" />
+    <Exec Command="bun ../scripts/update-openapi-version.script.ts ../openapi/ChikExams.openapi.json --base-branch-name origin/main --csproj-file-path $(MSBuildProjectFullPath)" />
     <Exec Command="npx prettier --write ../openapi/ChikExams.openapi.json" />
   </Target>
 
