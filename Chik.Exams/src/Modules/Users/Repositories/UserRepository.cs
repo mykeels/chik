@@ -23,7 +23,7 @@ public class UserRepository(
         var userDbo = new UserDbo
         {
             Username = user.Username,
-            Password = user.Password,
+            Password = BCrypt.Net.BCrypt.HashPassword(user.Password),
             Roles = user.Roles.ToInt32(),
             CreatedAt = timeProvider.GetUtcNow().DateTime
         };
@@ -64,7 +64,7 @@ public class UserRepository(
         }
         if (user.Password is not null)
         {
-            existingUser.Password = user.Password;
+            existingUser.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         }
         if (user.Roles is not null)
         {

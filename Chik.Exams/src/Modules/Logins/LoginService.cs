@@ -1,13 +1,34 @@
+using Chik.Exams.Data;
 using Chik.Exams.Logins.Repositories;
 
 namespace Chik.Exams;
 
 public class LoginService(
     ILoginRepository repository,
+    IUserRepository userRepository,
     ILogger<LoginService> logger
 ) : ILoginService
 {
     public ILoginRepository Repository => repository;
+
+    public async Task<User> Authenticate(string username, string password, string? ipAddress = null, string? userAgent = null)
+    {
+        logger.LogInformation($"{nameof(LoginService)}.{nameof(Authenticate)} ({username})");
+        
+        var userDbo = await userRepository.Get(username);
+        if (userDbo is null)
+        {
+            throw new UnauthorizedAccessException("Invalid username or password");
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(password, userDbo.Password))
+        {
+            throw new UnauthorizedAccessException("Invalid username or password");
+        }
+
+        // Note: Login recording should be done by the caller after obtaining IpAddressLocation
+        return (User)userDbo!;
+    }
 
     public async Task Create(Auth auth, Login.Create login)
     {

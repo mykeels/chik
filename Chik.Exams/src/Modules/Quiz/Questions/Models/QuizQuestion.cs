@@ -86,31 +86,38 @@ public record QuizQuestion(
     /// <summary>
     /// Fill in the blank question - user types in the answer.
     /// </summary>
-    public record FillInTheBlank() : QuestionType("fill-in-the-blank");
+    public record FillInTheBlank(
+        [property: Newtonsoft.Json.JsonProperty("acceptedAnswers")]
+        List<string> AcceptedAnswers
+    ) : QuestionType("fill-in-the-blank");
 
     /// <summary>
     /// Essay question - free-form long text answer.
     /// </summary>
-    public record Essay() : QuestionType("essay");
+    public record Essay(
+        [property: Newtonsoft.Json.JsonProperty("minWords")]
+        int? MinWords = null,
+        [property: Newtonsoft.Json.JsonProperty("maxWords")]
+        int? MaxWords = null
+    ) : QuestionType("essay");
 
     /// <summary>
     /// Short answer question - brief text answer.
     /// </summary>
-    public record ShortAnswer() : QuestionType("short-answer");
+    public record ShortAnswer(
+        [property: Newtonsoft.Json.JsonProperty("acceptedAnswers")]
+        List<string>? AcceptedAnswers = null,
+        [property: Newtonsoft.Json.JsonProperty("maxLength")]
+        int? MaxLength = null
+    ) : QuestionType("short-answer");
 
     /// <summary>
     /// True or false question.
     /// </summary>
     public record TrueOrFalse(
-        [property: Newtonsoft.Json.JsonProperty("options")]
-        List<bool> Options
-    ) : QuestionType("true-or-false")
-    {
-        /// <summary>
-        /// Creates a standard true/false question with [true, false] options.
-        /// </summary>
-        public static TrueOrFalse Default() => new([true, false]);
-    }
+        [property: Newtonsoft.Json.JsonProperty("correctAnswer")]
+        bool CorrectAnswer
+    ) : QuestionType("true-or-false");
 
     /// <summary>
     /// JSON converter for polymorphic QuestionType deserialization.

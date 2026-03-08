@@ -284,4 +284,15 @@ The audit log is a JSON string that contains the audit log properties.
 - When `ExamService.AutoScore(auth, examId)` is called, it will auto-score exam answers where possible
 - When `ExamService.GetScores(auth, examId)` is called, it will return the score of the exam, which is an aggregate of the auto-scored and examiner-scored answers, where examiner-scored answers override auto-scored answers
 - Every service method should have `Auth auth` as its first parameter. This is used to determine whether the user has the required roles to perform the action.
-- Every service method that mutates data should create an audit log.
+- Every service method that mutates data should create an audit log e.g.
+
+```cs
+await auditLogService.Create(
+    auth, 
+    new AuditLog.Create<User.Create>(
+        $"{nameof(UserService)}.{nameof(Create)}", 
+        userDbo.Id, 
+        user
+    )
+);
+```

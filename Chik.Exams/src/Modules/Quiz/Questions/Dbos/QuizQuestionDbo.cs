@@ -51,13 +51,13 @@ public class QuizQuestionDbo
         Type = dbo.Type
     };
 
-    private static string SerializeProperties(QuizQuestion.QuestionType? properties)
+    public static string SerializeProperties(QuizQuestion.QuestionType? properties)
     {
         if (properties is null) return "{}";
         return JsonConvert.SerializeObject(properties);
     }
 
-    private static QuizQuestion.QuestionType? DeserializeProperties(string? json)
+    public static QuizQuestion.QuestionType? DeserializeProperties(string? json)
     {
         if (string.IsNullOrWhiteSpace(json)) return null;
         return JsonConvert.DeserializeObject<QuizQuestion.QuestionType>(json);
