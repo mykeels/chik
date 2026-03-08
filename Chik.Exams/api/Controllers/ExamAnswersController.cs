@@ -68,36 +68,11 @@ public class ExamAnswersController : ControllerBase
     /// </summary>
     [HttpGet]
     public async Task<ActionResult<Paginated<ExamAnswer>>> Search(
-        [FromQuery] long? examId,
-        [FromQuery] long? questionId,
-        [FromQuery] long? examinerId,
-        [FromQuery] bool? isAutoScored,
-        [FromQuery] bool? isExaminerScored,
-        [FromQuery] DateTime? startDate,
-        [FromQuery] DateTime? endDate,
-        [FromQuery] bool includeExam = false,
-        [FromQuery] bool includeQuestion = false,
-        [FromQuery] bool includeExaminer = false,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromServices] Auth auth = null!)
+        [FromServices] Auth auth,
+        [FromQuery] ExamAnswer.Filter? filter,
+        [FromQuery] PaginationOptions? pagination)
     {
-        var filter = new ExamAnswer.Filter(
-            ExamId: examId,
-            QuestionId: questionId,
-            ExaminerId: examinerId,
-            IsAutoScored: isAutoScored,
-            IsExaminerScored: isExaminerScored,
-            DateRange: startDate.HasValue || endDate.HasValue
-                ? DateTimeRange.Between(startDate, endDate)
-                : null,
-            IncludeExam: includeExam ? true : null,
-            IncludeQuestion: includeQuestion ? true : null,
-            IncludeExaminer: includeExaminer ? true : null);
-
-        var pagination = new PaginationOptions(page, pageSize);
         var result = await _examAnswerService.Search(auth, filter, pagination);
-
         return Ok(result);
     }
 }

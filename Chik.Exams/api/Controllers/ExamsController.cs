@@ -188,42 +188,10 @@ public class ExamsController : ControllerBase
     /// </summary>
     [HttpGet("search")]
     public async Task<ActionResult<Paginated<Exam>>> Search(
-        [FromQuery] long? userId,
-        [FromQuery] long? quizId,
-        [FromQuery] long? creatorId,
-        [FromQuery] long? examinerId,
-        [FromQuery] bool? isStarted,
-        [FromQuery] bool? isEnded,
-        [FromQuery] bool? isMarked,
-        [FromQuery] DateTime? startDate,
-        [FromQuery] DateTime? endDate,
-        [FromQuery] bool includeUser = false,
-        [FromQuery] bool includeQuiz = false,
-        [FromQuery] bool includeCreator = false,
-        [FromQuery] bool includeExaminer = false,
-        [FromQuery] bool includeAnswers = false,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromServices] Auth auth = null!)
+        [FromServices] Auth auth,
+        [FromQuery] Exam.Filter? filter,
+        [FromQuery] PaginationOptions? pagination)
     {
-        var filter = new Exam.Filter(
-            UserId: userId,
-            QuizId: quizId,
-            CreatorId: creatorId,
-            ExaminerId: examinerId,
-            IsStarted: isStarted,
-            IsEnded: isEnded,
-            IsMarked: isMarked,
-            DateRange: startDate.HasValue || endDate.HasValue
-                ? new DateTimeRange(startDate, endDate)
-                : null,
-            IncludeUser: includeUser ? true : null,
-            IncludeQuiz: includeQuiz ? true : null,
-            IncludeCreator: includeCreator ? true : null,
-            IncludeExaminer: includeExaminer ? true : null,
-            IncludeAnswers: includeAnswers ? true : null);
-
-        var pagination = new PaginationOptions(page, pageSize);
         var result = await _examService.Search(auth, filter, pagination);
 
         return Ok(result);

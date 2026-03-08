@@ -88,28 +88,10 @@ public class QuizQuestionsController : ControllerBase
     [HttpGet]
     [AdminOrTeacher]
     public async Task<ActionResult<Paginated<QuizQuestion>>> Search(
-        [FromQuery] long? quizId,
-        [FromQuery] long? typeId,
-        [FromQuery] bool? isActive,
-        [FromQuery] DateTime? startDate,
-        [FromQuery] DateTime? endDate,
-        [FromQuery] bool includeQuiz = false,
-        [FromQuery] bool includeType = false,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromServices] Auth auth = null!)
+        [FromServices] Auth auth,
+        [FromQuery] QuizQuestion.Filter? filter,
+        [FromQuery] PaginationOptions? pagination)
     {
-        var filter = new QuizQuestion.Filter(
-            QuizId: quizId,
-            TypeId: typeId,
-            IsActive: isActive,
-            DateRange: startDate.HasValue || endDate.HasValue
-                ? new DateTimeRange(startDate, endDate)
-                : null,
-            IncludeQuiz: includeQuiz ? true : null,
-            IncludeType: includeType ? true : null);
-
-        var pagination = new PaginationOptions(page, pageSize);
         var result = await _quizQuestionService.Search(auth, filter, pagination);
 
         return Ok(result);

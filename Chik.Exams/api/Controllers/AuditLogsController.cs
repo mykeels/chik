@@ -56,26 +56,11 @@ public class AuditLogsController : ControllerBase
     /// </summary>
     [HttpGet]
     public async Task<ActionResult<Paginated<AuditLog>>> Search(
-        [FromQuery] long? userId,
-        [FromQuery] string? service,
-        [FromQuery] DateTime? startDate,
-        [FromQuery] DateTime? endDate,
-        [FromQuery] bool includeUser = false,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromServices] Auth auth = null!)
+        [FromServices] Auth auth,
+        [FromQuery] AuditLog.Filter? filter,
+        [FromQuery] PaginationOptions? pagination)
     {
-        var filter = new AuditLog.Filter(
-            UserId: userId,
-            Service: service,
-            DateRange: startDate.HasValue || endDate.HasValue
-                ? DateTimeRange.Between(startDate, endDate)
-                : null,
-            IncludeUser: includeUser ? true : null);
-
-        var pagination = new PaginationOptions(page, pageSize);
         var result = await _auditLogService.Search(auth, filter, pagination);
-
         return Ok(result);
     }
 }
