@@ -11,8 +11,8 @@ internal class ChikExamsDbContextFactory : IDesignTimeDbContextFactory<ChikExams
         
         // Use SQL Server with a connection string for design-time
         // You can modify this connection string as needed for your development environment
-        optionsBuilder.UseNpgsql(Chik.ExamsDbContext.GetConnectionString(password: "postgres"));
+        optionsBuilder.UseNpgsql(ChikExamsDbContext.GetConnectionString(password: "postgres"));
         
-        return new Chik.ExamsDbContext(optionsBuilder.Options);
+        return new ChikExamsDbContext(optionsBuilder.Options);
     }
 } 

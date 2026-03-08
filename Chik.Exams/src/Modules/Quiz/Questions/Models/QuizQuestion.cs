@@ -125,7 +125,7 @@ public record QuizQuestion(
             Newtonsoft.Json.JsonSerializer serializer)
         {
             var jsonObject = Newtonsoft.Json.Linq.JObject.Load(reader);
-            var type = jsonObject["type"]?.Value<string>();
+            var type = (string?)jsonObject["type"];
 
             return type switch
             {

@@ -2,7 +2,7 @@ namespace Chik.Exams;
 
 public record Login(
     Guid Id,
-    Guid UserId,
+    long UserId,
     Guid IpAddressLocationId,
     DateTime CreatedAt
 ) {
@@ -10,12 +10,12 @@ public record Login(
     public IpAddressLocation? IpAddressLocation { get; set; }
 
     public record Create(
-        Guid UserId,
+        long UserId,
         Guid IpAddressLocationId
     );
 
     public record Filter(
-        Guid? UserId = null,
+        long? UserId = null,
         Guid? IpAddressLocationId = null,
         DateTimeRange? DateRange = null,
         string? IpAddress = null,

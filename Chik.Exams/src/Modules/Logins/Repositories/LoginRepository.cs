@@ -9,7 +9,7 @@ public class LoginRepository(
     TimeProvider timeProvider
 ): ILoginRepository
 {
-    public async Task<LoginDbo> Create(Guid userId, Login.Create login)
+    public async Task<LoginDbo> Create(long userId, Login.Create login)
     {
         logger.LogInformation($"{nameof(LoginRepository)}.{nameof(Create)} ({userId}, {login})");
         var loginDbo = new LoginDbo
@@ -24,7 +24,7 @@ public class LoginRepository(
         return loginDbo;
     }
 
-    public async Task<LoginDbo?> GetLastLogin(Guid userId)
+    public async Task<LoginDbo?> GetLastLogin(long userId)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
         return await dbContext.Logins

@@ -3,7 +3,7 @@ namespace Chik.Exams.Data;
 public class LoginDbo
 {
     public Guid Id { get; set; }
-    public Guid UserId { get; set; }
+    public long UserId { get; set; }
     public Guid IpAddressLocationId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public virtual UserDbo? User { get; set; }
