@@ -28,7 +28,7 @@ export default {
   plugins: [
     require('tailwindcss-animate'),
     require('tailwindcss-scoped-preflight').scopedPreflightStyles({
-      cssSelector: '.daily-bible-comics',
+      cssSelector: '.chik-exams',
       mode: 'matched only',
     }),
   ],
