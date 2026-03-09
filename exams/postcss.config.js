@@ -9,7 +9,7 @@ export default {
           ? selector
           : selector
               .split(',')
-              .map((s) => `.daily-bible-comics ${s}`)
+              .map((s) => `.chik-exams ${s}`)
               .join(',');
       },
     },

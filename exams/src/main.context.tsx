@@ -18,7 +18,7 @@ export const AppContexts = ({ children }: AppContextsProps) => {
   return (
     <RenderMode>
       <QueryClientProvider client={queryClient}>
-        <div className="mfe daily-bible-comics">{children}</div>
+        <div className="mfe chik-exams">{children}</div>
         <ToastContainer position="bottom-center" />
       </QueryClientProvider>
     </RenderMode>

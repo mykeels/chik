@@ -6,15 +6,15 @@ import { useCacheUpdate } from '@/hooks/useCacheUpdate';
 import { CacheKeys } from '@/utils/cache-keys.utils';
 import { useMutation, useQuery } from 'react-query';
 import { EIGHT_HOURS } from '@/services/chikexams.hooks';
+import { useNavigate } from 'react-router';
 
 export const AuthProvider = ({
   children,
-  login = ioc((keys) => keys.login) || (async () => chikexamsService.login()),
 }: {
   children: React.ReactNode;
-  login?: typeof chikexamsService.login;
 }) => {
   const { isAuthenticated, isAuthenticationChallenge, isError, isLoading } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isError && !location.search.includes('noServerDownWarning')) {
@@ -27,7 +27,7 @@ export const AuthProvider = ({
 
   useEffect(() => {
     if (shouldRedirectToLogin) {
-      login();
+      navigate('/login');
     }
   }, [shouldRedirectToLogin]);
 
@@ -78,7 +78,7 @@ export const useAuth = ({
   const isError = meQuery.isError && !isAuthenticationChallenge;
 
   return {
-    isAuthenticated:  isAuthenticated,
+    isAuthenticated: isAuthenticated,
     isAuthenticationChallenge,
     isError,
     isLoading: meQuery.isLoading || isLoggingOut,

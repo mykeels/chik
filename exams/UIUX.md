@@ -400,7 +400,7 @@ Examiner Comment: "Good work overall."
 
 | Component | Usage |
 |-----------|-------|
-| `Button` | Primary (black bg), Secondary (white bg + black border), Danger (red) |
+| `Button` | Primary (primary color bg), Secondary (secondary color bg), Danger (red) |
 | `Input` | Text, Password, Number — all with label + error state |
 | `Select` | Dropdown with search |
 | `Modal` | Centered overlay with backdrop |

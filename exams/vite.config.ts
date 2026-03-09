@@ -24,18 +24,18 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       react(),
-      {
-        name: 'emit-version.json-file',
-        buildStart() {
-          const outputFolders = [path.join(__dirname, './dist'), path.join(__dirname, './public')];
-          for (const outputFolder of outputFolders) {
-            fs.writeFileSync(
-              path.join(outputFolder, 'version.json'),
-              JSON.stringify({ version: pkg.version }, null, 2)
-            );
-          }
-        },
-      },
+      // {
+      //   name: 'emit-version.json-file',
+      //   buildStart() {
+      //     const outputFolders = [path.join(__dirname, './dist'), path.join(__dirname, './public')];
+      //     for (const outputFolder of outputFolders) {
+      //       fs.writeFileSync(
+      //         path.join(outputFolder, 'version.json'),
+      //         JSON.stringify({ version: pkg.version }, null, 2)
+      //       );
+      //     }
+      //   },
+      // },
       ...(process.env.STORYBOOK
         ? []
         : [
@@ -122,7 +122,7 @@ export default defineConfig(({ mode }) => {
         fileRegex: /\.md$/,
       }),
       federation({
-        name: 'daily-bible-comics',
+        name: 'chik-exams',
         filename: 'remoteEntry.js',
         exposes: {},
         shared: ['react', 'react-dom', 'react-router'],

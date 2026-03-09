@@ -60,7 +60,7 @@ public class Startup
                     .AllowCredentials()
                     .WithOrigins(
                         "http://localhost",
-                        "http://localhost:5173",
+                        "http://localhost:5174",
                         "http://localhost:6006",
                         "https://www.chik.ng",
                         "https://chik.ng",
