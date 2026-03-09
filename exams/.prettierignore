@@ -1,0 +1,8 @@
+pnpm-lock.yaml
+public
+.github
+dist
+android
+Chik.*
+coverage
+storybook-static

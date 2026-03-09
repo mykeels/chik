@@ -1,0 +1,169 @@
+{
+  "name": "daily-bible-comics-admin-app",
+  "private": true,
+  "version": "0.0.8",
+  "type": "module",
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  },
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": [
+        "current"
+      ],
+      "cpu": [
+        "x64",
+        "arm64"
+      ]
+    }
+  },
+  "scripts": {
+    "pre-commit": "lint-staged",
+    "predeploy": "npm version patch && npm run build",
+    "prepare": "husky install",
+    "deploy": "bun ./scripts/deploy.script.ts",
+    "sync": "bun ./scripts/sync-comics.script.ts",
+    "dev": "vite --port 5174",
+    "start": "npm run dev",
+    "build:federation": "onchange -i ** --exclude dist --exclude node_modules --exclude package.json -- vite build",
+    "build": "tsc -b && npx cross-env VITE_API_ROOT_URL=https://api.dailybiblecomics.com vite build",
+    "ts": "tsc -b",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "npx cross-env BASE_URL=/ STORYBOOK=true storybook build && node ./scripts/fix-storybook-static.script.cjs",
+    "test": "npm run test-storybook",
+    "test-storybook": "npm run build-storybook && npm run test-storybook:run && npm run test-storybook:coverage",
+    "test-storybook:serve": "npx -y http-server storybook-static --port 6007 --silent || exit 0",
+    "test-storybook:test": "npx -y wait-on \"http://127.0.0.1:6007/iframe.html\" && npx -y rimraf coverage && npx cross-env TARGET_URL=http://127.0.0.1:6007 test-storybook --coverage",
+    "test-storybook:run": "npx -y playwright install --with-deps && npx -y concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npm run test-storybook:serve\" \"npm run test-storybook:test\"",
+    "test-storybook:coverage": "npx -y nyc report --reporter=lcov --temp-dir coverage"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,md,json}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  },
+  "dependencies": {
+    "cloudinary": "^2.9.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@excalidraw/excalidraw": "^0.18.0",
+    "@fusionauth/react-sdk": "^2.5.1",
+    "@mui/icons-material": "^7.3.7",
+    "@mui/material": "^7.3.7",
+    "@originjs/vite-plugin-federation": "^1.3.6",
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-separator": "^1.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.2.5",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-tooltip": "^1.1.4",
+    "@rse/soundfx": "^1.1.3",
+    "@rumenx/sitemap": "^1.0.0",
+    "@types/sharp": "^0.32.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "dexie": "^4.0.11",
+    "dexie-syncable": "4.0.1-beta.13",
+    "eventemitter3": "^5.0.1",
+    "framer-motion": "^11.9.0",
+    "get-browser-fingerprint": "^4.1.1",
+    "gh-pages": "^6.1.1",
+    "howler": "^2.2.4",
+    "lucide-react": "^0.454.0",
+    "nanoid": "^5.0.9",
+    "optional": "^0.1.4",
+    "platform": "^1.3.6",
+    "react": "^18.3.1",
+    "react-confetti-explosion": "^2.1.2",
+    "react-dom": "^18.3.1",
+    "react-draggable": "^4.4.6",
+    "react-markdown": "^9.0.1",
+    "react-photo-album": "^3.1.0",
+    "react-query": "^3.39.3",
+    "react-router": "^7.6.2",
+    "react-toastify": "^11.0.5",
+    "react-tooltip": "^5.30.0",
+    "react-typed": "^2.0.12",
+    "remark-gfm": "^4.0.0",
+    "satori": "^0.16.2",
+    "sharp": "^0.34.3",
+    "swipe-listener": "^1.3.0",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7",
+    "url-join": "^5.0.0",
+    "use-debounce": "^10.0.4",
+    "use-sound": "^4.0.3",
+    "vaul": "^1.1.2",
+    "vite-raw-plugin": "^1.0.2",
+    "yet-another-react-lightbox": "^3.25.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^1.9.0",
+    "@storybook/addon-coverage": "^1.0.5",
+    "@storybook/addon-essentials": "8.4.7",
+    "@storybook/addon-interactions": "8.4.7",
+    "@storybook/addon-links": "8.4.7",
+    "@storybook/addon-onboarding": "8.4.7",
+    "@storybook/blocks": "8.4.7",
+    "@storybook/react": "8.4.7",
+    "@storybook/react-vite": "8.4.7",
+    "@storybook/test": "8.4.7",
+    "@storybook/test-runner": "^0.16.0",
+    "@types/bun": "^1.2.21",
+    "@types/ga-gtag": "^1.2.0",
+    "@types/howler": "^2.2.11",
+    "@types/jsdom": "^27.0.0",
+    "@types/platform": "^1.3.6",
+    "@types/react": "^18.3.3",
+    "@types/react-canvas-draw": "^1.2.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "eslint-plugin-storybook": "^0.9.0",
+    "gh-pages-deploy": "^0.5.1",
+    "http-server": "^14.1.1",
+    "jsdom": "^27.1.0",
+    "nyc": "^17.1.0",
+    "onchange": "^7.1.0",
+    "postcss": "^8.4.47",
+    "postcss-prefixer": "^3.0.0",
+    "postcss-scope": "^1.7.4",
+    "postcss-transformselectors": "^2.0.1",
+    "react-to-print": "^3.1.0",
+    "storybook": "8.4.7",
+    "tailwindcss-scoped-preflight": "^2.0.2",
+    "vite": "^6.2.6",
+    "vite-plugin-pwa": "^0.20.5",
+    "vite-react-ssg": "^0.8.9",
+    "wait-on": "8.0.3"
+  },
+  "peerDependencies": {
+    "@zodios/core": "10.9.6",
+    "axios": "1.11.0"
+  },
+  "gh-pages-deploy": {
+    "staticpath": "dist",
+    "prep": [
+      "build"
+    ],
+    "commit": "Deploy to gh-pages",
+    "post": [],
+    "noprompt": false
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended"
+    ]
+  }
+}

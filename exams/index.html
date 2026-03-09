@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en" class="toddler-games">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Resource hints for performance optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <title>Chik Exams</title>
+    <meta
+      name="description"
+      content="Exams Software for Chik Schools"
+    />
+    <meta
+      name="keywords"
+      content="chik, exams, software, schools, exams software"
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="author" content="Chik" />
+    <meta name="publisher" content="Chik" />
+    <meta name="copyright" content="Chik" />
+    <meta name="category" content="Education" />
+    <meta name="rating" content="General" />
+    <meta name="distribution" content="Global" />
+    <meta property="og:url" content="https://exams.chik.ng" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Chik Exams" />
+    <meta
+      property="og:description"
+      content="Exams Software for Chik Schools"
+    />
+    <meta name="og:image" content="https://exams.chik.ng/logo/1024x1024.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content="exams.chik.ng" />
+    <meta property="twitter:url" content="https://exams.chik.ng" />
+    <meta name="twitter:title" content="Chik Exams" />
+    <meta name="twitter:description" content="Exams Software for Chik Schools" />
+    <meta name="twitter:image" content="https://exams.chik.ng/logo/1024x1024.png" />
+    <link rel="canonical" href="https://exams.chik.ng/" />
+  </head>
+
+  <body class="bg-brand-accent-charcoal">
+    <div id="root">
+      <div class="preload">
+        <img src="/logo/192x192.png" alt="Chik Exams" class="animate-breathe" />
+        <span class="spinner"></span>
+        <h4>
+          <span>Loading Exams Software...</span>
+          <span>Please wait...</span>
+          <span>This may take a few seconds...</span>
+          <span>We're almost there...</span>
+          <span>Thank you for your patience!</span>
+        </h4>
+        <p className="text-lg">Property of Chik Schools</p>
+        <p className="text-sm mt-2">© 2026 Chik. All rights reserved.</p>
+        <div className="mt-4 space-x-4">
+          <a
+            href="https://chik.ng"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="text-white/80 hover:text-white underline text-sm"
+          >
+            Chik Schools
+          </a>
+        </div>
+      </div>
+      <style>
+        #root .preload {
+          background: linear-gradient(90deg, hsla(339, 100%, 55%, 1) 0%, hsla(197, 100%, 64%, 1) 100%);
+          height: 100dvh;
+          width: 100dvw;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 16px;
+          color: white;
+          font-family: 'Poppins', sans-serif;
+        }
+
+        #root .preload img {
+          height: 192px;
+          width: 192px;
+          filter: drop-shadow(0 0 16px #803ec2);
+          border-radius: 16px;
+        }
+
+        #root .preload .spinner {
+          height: 32px;
+          width: 32px;
+          border: 2px solid #fff;
+          border-top: 2px solid #803ec2;
+          border-radius: 50%;
+        }
+
+        #root .preload .spinner {
+          animation: spin 0.4s linear infinite;
+        }
+
+        #root .preload a {
+          color: white;
+          text-decoration: underline;
+        }
+
+        #root .preload mt-4 {
+          margin-top: 16px;
+        }
+
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+
+        #root .preload h4 {
+          font-size: 24px;
+          font-weight: 600;
+          color: #fff;
+          text-align: center;
+          text-shadow: 0 0 16px #803ec2;
+          height: 10dvh;
+        }
+
+        #root .preload h4 span {
+          display: block;
+          font-size: 16px;
+          font-weight: 400;
+          font-family: 'Inter', sans-serif;
+          color: #fff;
+        }
+
+        #root .preload h4 span {
+          opacity: 0;
+          height: 0;
+        }
+
+        #root .preload h4 span:nth-child(1) {
+          animation: showSpan 14s infinite;
+          display: block;
+        }
+
+        #root .preload h4 span:nth-child(2) {
+          animation: showSpan 14s infinite 2s;
+          display: block;
+        }
+
+        #root .preload h4 span:nth-child(3) {
+          animation: showSpan 14s infinite 4s;
+          display: block;
+        }
+
+        #root .preload h4 span:nth-child(4) {
+          animation: showSpan 14s infinite 6s;
+          display: block;
+        }
+
+        #root .preload h4 span:nth-child(5) {
+          animation: showSpan 14s infinite 8s;
+          display: block;
+        }
+
+        #root .preload h4 span:nth-child(6) {
+          animation: showSpan 14s infinite 10s;
+          display: block;
+        }
+
+        #root .preload h4 span:nth-child(7) {
+          animation: showSpan 14s infinite 12s;
+          display: block;
+        }
+
+        @keyframes showSpan {
+          0%,
+          20% {
+            opacity: 1;
+            height: 100%;
+          }
+
+          21%,
+          100% {
+            opacity: 0;
+            height: 0;
+          }
+        }
+
+        body {
+          padding: 0;
+          margin: 0;
+        }
+      </style>
+    </div>
+    <script async type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
