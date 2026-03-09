@@ -17,12 +17,12 @@ import {
 } from '@mui/material';
 
 const QUESTION_TYPES = {
-  SINGLE_CHOICE: 1,
-  MULTIPLE_CHOICE: 2,
-  TRUE_OR_FALSE: 3,
-  FILL_IN_THE_BLANK: 4,
+  MULTIPLE_CHOICE: 1,
+  SINGLE_CHOICE: 2,
+  FILL_IN_THE_BLANK: 3,
+  ESSAY: 4,
   SHORT_ANSWER: 5,
-  ESSAY: 6,
+  TRUE_OR_FALSE: 6,
 };
 
 type Option = { text: string; isCorrect: boolean };

@@ -41,7 +41,7 @@ export const AssignExamModal = ({
     defaultValues: { userId: '', quizId: '' },
   });
 
-  const { data: users } = useUsers({ params: { IncludeRoles: true }, searchUsers });
+  const { data: users } = useUsers({ params: { Roles: enums.UserRole.Student }, searchUsers });
   const { data: quizzes } = useQuizzes({ searchQuizzes });
 
   const students = (users ?? []).filter((u) => u.roles?.includes(enums.UserRole.Student));

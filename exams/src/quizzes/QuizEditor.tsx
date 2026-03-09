@@ -92,14 +92,14 @@ export const QuizEditor = ({
   });
 
   const { data: teachers } = useUsers({
-    params: { IncludeRoles: true },
+    params: { Roles: enums.UserRole.Teacher },
     searchUsers,
   });
 
   const teacherList = (teachers ?? []).filter((u) => u.roles?.includes(enums.UserRole.Teacher));
 
   const [questionModalOpen, setQuestionModalOpen] = useState(false);
-  const [editingQuestion, setEditingQuestion] = useState<(typeof questions)[0] | null>(null);
+  const [editingQuestion, setEditingQuestion] = useState<NonNullable<typeof questions>[number] | null>(null);
 
   const durationParsed = parseDurationToFields(quiz?.duration);
 
@@ -131,7 +131,7 @@ export const QuizEditor = ({
       const duration = fieldsToDuration(Number(data.durationHrs), Number(data.durationMins));
       const body = {
         title: data.title,
-        description: data.description || undefined,
+        description: data.description ?? null,
         duration,
         examinerId: data.examinerId ? Number(data.examinerId) : undefined,
       };
@@ -225,14 +225,14 @@ export const QuizEditor = ({
     prompt: string;
     typeId: number;
     score: number;
-    properties: string | undefined;
+    properties: string;
     order?: number;
   }) => {
     const body = {
       prompt: data.prompt,
       typeId: data.typeId,
       score: data.score,
-      properties: data.properties ? JSON.parse(data.properties) : undefined,
+      properties: data.properties,
       order: data.order ?? (questions?.length ?? 0) + 1,
     };
     if (editingQuestion) {
@@ -282,7 +282,7 @@ export const QuizEditor = ({
             size="small"
             multiline
             rows={3}
-            {...register('description')}
+            {...register('description', { required: 'Description is required' })}
           />
           <div className="flex gap-3 items-center">
             <TextField

@@ -68,7 +68,6 @@ export const Users = ({
   const { data: users, isLoading } = useUsers({
     params: {
       Username: search || undefined,
-      IncludeRoles: true,
     },
     searchUsers,
   });

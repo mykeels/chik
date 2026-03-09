@@ -19,21 +19,30 @@ import {
 import { Plus, X } from 'lucide-react';
 
 export const QUESTION_TYPES = {
-  SINGLE_CHOICE: 1,
-  MULTIPLE_CHOICE: 2,
-  TRUE_OR_FALSE: 3,
-  FILL_IN_THE_BLANK: 4,
+  MULTIPLE_CHOICE: 1,
+  SINGLE_CHOICE: 2,
+  FILL_IN_THE_BLANK: 3,
+  ESSAY: 4,
   SHORT_ANSWER: 5,
-  ESSAY: 6,
+  TRUE_OR_FALSE: 6,
 } as const;
 
+const QUESTION_TYPE_STRINGS: Record<number, string> = {
+  1: 'multiple-choice',
+  2: 'single-choice',
+  3: 'fill-in-the-blank',
+  4: 'essay',
+  5: 'short-answer',
+  6: 'true-or-false',
+};
+
 const QUESTION_TYPE_LABELS: Record<number, string> = {
-  1: 'Single Choice',
-  2: 'Multiple Choice',
-  3: 'True or False',
-  4: 'Fill in the Blank',
+  1: 'Multiple Choice',
+  2: 'Single Choice',
+  3: 'Fill in the Blank',
+  4: 'Essay',
   5: 'Short Answer',
-  6: 'Essay',
+  6: 'True or False',
 };
 
 const isChoiceBased = (typeId: number) =>
@@ -55,7 +64,7 @@ type Props = {
     prompt: string;
     typeId: number;
     score: number;
-    properties: string | undefined;
+    properties: string;
     order?: number;
   }) => void;
   initialData?: Partial<types['QuizQuestion']>;
@@ -125,9 +134,19 @@ export const QuestionModal = ({ open, onClose, onSave, initialData, existingCoun
   };
 
   const onSubmit = (data: QuestionFormData) => {
-    let properties: string | undefined;
-    if (isChoiceBased(data.typeId)) {
-      properties = JSON.stringify({ options: data.options });
+    const typeStr = QUESTION_TYPE_STRINGS[data.typeId];
+    let properties: string;
+    if (data.typeId === QUESTION_TYPES.TRUE_OR_FALSE) {
+      const correct = data.options.find((o) => o.isCorrect);
+      properties = JSON.stringify({ type: typeStr, correctAnswer: correct?.text === 'True' });
+    } else if (isChoiceBased(data.typeId)) {
+      properties = JSON.stringify({ type: typeStr, options: data.options });
+    } else if (data.typeId === QUESTION_TYPES.FILL_IN_THE_BLANK) {
+      properties = JSON.stringify({ type: typeStr, acceptedAnswers: [] });
+    } else if (data.typeId === QUESTION_TYPES.SHORT_ANSWER) {
+      properties = JSON.stringify({ type: typeStr, acceptedAnswers: null, maxLength: null });
+    } else {
+      properties = JSON.stringify({ type: typeStr });
     }
     onSave({
       prompt: data.prompt,
