@@ -37,6 +37,9 @@ public class AuthController : ControllerBase
             ipAddress,
             userAgent);
 
+        var (accessToken, refreshToken) = _loginService.GenerateTokens(user);
+        AuthenticationExtensions.SaveCookies(accessToken, refreshToken, user.Id.ToString());
+
         _logger.LogInformation("User {Username} logged in successfully", user.Username);
 
         return Ok(new LoginResponse(

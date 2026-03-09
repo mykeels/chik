@@ -4,6 +4,8 @@ using Chik.Exams.Logins.Repositories;
 namespace Chik.Exams;
 
 public class LoginService(
+    IJwtService jwtService,
+    TimeProvider timeProvider,
     ILoginRepository repository,
     IUserRepository userRepository,
     ILogger<LoginService> logger
@@ -28,6 +30,21 @@ public class LoginService(
 
         // Note: Login recording should be done by the caller after obtaining IpAddressLocation
         return userDbo!.ToModel();
+    }
+
+    public (string accessToken, string refreshToken) GenerateTokens(User user)
+    {
+        var accessToken = jwtService.GenerateToken(new Dictionary<string, string>
+        {
+            { "sub", user.Id.ToString() },
+            { "username", user.Username },
+            { "roles", string.Join(",", user.Roles.Select(role => role.ToString())) }
+        });
+        var refreshToken = jwtService.GenerateToken(new Dictionary<string, string>
+        {
+            { "sub", user.Id.ToString() }
+        }, timeProvider.GetUtcNow().Add(TimeSpan.FromDays(1)).DateTime);
+        return (accessToken, refreshToken);
     }
 
     public async Task Create(Auth auth, Login.Create login)

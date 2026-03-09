@@ -222,7 +222,7 @@ public static class AuthenticationExtensions
         return res.successResponse?.access_token ?? throw new Exception("No access token returned");
     }
 
-    private static void SaveCookies(
+    public static void SaveCookies(
         string accessToken, 
         string? refreshToken, 
         string? userId, 

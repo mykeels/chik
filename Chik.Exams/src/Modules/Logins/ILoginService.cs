@@ -12,6 +12,11 @@ public interface ILoginService
     Task<User> Authenticate(string username, string password, string? ipAddress = null, string? userAgent = null);
 
     /// <summary>
+    /// Generates access and refresh tokens for a user.
+    /// </summary>
+    (string accessToken, string refreshToken) GenerateTokens(User user);
+
+    /// <summary>
     /// Records a login event for a user.
     /// </summary>
     Task Create(Auth auth, Login.Create login);
