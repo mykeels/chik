@@ -9,6 +9,15 @@ public static class ChikExamsExtensions
                 configuration["EmailCredentials:Password"] ?? throw new Exception("EmailCredentials:Password is not set")
             )
         );
+        services.AddJwtService(
+            new JwtConfig()
+            {
+                Secret = configuration["Jwt:Secret"] ?? throw new Exception("Jwt:Secret is not set"),
+                Issuer = configuration["Jwt:Issuer"] ?? "chik.ng",
+                Audience = configuration["Jwt:Audience"] ?? "chik.ng",
+                TokenExpiration = TimeSpan.FromHours(2)
+            }
+        );
         services.AddAuditLog();
         services.AddExam();
         services.AddIpAddressLocation();
