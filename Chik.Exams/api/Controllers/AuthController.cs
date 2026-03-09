@@ -86,7 +86,7 @@ public class AuthController : ControllerBase
     public async Task<ActionResult> Logout()
     {
         await AuthenticationExtensions.Logout();
-        return Ok(new { Message = "Logged out successfully" });
+        return Ok();
     }
 
     /// <summary>
