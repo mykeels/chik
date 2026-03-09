@@ -75,7 +75,7 @@ public class UsersController : ControllerBase
         [FromServices] Auth auth)
     {
         await _userService.ChangePassword(auth, id, request.CurrentPassword, request.NewPassword);
-        return Ok(new { Message = "Password changed successfully" });
+        return Ok();
     }
 
     /// <summary>

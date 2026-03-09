@@ -57,7 +57,7 @@ public class QuizQuestionsController : ControllerBase
     public async Task<ActionResult> Deactivate(long id, [FromServices] Auth auth)
     {
         await _quizQuestionService.Deactivate(auth, id);
-        return Ok(new { Message = "Question deactivated successfully" });
+        return Ok();
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public class QuizQuestionsController : ControllerBase
     public async Task<ActionResult> Reactivate(long id, [FromServices] Auth auth)
     {
         await _quizQuestionService.Reactivate(auth, id);
-        return Ok(new { Message = "Question reactivated successfully" });
+        return Ok();
     }
 
     /// <summary>

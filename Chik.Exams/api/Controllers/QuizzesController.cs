@@ -157,7 +157,7 @@ public class QuizzesController : ControllerBase
         [FromServices] Auth auth)
     {
         await _quizQuestionService.ReorderQuestions(auth, quizId, request.QuestionIdsInOrder);
-        return Ok(new { Message = "Questions reordered successfully" });
+        return Ok();
     }
 
     #endregion

@@ -121,7 +121,7 @@ public class ExamsController : ControllerBase
     public async Task<ActionResult> AutoScore(long id, [FromServices] Auth auth)
     {
         await _examService.AutoScore(auth, id);
-        return Ok(new { Message = "Auto-scoring completed" });
+        return Ok();
     }
 
     /// <summary>
@@ -143,7 +143,7 @@ public class ExamsController : ControllerBase
     public async Task<ActionResult> Cancel(long id, [FromServices] Auth auth)
     {
         await _examService.Cancel(auth, id);
-        return Ok(new { Message = "Exam cancelled successfully" });
+        return Ok();
     }
 
     /// <summary>

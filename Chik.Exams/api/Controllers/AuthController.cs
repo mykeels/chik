@@ -71,11 +71,11 @@ public class AuthController : ControllerBase
             
             AuthenticationExtensions.SaveCookies(newAccessToken, newRefreshToken, userId);
             
-            return Ok(new { Message = "Token refreshed successfully" });
+            return Ok();
         }
         catch (UnauthorizedAccessException)
         {
-            return Unauthorized(new { Message = "Invalid or expired refresh token" });
+            return Unauthorized();
         }
     }
 
@@ -103,7 +103,7 @@ public class AuthController : ControllerBase
             request.CurrentPassword,
             request.NewPassword);
 
-        return Ok(new { Message = "Password changed successfully" });
+        return Ok();
     }
 
     /// <summary>
