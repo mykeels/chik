@@ -50,6 +50,36 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
+    /// Refreshes the access token using the refresh token from cookies.
+    /// </summary>
+    [HttpPost("refresh")]
+    [AllowAnonymous]
+    public async Task<ActionResult> RefreshToken()
+    {
+        var refreshToken = Request.GetRefreshToken();
+        if (string.IsNullOrEmpty(refreshToken))
+        {
+            return Unauthorized(new { Message = "No refresh token provided" });
+        }
+
+        try
+        {
+            var (newAccessToken, newRefreshToken) = await _loginService.RefreshTokens(refreshToken);
+            
+            var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().ReadJwtToken(newAccessToken);
+            var userId = token.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            
+            AuthenticationExtensions.SaveCookies(newAccessToken, newRefreshToken, userId);
+            
+            return Ok(new { Message = "Token refreshed successfully" });
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Unauthorized(new { Message = "Invalid or expired refresh token" });
+        }
+    }
+
+    /// <summary>
     /// Logs out the current user.
     /// </summary>
     [HttpPost("logout")]

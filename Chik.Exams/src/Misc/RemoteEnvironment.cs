@@ -24,7 +24,7 @@ public class RemoteEnvironment
 
     public string GetBaseUrl()
     {
-        return Environment == Production ? "https://exams.chik.ng" : "http://localhost:30003";
+        return Environment == Production ? "https://exams.chik.ng" : "http://localhost:5000";
     }
 
     public string GetAppUrl()

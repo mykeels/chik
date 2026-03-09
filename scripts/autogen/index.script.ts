@@ -260,9 +260,9 @@ export async function autogenNodeClient(options: {
           "typescript": "5.2.2",
           "tsup": "7.2.0"
         },
-        "keywords": ["Under4Games", "${options.packageName}", "openapi", "swagger", "client"],
-        "author": "Under4Games",
-        "license": "Under4Games"
+        "keywords": ["Chik", "${options.packageName}", "openapi", "swagger", "client"],
+        "author": "Chik",
+        "license": "Chik"
     }`,
     "utf8",
   );

@@ -7,7 +7,7 @@
       "name": "Chik.Exams",
       "email": "support@chik.ng"
     },
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   "paths": {
     "/": {
@@ -337,6 +337,17 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "operationId": "Auth_RefreshToken",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }

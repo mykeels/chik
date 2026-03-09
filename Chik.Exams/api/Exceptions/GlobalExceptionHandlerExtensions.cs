@@ -51,7 +51,7 @@ public static class GlobalExceptionHandlerExtensions
                         { typeof(NotImplementedException), HttpStatusCode.NotImplemented },
                         { typeof(TimeoutException), HttpStatusCode.RequestTimeout },
                         { typeof(UnauthorizedAccessException), HttpStatusCode.Unauthorized },
-                        { typeof(FusionAuthClientException), HttpStatusCode.Unauthorized },
+                        { typeof(InvalidJwtException), HttpStatusCode.Unauthorized },
                         {
                             typeof(System.ComponentModel.DataAnnotations.ValidationException),
                             HttpStatusCode.BadRequest
@@ -139,7 +139,7 @@ public static class GlobalExceptionHandlerExtensions
                     };
 
                     // Clear auth cookies for unauthorized exceptions
-                    if (exception is UnauthorizedAccessException or FusionAuthClientException)
+                    if (exception is UnauthorizedAccessException or InvalidJwtException)
                     {
                         var remoteEnvironment = context.RequestServices.GetRequiredService<RemoteEnvironment>();
                         httpContextAccessor.ClearAuthCookies(remoteEnvironment);

@@ -1,5 +1,5 @@
 {
-  "name": "under4-games",
+  "name": "chik",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,21 +12,21 @@
     "prepare": "husky install",
     "secrets": "bun ./scripts/user-secrets.script.ts",
     "api": "cd Chik.Exams && ASPNETCORE_ENVIRONMENT=Development dotnet watch --db false",
-    "autogen": "bun ./scripts/autogen/index.script.ts ./openapi/Under4Games.openapi.json -p under4games-client --output-dir .clients/under4games-client",
-    "migration:add": "dotnet ef migrations add $2 --project Under4Games --startup-project Under4Games.Api",
-    "migration:update": "dotnet ef database update --project Under4Games --startup-project Under4Games.Api",
-    "aspirate": "cd Under4Games.AppHost && aspirate generate && bun ./scripts/transform-aspirate-output.script.ts",
+    "autogen": "bun ./scripts/autogen/index.script.ts ./openapi/ChikExams.openapi.json -p chikexams-client --output-dir .clients/chikexams-client",
+    "migration:add": "dotnet ef migrations add $2 --project Chik.Exams --startup-project Chik.Exams.Api",
+    "migration:update": "dotnet ef database update --project Chik.Exams --startup-project Chik.Exams.Api",
+    "aspirate": "cd Chik.Exams.AppHost && aspirate generate && bun ./scripts/transform-aspirate-output.script.ts",
     "aspirate:deploy": "npm run aspirate && gh-pages -d Chik.AppHost/aspirate-output -b aspirate-output",
     "dotnet:build": "dotnet build -p WarningLevel=0",
     "dotnet:test": "dotnet test -p:WarningLevel=0 -p:SkipOpenApiGeneration=true",
     "dotnet:test:watch": "cd Chik.Exams.Tests && dotnet watch test /p:SkipOpenApiGeneration=true",
-    "emails:css": "tailwindcss -i ./Under4Games/Mails/Templates/EmailTemplate.template.css -o ./Under4Games/Mails/Templates/EmailTemplate.css",
+    "emails:css": "tailwindcss -i ./Chik.Exams/src/Mails/Templates/EmailTemplate.template.css -o ./Chik.Exams/Mails/Templates/EmailTemplate.css",
     "emails:render": "dotnet run --project Chik.Exams.Jobs -- emails:render",
     "emails:watch": "npx nodemon --watch Chik.Exams/src/Mails/Templates --ext cs --exec 'npm run emails:render'",
     "emails:preview": "cd Chik.Exams.Jobs/bin/Debug/net9.0/src/Mails/Templates/Samples && npx live-server --port=6008 --host=localhost",
     "emails": "npx concurrently \"npm run emails:watch\" \"npm run emails:preview\"",
     "post": "bun ./scripts/new-post.script.ts",
-    "db:restore": "bun ./scripts/restore-db.script.ts data/dbs/Under4Games.sql",
+    "db:restore": "bun ./scripts/restore-db.script.ts data/dbs/Chik.Exams.sql",
     "repl": "cd Chik.Exams && ASPNETCORE_ENVIRONMENT=Development SkipOpenApiGeneration=true dotnet run --db false repl",
     "repl:db": "cd Chik.Exams && ASPNETCORE_ENVIRONMENT=Development SkipOpenApiGeneration=true dotnet run --db true repl"
   },
@@ -73,5 +73,8 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "wrangler": "^4.16.1"
+  },
+  "peerDependencies": {
+    "chikexams-client": ".clients/chikexams-client"
   }
 }

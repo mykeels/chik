@@ -47,6 +47,31 @@ public class LoginService(
         return (accessToken, refreshToken);
     }
 
+    public async Task<(string accessToken, string refreshToken)> RefreshTokens(string refreshToken)
+    {
+        logger.LogInformation($"{nameof(LoginService)}.{nameof(RefreshTokens)}");
+        
+        var claims = await VerifyToken(refreshToken);
+        var subClaim = claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+        if (string.IsNullOrEmpty(subClaim) || !long.TryParse(subClaim, out var userId))
+        {
+            throw new UnauthorizedAccessException("Invalid refresh token");
+        }
+
+        var userDbo = await userRepository.Get(userId);
+        if (userDbo is null)
+        {
+            throw new UnauthorizedAccessException("User not found");
+        }
+
+        return GenerateTokens(userDbo.ToModel());
+    }
+
+    public async Task<IEnumerable<System.Security.Claims.Claim>> VerifyToken(string token)
+    {
+        return await jwtService.VerifyToken(token);
+    }
+
     public async Task Create(Auth auth, Login.Create login)
     {
         logger.LogInformation($"{nameof(LoginService)}.{nameof(Create)} ({auth.Id}, {login})");

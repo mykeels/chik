@@ -17,6 +17,16 @@ public interface ILoginService
     (string accessToken, string refreshToken) GenerateTokens(User user);
 
     /// <summary>
+    /// Refreshes tokens using a valid refresh token. Returns new access and refresh tokens.
+    /// </summary>
+    Task<(string accessToken, string refreshToken)> RefreshTokens(string refreshToken);
+
+    /// <summary>
+    /// Verifies a token and returns the claims if valid.
+    /// </summary>
+    Task<IEnumerable<System.Security.Claims.Claim>> VerifyToken(string token);
+
+    /// <summary>
     /// Records a login event for a user.
     /// </summary>
     Task Create(Auth auth, Login.Create login);

@@ -172,11 +172,13 @@ internal class UserService(
         public class Keys
         {
             public static string User(Guid userId) => $"user:id={userId}";
+            public static string User(long userId) => $"user:id={userId}";
         }
 
         public class Tags
         {
             public static string User(Guid id) => $"user:id={id}";
+            public static string User(long id) => $"user:id={id}";
         }
     }
 }

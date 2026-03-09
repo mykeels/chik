@@ -2,7 +2,6 @@ using Chik.Exams.Data;
 using Microsoft.EntityFrameworkCore;
 using Chik.Exams;
 using System.Reflection;
-using io.fusionauth;
 using ZiggyCreatures.Caching.Fusion;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -45,13 +44,6 @@ public class Startup
         services.AddFusionCache()
             .WithDefaultEntryOptions(opt => opt.SetDuration(TimeSpan.FromMinutes(5)));
 
-        services.AddSingleton<IFusionAuthAsyncClient>(
-            (sp) => new FusionAuthClient(
-                _configuration["OpenIdConnect:ApiKey"] ?? throw new KeyNotFoundException("OpenIdConnect:ApiKey is not set"),
-                _configuration["OpenIdConnect:Authority"] ?? throw new KeyNotFoundException("OpenIdConnect:Authority is not set"),
-                _configuration["OpenIdConnect:TenantId"] ?? throw new KeyNotFoundException("OpenIdConnect:TenantId is not set")
-            )
-        );
         services.AddAuthenticationServices(_configuration);
         services.AddRoleAuthorization();
         services.Configure<ApiBehaviorOptions>(options =>
@@ -142,6 +134,7 @@ public class Startup
                     {
                         await dbContext.Database.MigrateAsync();
                     }
+                    await Seeder.Seed(scope.ServiceProvider);
                 }
             }
             else
