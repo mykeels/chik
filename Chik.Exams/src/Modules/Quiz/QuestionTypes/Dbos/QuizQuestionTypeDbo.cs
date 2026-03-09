@@ -26,8 +26,5 @@ public class QuizQuestionTypeDbo
         Description,
         CreatedAt,
         UpdatedAt
-    )
-    {
-        Questions = Questions?.Select(q => q.ToModel()).ToList()
-    };
+    );
 }

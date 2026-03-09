@@ -138,7 +138,7 @@ public record QuizQuestion(
             // Since all concrete types inherit from QuestionType which has [JsonConverter],
             // passing the serializer causes infinite recursion. Instead, manually construct
             // each concrete type by reading the known fields directly from the JObject.
-            return type switch
+            QuestionType? obj = type switch
             {
                 "single-choice" => new SingleChoice(jsonObject["options"].ToObject<List<Option>>(serializer)),
                 "multiple-choice" => new MultipleChoice(jsonObject["options"].ToObject<List<Option>>(serializer)),
@@ -148,6 +148,8 @@ public record QuizQuestion(
                 "true-or-false" => new TrueOrFalse(jsonObject["correctAnswer"].ToObject<bool>(serializer)),
                 _ => throw new Newtonsoft.Json.JsonSerializationException($"Unknown question type: {type}")
             };
+
+            return obj;
         }
 
         public override void WriteJson(

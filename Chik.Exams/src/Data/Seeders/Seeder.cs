@@ -12,8 +12,12 @@ public static class Seeder
         var userService = services.GetRequiredService<IUserService>();
         var quizService = services.GetRequiredService<IQuizService>();
         var quizQuestionService = services.GetRequiredService<IQuizQuestionService>();
+        var quizQuestionTypeRepository = services.GetRequiredService<IQuizQuestionTypeRepository>();
         var examService = services.GetRequiredService<IExamService>();
         var examAnswerService = services.GetRequiredService<IExamAnswerService>();
+
+        // Seed question types first (required for quiz questions)
+        await SeedQuestionTypes(quizQuestionTypeRepository);
 
         var adminAuth = User.Admin;
 
@@ -253,5 +257,29 @@ public static class Seeder
             QuizQuestionType.Types.Essay => JsonConvert.SerializeObject(Faker.Lorem.Paragraphs(2)),
             _ => JsonConvert.SerializeObject(Faker.Lorem.Sentence())
         };
+    }
+
+    private static async Task SeedQuestionTypes(IQuizQuestionTypeRepository repository)
+    {
+        var existingTypes = await repository.GetAll();
+        if (existingTypes.Count > 0)
+        {
+            return;
+        }
+
+        var questionTypes = new[]
+        {
+            new QuizQuestionType.Create("Multiple Choice", "Select multiple correct answers from a list of options"),
+            new QuizQuestionType.Create("Single Choice", "Select one correct answer from a list of options"),
+            new QuizQuestionType.Create("Fill in the Blank", "Fill in the missing word or phrase"),
+            new QuizQuestionType.Create("Essay", "Write a detailed response to the question"),
+            new QuizQuestionType.Create("Short Answer", "Provide a brief text response"),
+            new QuizQuestionType.Create("True or False", "Determine if the statement is true or false"),
+        };
+
+        foreach (var type in questionTypes)
+        {
+            await repository.Create(type);
+        }
     }
 }

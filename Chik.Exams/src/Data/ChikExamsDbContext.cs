@@ -132,6 +132,16 @@ public class ChikExamsDbContext : DbContext
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             entity.HasIndex(e => e.Name).IsUnique();
+
+            var seedDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            entity.HasData(
+                new QuizQuestionTypeDbo { Id = QuizQuestionType.Types.MultipleChoice, Name = "Multiple Choice", Description = "Select multiple correct answers from a list of options", CreatedAt = seedDate },
+                new QuizQuestionTypeDbo { Id = QuizQuestionType.Types.SingleChoice, Name = "Single Choice", Description = "Select one correct answer from a list of options", CreatedAt = seedDate },
+                new QuizQuestionTypeDbo { Id = QuizQuestionType.Types.FillInTheBlank, Name = "Fill in the Blank", Description = "Fill in the missing word or phrase", CreatedAt = seedDate },
+                new QuizQuestionTypeDbo { Id = QuizQuestionType.Types.Essay, Name = "Essay", Description = "Write a detailed response to the question", CreatedAt = seedDate },
+                new QuizQuestionTypeDbo { Id = QuizQuestionType.Types.ShortAnswer, Name = "Short Answer", Description = "Provide a brief text response", CreatedAt = seedDate },
+                new QuizQuestionTypeDbo { Id = QuizQuestionType.Types.TrueOrFalse, Name = "True or False", Description = "Determine if the statement is true or false", CreatedAt = seedDate }
+            );
         });
     }
 
