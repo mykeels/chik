@@ -32,12 +32,12 @@ type QuizFormData = {
 };
 
 const QUESTION_TYPE_LABELS: Record<number, string> = {
-  1: 'Single Choice',
-  2: 'Multiple Choice',
-  3: 'True or False',
-  4: 'Fill in the Blank',
+  1: 'Multiple Choice',
+  2: 'Single Choice',
+  3: 'Fill in the Blank',
+  4: 'Essay',
   5: 'Short Answer',
-  6: 'Essay',
+  6: 'True or False',
 };
 
 const parseDurationToFields = (duration: string | null | undefined) => {
