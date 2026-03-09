@@ -109,6 +109,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.9.0",
+    "@playwright/test": "^1.58.2",
     "@storybook/addon-coverage": "^1.0.5",
     "@storybook/addon-essentials": "8.4.7",
     "@storybook/addon-interactions": "8.4.7",
