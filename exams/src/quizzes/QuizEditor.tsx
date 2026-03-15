@@ -10,7 +10,7 @@ import { enums, types } from '@/services/chikexams.service';
 import { useQuiz, useQuizQuestions, useUsers } from '@/services/chikexams.hooks';
 import { CacheKeys } from '@/utils/cache-keys.utils';
 import { useAuth } from '@/auth';
-import { QuestionModal, QUESTION_TYPES } from './QuestionModal';
+import { QuestionModal } from './QuestionModal';
 import { ChevronLeft, Plus, Edit, ArrowUp, ArrowDown } from 'lucide-react';
 import {
   Button,
@@ -56,7 +56,6 @@ const fieldsToDuration = (hrs: number, mins: number): string | undefined => {
 };
 
 export const QuizEditor = ({
-  searchQuizzes = ioc((keys) => keys.searchQuizzes) || chikexamsService.searchQuizzes,
   createQuiz = ioc((keys) => keys.createQuiz) || chikexamsService.createQuiz,
   updateQuiz = ioc((keys) => keys.updateQuiz) || chikexamsService.updateQuiz,
   getQuizQuestions: getQuizQuestionsFn = ioc((keys) => keys.getQuizQuestions) || chikexamsService.getQuizQuestions,
@@ -105,7 +104,6 @@ export const QuizEditor = ({
   const [questionModalOpen, setQuestionModalOpen] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<NonNullable<typeof questions>[number] | null>(null);
 
-  const durationParsed = parseDurationToFields(quiz?.duration);
 
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm<QuizFormData>({
     defaultValues: {
@@ -226,7 +224,6 @@ export const QuizEditor = ({
     },
   });
 
-  const activeQuestions = (questions ?? []).filter((q) => q.isActive);
   const sortedQuestions = [...(questions ?? [])].sort((a, b) => a.order - b.order);
 
   const moveQuestion = (index: number, direction: 'up' | 'down') => {

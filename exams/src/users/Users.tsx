@@ -31,7 +31,7 @@ type UserFormData = {
   password: string;
 };
 
-const getRoleLabel = (roles: types['UserRole'][] | null | undefined) => {
+const getRoleLabel = (roles: types.UserRole[] | null | undefined) => {
   if (!roles || roles.length === 0) return 'None';
   return roles
     .map((r) => {
@@ -56,15 +56,8 @@ export const Users = ({
   const [tab, setTab] = useState<UserTab>('all');
   const [search, setSearch] = useState('');
   const [modalMode, setModalMode] = useState<UserModalMode | null>(null);
-  const [editingUser, setEditingUser] = useState<types['User'] | null>(null);
+  const [editingUser, setEditingUser] = useState<types.User | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const roleFilter =
-    tab === 'teachers'
-      ? enums.UserRole.Teacher
-      : tab === 'students'
-        ? enums.UserRole.Student
-        : undefined;
 
   const { data: users, isLoading } = useUsers({
     params: {
@@ -118,7 +111,7 @@ export const Users = ({
     reset();
   };
 
-  const openEdit = (user: types['User']) => {
+  const openEdit = (user: types.User) => {
     setEditingUser(user);
     setModalMode('edit');
     reset({ username: user.username ?? '' });

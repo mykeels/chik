@@ -42,7 +42,7 @@ export const Quizzes = ({
   const navigate = useNavigate();
   const quizzesCache = useCacheUpdate(CacheKeys.searchQuizzes);
   const [search, setSearch] = useState('');
-  const [deleteTarget, setDeleteTarget] = useState<types['Quiz'] | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<types.Quiz | null>(null);
 
   const { data: quizzes, isLoading } = useQuizzes({
     params: { Title: search || undefined, IncludeQuestions: true },

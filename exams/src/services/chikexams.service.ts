@@ -16,14 +16,6 @@ api.axios.defaults.headers['X-App-Version'] = getAppVersion();
 export type { types };
 export { enums };
 
-// Helper to convert null values to undefined for API compatibility
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const nullToUndefined = <T extends Record<string, any>>(obj: T): T => {
-  return Object.fromEntries(
-    Object.entries(obj).map(([key, value]) => [key, value === null ? undefined : value])
-  ) as T;
-};
-
 export const getMe = async () => {
   return await api.Auth_GetCurrentUser();
 }
