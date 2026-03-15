@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router';
 import { useForm, Controller } from 'react-hook-form';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
+import { useCacheUpdate } from '@/hooks/useCacheUpdate';
 import { toast } from 'react-toastify';
 import { ioc } from '@/utils/ioc';
 import * as chikexamsService from '@/services/chikexams.service';
-import { enums } from '@/services/chikexams.service';
+import { enums, types } from '@/services/chikexams.service';
 import { useQuiz, useQuizQuestions, useUsers } from '@/services/chikexams.hooks';
 import { CacheKeys } from '@/utils/cache-keys.utils';
 import { useAuth } from '@/auth';
@@ -80,7 +81,6 @@ export const QuizEditor = ({
   const { id } = useParams<{ id?: string }>();
   const quizId = id ? parseInt(id) : undefined;
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { profile } = useAuth();
 
   const isAdmin = profile?.roles?.includes(enums.UserRole.Admin) ?? false;
@@ -95,6 +95,10 @@ export const QuizEditor = ({
     params: { Roles: enums.UserRole.Teacher },
     searchUsers,
   });
+
+  const quizQuestionsCache = useCacheUpdate<NonNullable<typeof questions>>(CacheKeys.getQuizQuestions);
+  const quizCache = useCacheUpdate(CacheKeys.getQuiz);
+  const quizzesCache = useCacheUpdate(CacheKeys.searchQuizzes);
 
   const teacherList = (teachers ?? []).filter((u) => u.roles?.includes(enums.UserRole.Teacher));
 
@@ -143,11 +147,11 @@ export const QuizEditor = ({
     },
     onSuccess: (result) => {
       toast.success(isNew ? 'Quiz created!' : 'Quiz saved!');
-      queryClient.invalidateQueries(CacheKeys.searchQuizzes);
+      quizzesCache.invalidateAndRefetch();
       if (isNew && result) {
         navigate(`/quizzes/${result.id}/edit`);
       } else {
-        queryClient.invalidateQueries([CacheKeys.getQuiz, quizId]);
+        quizCache.invalidateAndRefetch();
       }
     },
     onError: () => {
@@ -161,7 +165,7 @@ export const QuizEditor = ({
     },
     onSuccess: () => {
       toast.success('Question added');
-      queryClient.invalidateQueries([CacheKeys.getQuizQuestions, quizId]);
+      quizQuestionsCache.invalidateAndRefetch();
       setQuestionModalOpen(false);
       setEditingQuestion(null);
     },
@@ -174,14 +178,20 @@ export const QuizEditor = ({
     mutationFn: async ({ id, data }: { id: number; data: Parameters<typeof updateQuizQuestion>[1] }) => {
       return await updateQuizQuestion(id, data);
     },
-    onSuccess: () => {
-      toast.success('Question updated');
-      queryClient.invalidateQueries([CacheKeys.getQuizQuestions, quizId]);
-      setQuestionModalOpen(false);
-      setEditingQuestion(null);
+    onMutate: ({ id, data }) => {
+      quizQuestionsCache.update((old) => old?.map(
+        (q) => (q.id === id ? { ...q, ...data, properties: data.properties ? JSON.parse(data.properties) as types.QuizQuestion_QuestionType
+           : undefined } : q)
+      ));
     },
     onError: () => {
       toast.error('Failed to update question');
+    },
+    onSuccess: () => {
+      toast.success('Question updated');
+      quizQuestionsCache.invalidateAndRefetch();
+      setQuestionModalOpen(false);
+      setEditingQuestion(null);
     },
   });
 
@@ -193,11 +203,14 @@ export const QuizEditor = ({
         return await reactivateQuestion(id);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries([CacheKeys.getQuizQuestions, quizId]);
+    onMutate: ({ id, isActive }) => {
+      quizQuestionsCache.update((old) => old?.map((q) => (q.id === id ? { ...q, isActive: !isActive } : q)));
     },
     onError: () => {
       toast.error('Failed to toggle question');
+    },
+    onSuccess: () => {
+      quizQuestionsCache.invalidateAndRefetch();
     },
   });
 
@@ -205,8 +218,11 @@ export const QuizEditor = ({
     mutationFn: async (ids: number[]) => {
       return await reorderQuestions(quizId!, ids);
     },
+    onMutate: (ids) => {
+      quizQuestionsCache.update((old) => old?.map((q) => ({ ...q, order: ids.indexOf(q.id) + 1 })));
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries([CacheKeys.getQuizQuestions, quizId]);
+      quizQuestionsCache.invalidateAndRefetch();
     },
   });
 

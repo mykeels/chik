@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
+import { useCacheUpdate } from '@/hooks/useCacheUpdate';
 import { toast } from 'react-toastify';
 import { ioc } from '@/utils/ioc';
 import * as chikexamsService from '@/services/chikexams.service';
@@ -65,7 +66,7 @@ export const Exams = ({
   searchQuizzes?: typeof chikexamsService.searchQuizzes;
 }) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const examsCache = useCacheUpdate(CacheKeys.searchExams);
   const [statusFilter, setStatusFilter] = useState<ExamStatus>('all');
   const [search, setSearch] = useState('');
   const [assignOpen, setAssignOpen] = useState(false);
@@ -96,7 +97,7 @@ export const Exams = ({
     },
     onSuccess: () => {
       toast.success('Exam assigned');
-      queryClient.invalidateQueries(CacheKeys.searchExams);
+      examsCache.invalidateAndRefetch();
       setAssignOpen(false);
     },
     onError: () => {
@@ -108,7 +109,7 @@ export const Exams = ({
     mutationFn: async (id: number) => await cancelExam(id),
     onSuccess: () => {
       toast.success('Exam cancelled');
-      queryClient.invalidateQueries(CacheKeys.searchExams);
+      examsCache.invalidateAndRefetch();
       setCancelTarget(null);
     },
     onError: () => {

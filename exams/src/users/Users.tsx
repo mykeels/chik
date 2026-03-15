@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
+import { useCacheUpdate } from '@/hooks/useCacheUpdate';
 import { toast } from 'react-toastify';
 import { ioc } from '@/utils/ioc';
 import * as chikexamsService from '@/services/chikexams.service';
@@ -51,7 +52,7 @@ export const Users = ({
   createUser?: typeof chikexamsService.createUser;
   updateUser?: typeof chikexamsService.updateUser;
 }) => {
-  const queryClient = useQueryClient();
+  const usersCache = useCacheUpdate(CacheKeys.searchUsers);
   const [tab, setTab] = useState<UserTab>('all');
   const [search, setSearch] = useState('');
   const [modalMode, setModalMode] = useState<UserModalMode | null>(null);
@@ -88,7 +89,7 @@ export const Users = ({
     },
     onSuccess: () => {
       toast.success('User created successfully');
-      queryClient.invalidateQueries(CacheKeys.searchUsers);
+      usersCache.invalidateAndRefetch();
       closeModal();
     },
     onError: () => {
@@ -103,7 +104,7 @@ export const Users = ({
     },
     onSuccess: () => {
       toast.success('User updated successfully');
-      queryClient.invalidateQueries(CacheKeys.searchUsers);
+      usersCache.invalidateAndRefetch();
       closeModal();
     },
     onError: () => {

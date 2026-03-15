@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
+import { useCacheUpdate } from '@/hooks/useCacheUpdate';
 import { toast } from 'react-toastify';
 import { ioc } from '@/utils/ioc';
 import * as chikexamsService from '@/services/chikexams.service';
@@ -18,7 +19,7 @@ export const MyExams = ({
   startExam?: typeof chikexamsService.startExam;
 }) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const pendingExamsCache = useCacheUpdate(CacheKeys.getPendingExams);
   const [tab, setTab] = useState<'pending' | 'history'>('pending');
 
   const { data: pendingExams, isLoading: pendingLoading } = usePendingExams({
@@ -34,7 +35,7 @@ export const MyExams = ({
     },
     onSuccess: (exam) => {
       toast.success('Exam started!');
-      queryClient.invalidateQueries(CacheKeys.getPendingExams);
+      pendingExamsCache.invalidateAndRefetch();
       navigate(`/exams/${exam?.id}/take`);
     },
     onError: () => {

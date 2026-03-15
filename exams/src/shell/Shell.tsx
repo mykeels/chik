@@ -26,6 +26,7 @@ export const ShellLayout = () => {
 
   const handleLogout = () => {
     logout();
+    navigate('/login');
   };
 
   return (

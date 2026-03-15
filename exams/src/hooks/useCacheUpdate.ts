@@ -12,7 +12,7 @@ export const useCacheUpdate = <TData, TKey extends string = string>(key: TKey) =
       queryClient.invalidateQueries(
         key,
         {
-          exact: true,
+          exact: false,
           refetchActive: false,
           refetchInactive: false,
         },

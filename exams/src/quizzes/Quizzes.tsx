@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
+import { useCacheUpdate } from '@/hooks/useCacheUpdate';
 import { toast } from 'react-toastify';
 import { ioc } from '@/utils/ioc';
 import * as chikexamsService from '@/services/chikexams.service';
@@ -39,7 +40,7 @@ export const Quizzes = ({
   deleteQuiz?: typeof chikexamsService.deleteQuiz;
 }) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const quizzesCache = useCacheUpdate(CacheKeys.searchQuizzes);
   const [search, setSearch] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<types['Quiz'] | null>(null);
 
@@ -52,7 +53,7 @@ export const Quizzes = ({
     mutationFn: async (id: number) => await deleteQuiz(id),
     onSuccess: () => {
       toast.success('Quiz deleted');
-      queryClient.invalidateQueries(CacheKeys.searchQuizzes);
+      quizzesCache.invalidateAndRefetch();
       setDeleteTarget(null);
     },
     onError: () => {

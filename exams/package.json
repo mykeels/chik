@@ -41,7 +41,10 @@
     "test-storybook:serve": "npx -y http-server storybook-static --port 6007 --silent || exit 0",
     "test-storybook:test": "npx -y wait-on \"http://127.0.0.1:6007/iframe.html\" && npx -y rimraf coverage && npx cross-env TARGET_URL=http://127.0.0.1:6007 test-storybook --coverage",
     "test-storybook:run": "npx -y playwright install --with-deps && npx -y concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npm run test-storybook:serve\" \"npm run test-storybook:test\"",
-    "test-storybook:coverage": "npx -y nyc report --reporter=lcov --temp-dir coverage"
+    "test-storybook:coverage": "npx -y nyc report --reporter=lcov --temp-dir coverage",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:headed": "playwright test --headed"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,md,json}": [

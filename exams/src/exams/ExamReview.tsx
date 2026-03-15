@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
+import { useCacheUpdate } from '@/hooks/useCacheUpdate';
 import { toast } from 'react-toastify';
 import { ioc } from '@/utils/ioc';
 import * as chikexamsService from '@/services/chikexams.service';
@@ -10,12 +11,12 @@ import { ChevronLeft } from 'lucide-react';
 import { Button, CircularProgress, TextField } from '@mui/material';
 
 const QUESTION_TYPE_LABELS: Record<number, string> = {
-  1: 'Single Choice',
-  2: 'Multiple Choice',
-  3: 'True or False',
-  4: 'Fill in the Blank',
+  1: 'Multiple Choice',
+  2: 'Single Choice',
+  3: 'Fill in the Blank',
+  4: 'Essay',
   5: 'Short Answer',
-  6: 'Essay',
+  6: 'True or False',
 };
 
 const isManualScored = (typeId: number) => [4, 5, 6].includes(typeId);
@@ -40,7 +41,9 @@ export const ExamReview = ({
 }) => {
   const { id } = useParams<{ id: string }>();
   const examId = parseInt(id!);
-  const queryClient = useQueryClient();
+  const examCache = useCacheUpdate(CacheKeys.getExam);
+  const examAnswersCache = useCacheUpdate(CacheKeys.getExamAnswers);
+  const examScoresCache = useCacheUpdate(CacheKeys.getExamScores);
 
   const [examinerComment, setExaminerComment] = useState('');
   const [answerScores, setAnswerScores] = useState<Record<number, AnswerScoreState>>({});
@@ -55,7 +58,7 @@ export const ExamReview = ({
     },
     onSuccess: () => {
       toast.success('Comment saved');
-      queryClient.invalidateQueries([CacheKeys.getExam, examId]);
+      examCache.invalidateAndRefetch();
     },
     onError: () => {
       toast.error('Failed to save comment');
@@ -68,8 +71,8 @@ export const ExamReview = ({
     },
     onSuccess: () => {
       toast.success('Score saved');
-      queryClient.invalidateQueries([CacheKeys.getExamAnswers, examId]);
-      queryClient.invalidateQueries([CacheKeys.getExamScores, examId]);
+      examAnswersCache.invalidateAndRefetch();
+      examScoresCache.invalidateAndRefetch();
     },
     onError: () => {
       toast.error('Failed to save score');

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
+import { useCacheUpdate } from '@/hooks/useCacheUpdate';
 import { toast } from 'react-toastify';
 import { ioc } from '@/utils/ioc';
 import * as chikexamsService from '@/services/chikexams.service';
@@ -69,7 +70,7 @@ export const TakeExam = ({
   const { id } = useParams<{ id: string }>();
   const examId = parseInt(id!);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const pendingExamsCache = useCacheUpdate(CacheKeys.getPendingExams);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [localAnswers, setLocalAnswers] = useState<Record<number, string>>({});
@@ -135,7 +136,7 @@ export const TakeExam = ({
     },
     onSuccess: (result) => {
       toast.success('Exam submitted!');
-      queryClient.invalidateQueries(CacheKeys.getPendingExams);
+      pendingExamsCache.invalidateAndRefetch();
       navigate(`/exams/${result?.id ?? examId}/review`);
     },
     onError: () => {
