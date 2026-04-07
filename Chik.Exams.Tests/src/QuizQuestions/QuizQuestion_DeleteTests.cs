@@ -1,5 +1,3 @@
-using Chik.Exams.Quizzes.Questions.Repositories;
-
 namespace Chik.Exams.Tests.QuizQuestions;
 
 [TestFixture]
