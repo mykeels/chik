@@ -30,8 +30,8 @@ export const Default: Story = {
       <AssignExamModal
         open={open}
         onClose={() => setOpen(false)}
-        onAssign={(userId, quizId) => {
-          console.log('Assigned:', { userId, quizId });
+        onAssign={(userIds, quizId) => {
+          console.log('Assigned:', { userIds, quizId });
           setOpen(false);
         }}
         searchUsers={async () => [

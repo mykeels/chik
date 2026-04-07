@@ -92,11 +92,12 @@ export const Exams = ({
   });
 
   const createMutation = useMutation({
-    mutationFn: async ({ userId, quizId }: { userId: number; quizId: number }) => {
-      return await createExam(userId, quizId);
+    mutationFn: async ({ userIds, quizId }: { userIds: number[]; quizId: number }) => {
+      await Promise.all(userIds.map((userId) => createExam(userId, quizId)));
     },
-    onSuccess: () => {
-      toast.success('Exam assigned');
+    onSuccess: (_data, { userIds }) => {
+      const n = userIds.length;
+      toast.success(n === 1 ? 'Exam assigned' : `Exam assigned to ${n} students`);
       examsCache.invalidateAndRefetch();
       setAssignOpen(false);
     },
@@ -247,7 +248,7 @@ export const Exams = ({
       <AssignExamModal
         open={assignOpen}
         onClose={() => setAssignOpen(false)}
-        onAssign={(userId, quizId) => createMutation.mutate({ userId, quizId })}
+        onAssign={(userIds, quizId) => createMutation.mutate({ userIds, quizId })}
         isLoading={createMutation.isLoading}
         searchUsers={searchUsers}
         searchQuizzes={searchQuizzes}

@@ -13,17 +13,19 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Autocomplete,
+  TextField,
 } from '@mui/material';
 
 type AssignExamFormData = {
-  userId: number | '';
+  userIds: number[];
   quizId: number | '';
 };
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  onAssign: (userId: number, quizId: number) => void;
+  onAssign: (userIds: number[], quizId: number) => void;
   isLoading?: boolean;
   searchUsers?: typeof chikexamsService.searchUsers;
   searchQuizzes?: typeof chikexamsService.searchQuizzes;
@@ -38,7 +40,7 @@ export const AssignExamModal = ({
   searchQuizzes = ioc((keys) => keys.searchQuizzes) || chikexamsService.searchQuizzes,
 }: Props) => {
   const { control, handleSubmit, reset, formState: { errors } } = useForm<AssignExamFormData>({
-    defaultValues: { userId: '', quizId: '' },
+    defaultValues: { userIds: [], quizId: '' },
   });
 
   const { data: users } = useUsers({ params: { Roles: enums.UserRole.Student }, searchUsers });
@@ -47,8 +49,8 @@ export const AssignExamModal = ({
   const students = (users ?? []).filter((u) => u.roles?.includes(enums.UserRole.Student));
 
   const onSubmit = (data: AssignExamFormData) => {
-    if (data.userId && data.quizId) {
-      onAssign(Number(data.userId), Number(data.quizId));
+    if (data.userIds.length > 0 && data.quizId) {
+      onAssign(data.userIds, Number(data.quizId));
     }
   };
 
@@ -62,22 +64,42 @@ export const AssignExamModal = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogTitle>Assign Exam</DialogTitle>
         <DialogContent className="flex flex-col gap-4" sx={{ pt: 2 }}>
-          <FormControl fullWidth size="small" error={!!errors.userId} sx={{ mt: 1 }}>
-            <InputLabel>Student</InputLabel>
-            <Controller
-              control={control}
-              name="userId"
-              rules={{ required: 'Student is required' }}
-              render={({ field }) => (
-                <Select label="Student" {...field}>
-                  <MenuItem value="" disabled>Select student</MenuItem>
-                  {students.map((s) => (
-                    <MenuItem key={s.id} value={s.id}>{s.username}</MenuItem>
-                  ))}
-                </Select>
-              )}
-            />
-          </FormControl>
+          <Controller
+            control={control}
+            name="userIds"
+            rules={{
+              validate: (v: number[]) =>
+                Array.isArray(v) && v.length > 0 ? true : 'Select at least one student',
+            }}
+            render={({ field: { onChange, value: selectedIds, ref, onBlur, name } }) => (
+              <Autocomplete
+                multiple
+                id="assign-exam-students"
+                options={students}
+                getOptionLabel={(option) => option.username ?? ''}
+                isOptionEqualToValue={(a, b) => a.id === b.id}
+                value={selectedIds
+                  .map((id) => students.find((s) => s.id === id))
+                  .filter((s): s is (typeof students)[number] => s != null)}
+                onChange={(_, selected) => {
+                  onChange(selected.map((s) => s.id));
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    name={name}
+                    label="Students"
+                    error={!!errors.userIds}
+                    helperText={errors.userIds?.message as string | undefined}
+                    inputRef={ref}
+                    onBlur={onBlur}
+                  />
+                )}
+                size="small"
+                sx={{ mt: 1 }}
+              />
+            )}
+          />
 
           <FormControl fullWidth size="small" error={!!errors.quizId}>
             <InputLabel>Quiz</InputLabel>

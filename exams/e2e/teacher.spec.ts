@@ -148,11 +148,12 @@ test.describe('Teacher Flow', () => {
       const dialog = page.getByRole('dialog');
       await expect(dialog).toBeVisible();
 
-      const studentSelect = getMuiSelect(dialog, /Student/i);
+      const studentSelect = getMuiSelect(dialog, /Students/i);
       await studentSelect.click();
       const enabledStudents = page.locator('[role="option"]:not([aria-disabled="true"])');
       if (await enabledStudents.count() > 0) {
         await enabledStudents.first().click();
+        await page.keyboard.press('Escape');
         const quizSelect = getMuiSelect(dialog, /Quiz/i);
         await quizSelect.click();
         const enabledQuizzes = page.locator('[role="option"]:not([aria-disabled="true"])');

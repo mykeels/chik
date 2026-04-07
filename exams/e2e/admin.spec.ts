@@ -161,10 +161,11 @@ test.describe('Admin Flow', () => {
       const dialog = page.getByRole('dialog');
       await expect(dialog).toBeVisible();
 
-      // Select student (MUI Select) - skip disabled placeholder
-      const studentSelect = getMuiSelect(dialog, /Student/i);
+      // Select student(s) (MUI multi-select)
+      const studentSelect = getMuiSelect(dialog, /Students/i);
       await studentSelect.click();
       await page.locator('[role="option"]:not([aria-disabled="true"])').first().click();
+      await page.keyboard.press('Escape');
 
       // Select quiz (MUI Select) - skip disabled placeholder
       const quizSelect = getMuiSelect(dialog, /Quiz/i);
