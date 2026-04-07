@@ -157,14 +157,15 @@ public class QuizzesController : ControllerBase
     #region Quiz Questions
 
     /// <summary>
-    /// Gets all questions for a quiz. Admin and Teacher (for quizzes they manage) see all;
-    /// students may read when they have an exam assignment for this quiz. Deactivated questions are omitted for students.
+    /// Gets all questions for a quiz. Admin and Teacher (for quizzes they manage) see active and deactivated
+    /// questions by default (<c>isActive</c> false when deactivated). Pass <c>includeDeactivated=false</c> to list
+    /// only active questions. Students may read when they have an exam assignment; deactivated questions are never returned for students.
     /// </summary>
     [HttpGet("{quizId:long}/questions")]
     [StudentAccess]
     public async Task<ActionResult<List<QuizQuestion>>> GetQuestions(
         long quizId,
-        [FromQuery] bool includeDeactivated = false,
+        [FromQuery] bool includeDeactivated = true,
         [FromServices] Auth auth = null!)
     {
         var questions = await _quizQuestionService.GetByQuizId(auth, quizId, includeDeactivated);

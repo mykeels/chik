@@ -17,7 +17,8 @@ public interface IQuizQuestionService
     Task<QuizQuestion?> Get(Auth auth, long id);
 
     /// <summary>
-    /// Gets all questions for a quiz. Same readers as <see cref="Get"/>; students do not receive deactivated questions.
+    /// Gets all questions for a quiz. Same readers as <see cref="Get"/>; students never receive deactivated questions.
+    /// Admin and Teacher: when <paramref name="includeDeactivated"/> is true, the list includes deactivated items (<see cref="QuizQuestion.IsActive"/> false).
     /// </summary>
     Task<List<QuizQuestion>> GetByQuizId(Auth auth, long quizId, bool includeDeactivated = false);
 
