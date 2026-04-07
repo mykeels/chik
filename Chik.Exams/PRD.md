@@ -278,6 +278,54 @@ The audit log is a JSON string that contains the audit log properties.
 - can change their password
 - can log out
 
+## 8. Quiz Export
+
+A Quiz can be exported from the `/quizzes/{quizId}/edit` page by teachers and admins who own the quiz. The export is a `.zip` file containing:
+
+- `index.yaml` — the quiz definition (metadata + questions)
+- `assets/` — optional folder for referenced media files (images, etc.)
+
+The exported zip filename should be `{quiz-title-slug}.zip`.
+
+### Export Format
+
+The `index.yaml` follows the schema defined in `quiz.schema.json`. It includes quiz metadata and all active questions with their properties.
+
+Asset files (e.g. images embedded in question prompts) are referenced using relative paths like `assets/image.png` within the YAML.
+
+### Export User Story
+
+- Teacher or Admin visits `/quizzes/{quizId}/edit`
+- Clicks "Export Quiz" button
+- Browser downloads `{quiz-title-slug}.zip`
+- Only active questions (not deactivated) are included in the export
+
+## 9. Quiz Import
+
+A Quiz can be imported from the `/quizzes/new` page. Three input methods are supported:
+
+| Method | Description |
+|--------|-------------|
+| Plain text YAML | Paste YAML directly into a code-editor field |
+| YAML file upload | Upload a `.yaml` or `.yml` file |
+| Zip file upload | Upload a `.zip` containing `index.yaml` and an optional `assets/` folder |
+
+### Import Behaviour
+
+- On successful import, a new Quiz is created (does not overwrite existing quizzes)
+- The importing user becomes the `CreatorId`
+- Questions are created in the order specified in the YAML
+- Assets referenced in the YAML are extracted from the zip and stored
+- Validation errors (schema violations, missing assets) are shown inline before saving
+
+### Import User Story
+
+- Teacher or Admin visits `/quizzes/new`
+- Selects an import method (YAML text, YAML file, or Zip file)
+- Reviews a preview of the quiz (title, question count, duration)
+- Confirms import — quiz and questions are persisted
+- User is redirected to `/quizzes/{newQuizId}/edit`
+
 ## Implementation Notes
 
 - Quiz question types are seeded on startup

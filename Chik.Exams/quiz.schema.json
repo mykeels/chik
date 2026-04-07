@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://chik.ng/schemas/quiz.schema.json",
+  "title": "Quiz",
+  "description": "Schema for a quiz export (index.yaml inside a quiz zip archive)",
+  "type": "object",
+  "required": ["title", "questions"],
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Display title of the quiz"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description shown to students before they start"
+    },
+    "duration": {
+      "type": ["string", "null"],
+      "pattern": "^\\d{2}:\\d{2}:\\d{2}$",
+      "description": "Time limit in HH:MM:SS format, or null for no limit",
+      "examples": ["01:30:00", "00:45:00"]
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered list of quiz questions",
+      "items": {
+        "$ref": "#/definitions/Question"
+      }
+    }
+  },
+  "definitions": {
+    "Question": {
+      "type": "object",
+      "required": ["prompt", "type", "score"],
+      "additionalProperties": false,
+      "properties": {
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The question text shown to the student. May reference an asset using a relative path e.g. assets/image.png"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "multiple-choice",
+            "single-choice",
+            "fill-in-the-blank",
+            "essay",
+            "short-answer",
+            "true-or-false"
+          ],
+          "description": "Question type"
+        },
+        "score": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum score awarded for a correct answer"
+        },
+        "properties": {
+          "description": "Type-specific configuration. Required for choice-based types.",
+          "oneOf": [
+            { "$ref": "#/definitions/MultipleChoiceProperties" },
+            { "$ref": "#/definitions/SingleChoiceProperties" },
+            { "$ref": "#/definitions/TrueOrFalseProperties" },
+            { "$ref": "#/definitions/EmptyProperties" }
+          ]
+        }
+      }
+    },
+    "MultipleChoiceProperties": {
+      "type": "object",
+      "required": ["options"],
+      "additionalProperties": false,
+      "properties": {
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/definitions/ChoiceOption" },
+          "description": "At least one option must have isCorrect: true"
+        }
+      }
+    },
+    "SingleChoiceProperties": {
+      "type": "object",
+      "required": ["options"],
+      "additionalProperties": false,
+      "properties": {
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/definitions/ChoiceOption" },
+          "description": "Exactly one option must have isCorrect: true"
+        }
+      }
+    },
+    "TrueOrFalseProperties": {
+      "type": "object",
+      "required": ["answer"],
+      "additionalProperties": false,
+      "properties": {
+        "answer": {
+          "type": "boolean",
+          "description": "The correct answer — true or false"
+        }
+      }
+    },
+    "EmptyProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "description": "Used for essay, short-answer, and fill-in-the-blank questions which have no predefined options"
+    },
+    "ChoiceOption": {
+      "type": "object",
+      "required": ["text", "isCorrect"],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Display text of the option"
+        },
+        "isCorrect": {
+          "type": "boolean",
+          "description": "Whether this option is a correct answer"
+        }
+      }
+    }
+  }
+}

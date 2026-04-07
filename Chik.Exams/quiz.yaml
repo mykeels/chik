@@ -1,0 +1,62 @@
+# Sample quiz export — conforms to quiz.schema.json
+# This file is named index.yaml when inside a .zip archive.
+# Assets referenced below (e.g. assets/cell.png) would be bundled alongside this file in the zip.
+
+title: "Biology 101 — Cell Structure"
+description: "A short quiz on the fundamentals of cell biology."
+duration: "00:30:00"
+
+questions:
+  - prompt: "Which of the following are organelles found in a eukaryotic cell? (Select all that apply)"
+    type: multiple-choice
+    score: 10
+    properties:
+      options:
+        - text: "Mitochondria"
+          isCorrect: true
+        - text: "Ribosome"
+          isCorrect: true
+        - text: "Cell wall"
+          isCorrect: false
+        - text: "Nucleus"
+          isCorrect: true
+
+  - prompt: "Which organelle is known as the powerhouse of the cell?"
+    type: single-choice
+    score: 5
+    properties:
+      options:
+        - text: "Nucleus"
+          isCorrect: false
+        - text: "Mitochondria"
+          isCorrect: true
+        - text: "Golgi apparatus"
+          isCorrect: false
+        - text: "Endoplasmic reticulum"
+          isCorrect: false
+
+  - prompt: "Prokaryotic cells have a membrane-bound nucleus."
+    type: true-or-false
+    score: 5
+    properties:
+      answer: false
+
+  - prompt: "The __________ is the control centre of the cell and contains the cell's DNA."
+    type: fill-in-the-blank
+    score: 5
+    properties: {}
+
+  - prompt: "In two or three sentences, explain the role of the Golgi apparatus in a eukaryotic cell."
+    type: essay
+    score: 20
+    properties: {}
+
+  - prompt: "Name one key difference between plant cells and animal cells."
+    type: short-answer
+    score: 10
+    properties: {}
+
+  - prompt: "The diagram below shows a cell. Identify the labelled organelle. (See assets/cell.png)"
+    type: short-answer
+    score: 5
+    properties: {}
