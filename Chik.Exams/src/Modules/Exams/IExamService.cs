@@ -1,4 +1,5 @@
 using Chik.Exams.Data;
+using Newtonsoft.Json;
 
 namespace Chik.Exams;
 
@@ -89,7 +90,9 @@ public record ExamScores(
 /// </summary>
 public record AnswerScore(
     long QuestionId,
+    [property: JsonProperty("autoScore", NullValueHandling = NullValueHandling.Include)]
     int? AutoScore,
+    [property: JsonProperty("examinerScore", NullValueHandling = NullValueHandling.Include)]
     int? ExaminerScore,
     int FinalScore,
     int MaxScore

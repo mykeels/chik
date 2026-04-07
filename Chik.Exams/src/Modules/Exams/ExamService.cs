@@ -163,6 +163,17 @@ internal class ExamService(
         }
 
         var result = await repository.End(id);
+        try
+        {
+            var examWithAnswers = await repository.Get(id, includeAnswers: true);
+            if (examWithAnswers is not null)
+                await ApplyAutoScores(examWithAnswers);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Auto-score after submit failed for exam {ExamId}", id);
+        }
+
         await auditLogService.Create(
             auth,
             new AuditLog.Create<object>(
@@ -236,18 +247,7 @@ internal class ExamService(
             throw new InvalidOperationException("Quiz or questions not found");
         }
 
-        var answers = examDbo.Answers ?? [];
-        foreach (var answer in answers)
-        {
-            var question = quiz.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
-            if (question is null) continue;
-
-            var autoScore = CalculateAutoScore(question, answer.Answer);
-            if (autoScore is not null)
-            {
-                await answerRepository.AutoScore(answer.Id, autoScore.Value);
-            }
-        }
+        await ApplyAutoScores(examDbo, quiz);
 
         await auditLogService.Create(
             auth,
@@ -257,6 +257,29 @@ internal class ExamService(
                 new { AutoScoredExamId = examId }
             )
         );
+    }
+
+    /// <summary>
+    /// Computes and persists auto-scores for each answer. Used after submit and from the teacher auto-score endpoint.
+    /// </summary>
+    private async Task ApplyAutoScores(ExamDbo examDbo, QuizDbo? quiz = null)
+    {
+        quiz ??= await quizRepository.Get(examDbo.QuizId, includeQuestions: true);
+        if (quiz?.Questions is null)
+            return;
+
+        var answers = examDbo.Answers ?? [];
+        foreach (var answer in answers)
+        {
+            var question = quiz.Questions!.FirstOrDefault(q => q.Id == answer.QuestionId);
+            if (question is null) continue;
+
+            var autoScore = CalculateAutoScore(question, answer.Answer);
+            if (autoScore is not null)
+            {
+                await answerRepository.AutoScore(answer.Id, autoScore.Value);
+            }
+        }
     }
 
     public async Task<ExamScores> GetScores(Auth auth, long examId)

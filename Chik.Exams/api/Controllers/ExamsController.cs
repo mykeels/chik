@@ -126,7 +126,8 @@ public class ExamsController : ControllerBase
 
     /// <summary>
     /// Gets the scores for an exam, aggregating auto-scored and examiner-scored answers.
-    /// Examiner-scored answers override auto-scored answers.
+    /// Auto-scores are computed when the student submits the exam (and can be recomputed via POST …/auto-score).
+    /// Each answer includes <c>autoScore</c> and <c>examinerScore</c> (null when not set). Examiner score overrides auto score for <c>finalScore</c>.
     /// </summary>
     [HttpGet("{id:long}/scores")]
     public async Task<ActionResult<ExamScores>> GetScores(long id, [FromServices] Auth auth)
