@@ -4,6 +4,11 @@ public static class ChikExamsExtensions
 {
     public static IServiceCollection AddChikExams(this IServiceCollection services, IConfiguration configuration)
     {
+        var storagePath = configuration["Storage:RootPath"]
+            ?? Path.Combine(Directory.GetCurrentDirectory(), "storage");
+        Directory.CreateDirectory(storagePath);
+        services.AddSingleton<IFileStorage>(new FileStorage(storagePath));
+
         services.AddEmailService(
             new(
                 configuration["EmailCredentials:Password"] ?? throw new Exception("EmailCredentials:Password is not set")

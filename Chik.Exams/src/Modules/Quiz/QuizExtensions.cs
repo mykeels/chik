@@ -11,7 +11,7 @@ public static class QuizExtensions
         services.TrackScoped<IQuizQuestionRepository, QuizQuestionRepository>();
         services.TrackScoped<IQuizQuestionService, QuizQuestionService>();
         services.TrackScoped<IQuizQuestionTypeRepository, QuizQuestionTypeRepository>();
-        services.TrackScoped<IQuizQuestionTypeRepository, QuizQuestionTypeRepository>();
+        services.TrackScoped<IQuizImportExportService, QuizImportExportService>();
         return services;
     }
 }

@@ -5,6 +5,7 @@ namespace Chik.Exams;
 internal class QuizQuestionService(
     IQuizQuestionRepository repository,
     IQuizRepository quizRepository,
+    IExamRepository examRepository,
     IAuditLogService auditLogService,
     ILogger<QuizQuestionService> logger
 ) : IQuizQuestionService
@@ -16,7 +17,7 @@ internal class QuizQuestionService(
         logger.LogInformation($"{nameof(QuizQuestionService)}.{nameof(Create)} ({auth.Id}, {question})");
         
         // Authorization: Admin and Teacher can create questions for quizzes they own
-        await AuthorizeQuizAccess(auth, question.QuizId);
+        await AuthorizeQuizManageAccess(auth, question.QuizId);
 
         var questionDbo = await repository.Create(question);
         await auditLogService.Create(
@@ -37,7 +38,10 @@ internal class QuizQuestionService(
         var questionDbo = await repository.Get(id);
         if (questionDbo is null) return null;
 
-        await AuthorizeQuizAccess(auth, questionDbo.QuizId);
+        await AuthorizeQuizQuestionReadAccess(auth, questionDbo.QuizId);
+        if (auth.IsStudent() && questionDbo.DeactivatedAt is not null)
+            return null;
+
         return questionDbo!.ToModel();
     }
 
@@ -45,9 +49,10 @@ internal class QuizQuestionService(
     {
         logger.LogInformation($"{nameof(QuizQuestionService)}.{nameof(GetByQuizId)} ({auth.Id}, {quizId})");
         
-        await AuthorizeQuizAccess(auth, quizId);
+        await AuthorizeQuizQuestionReadAccess(auth, quizId);
 
-        var questions = await repository.GetByQuizId(quizId, includeDeactivated);
+        var effectiveIncludeDeactivated = includeDeactivated && (auth.IsAdmin() || auth.IsTeacher());
+        var questions = await repository.GetByQuizId(quizId, effectiveIncludeDeactivated);
         return questions.Select(dbo => dbo!.ToModel()).ToList();
     }
 
@@ -61,7 +66,7 @@ internal class QuizQuestionService(
             throw new KeyNotFoundException($"QuizQuestion with id '{question.Id}' not found");
         }
 
-        await AuthorizeQuizAccess(auth, existingQuestion.QuizId);
+        await AuthorizeQuizManageAccess(auth, existingQuestion.QuizId);
 
         var questionDbo = await repository.Update(question.Id, question);
         await auditLogService.Create(
@@ -85,7 +90,7 @@ internal class QuizQuestionService(
             throw new KeyNotFoundException($"QuizQuestion with id '{id}' not found");
         }
 
-        await AuthorizeQuizAccess(auth, existingQuestion.QuizId);
+        await AuthorizeQuizManageAccess(auth, existingQuestion.QuizId);
 
         await repository.Deactivate(id);
         await auditLogService.Create(
@@ -108,7 +113,7 @@ internal class QuizQuestionService(
             throw new KeyNotFoundException($"QuizQuestion with id '{id}' not found");
         }
 
-        await AuthorizeQuizAccess(auth, existingQuestion.QuizId);
+        await AuthorizeQuizManageAccess(auth, existingQuestion.QuizId);
 
         await repository.Reactivate(id);
         await auditLogService.Create(
@@ -152,7 +157,7 @@ internal class QuizQuestionService(
     {
         logger.LogInformation($"{nameof(QuizQuestionService)}.{nameof(ReorderQuestions)} ({auth.Id}, {quizId})");
         
-        await AuthorizeQuizAccess(auth, quizId);
+        await AuthorizeQuizManageAccess(auth, quizId);
 
         await repository.ReorderQuestions(quizId, questionIdsInOrder);
         await auditLogService.Create(
@@ -187,7 +192,7 @@ internal class QuizQuestionService(
         );
     }
 
-    private async Task AuthorizeQuizAccess(Auth auth, long quizId)
+    private async Task AuthorizeQuizManageAccess(Auth auth, long quizId)
     {
         if (auth.IsAdmin()) return;
 
@@ -196,6 +201,31 @@ internal class QuizQuestionService(
             throw new UnauthorizedAccessException("Only Admin or Teacher can manage quiz questions");
         }
 
+        await AssertTeacherCanManageQuiz(auth, quizId);
+    }
+
+    private async Task AuthorizeQuizQuestionReadAccess(Auth auth, long quizId)
+    {
+        if (auth.IsAdmin()) return;
+
+        if (auth.IsTeacher())
+        {
+            await AssertTeacherCanManageQuiz(auth, quizId);
+            return;
+        }
+
+        if (auth.IsStudent())
+        {
+            if (await examRepository.UserHasAssignedExamForQuiz(auth.Id, quizId))
+                return;
+            throw new UnauthorizedAccessException("You do not have an exam assignment for this quiz");
+        }
+
+        throw new UnauthorizedAccessException("You cannot view questions for this quiz");
+    }
+
+    private async Task AssertTeacherCanManageQuiz(Auth auth, long quizId)
+    {
         var quiz = await quizRepository.Get(quizId);
         if (quiz is null)
         {

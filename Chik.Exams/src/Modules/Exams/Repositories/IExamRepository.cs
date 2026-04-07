@@ -4,6 +4,7 @@ public interface IExamRepository
 {
     Task<ExamDbo> Create(Exam.Create exam);
     Task<ExamDbo?> Get(long id, bool includeAnswers = false);
+    Task<bool> UserHasAssignedExamForQuiz(long userId, long quizId);
     Task<List<ExamDbo>> GetByUserId(long userId);
     Task<List<ExamDbo>> GetByQuizId(long quizId);
     Task<ExamDbo> Update(long id, Exam.Update exam);

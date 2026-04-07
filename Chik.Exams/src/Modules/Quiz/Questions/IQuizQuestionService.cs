@@ -12,12 +12,12 @@ public interface IQuizQuestionService
     Task<QuizQuestion> Create(Auth auth, QuizQuestion.Create question);
 
     /// <summary>
-    /// Gets a quiz question by ID.
+    /// Gets a quiz question by ID. Admin, Teacher (quiz creator/examiner), or Student with an exam for that quiz.
     /// </summary>
     Task<QuizQuestion?> Get(Auth auth, long id);
 
     /// <summary>
-    /// Gets all questions for a quiz.
+    /// Gets all questions for a quiz. Same readers as <see cref="Get"/>; students do not receive deactivated questions.
     /// </summary>
     Task<List<QuizQuestion>> GetByQuizId(Auth auth, long quizId, bool includeDeactivated = false);
 

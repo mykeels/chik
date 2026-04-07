@@ -8,15 +8,18 @@ public class QuizzesController : ControllerBase
 {
     private readonly IQuizService _quizService;
     private readonly IQuizQuestionService _quizQuestionService;
+    private readonly IQuizImportExportService _quizImportExportService;
     private readonly ILogger<QuizzesController> _logger;
 
     public QuizzesController(
         IQuizService quizService,
         IQuizQuestionService quizQuestionService,
+        IQuizImportExportService quizImportExportService,
         ILogger<QuizzesController> logger)
     {
         _quizService = quizService;
         _quizQuestionService = quizQuestionService;
+        _quizImportExportService = quizImportExportService;
         _logger = logger;
     }
 
@@ -105,13 +108,57 @@ public class QuizzesController : ControllerBase
         return Ok(result);
     }
 
+    #region Import / Export
+
+    /// <summary>
+    /// Exports a quiz as a ZIP archive containing index.yaml.
+    /// Admins can export any quiz; Teachers can only export their own or assigned quizzes.
+    /// </summary>
+    [HttpGet("{id:long}/export")]
+    [AdminOrTeacher]
+    public async Task<IActionResult> Export(long id, [FromServices] Auth auth)
+    {
+        var (zipBytes, fileName) = await _quizImportExportService.ExportQuiz(auth, id);
+        return File(zipBytes, "application/zip", fileName);
+    }
+
+    /// <summary>
+    /// Imports a quiz from a ZIP archive containing index.yaml.
+    /// Request: multipart/form-data with 'file' (the .zip) and optional 'examinerId'.
+    /// Returns the created Quiz with all questions included.
+    /// </summary>
+    [HttpPost("import")]
+    [AdminOrTeacher]
+    public async Task<ActionResult<Quiz>> Import(
+        IFormFile file,
+        [FromForm] long? examinerId,
+        [FromServices] Auth auth)
+    {
+        if (file is null || file.Length == 0)
+            return BadRequest(new { Message = "A ZIP file must be provided in the 'file' field" });
+
+        bool isZip = file.FileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
+            || file.ContentType is "application/zip" or "application/octet-stream";
+        if (!isZip)
+            return BadRequest(new { Message = "Uploaded file must be a ZIP archive" });
+
+        using var stream = file.OpenReadStream();
+        var quiz = await _quizImportExportService.ImportQuiz(auth, stream, examinerId);
+
+        _logger.LogInformation("Quiz '{Title}' imported by {Creator}", quiz.Title, auth.Username);
+        return CreatedAtAction(nameof(Get), new { id = quiz.Id }, quiz);
+    }
+
+    #endregion
+
     #region Quiz Questions
 
     /// <summary>
-    /// Gets all questions for a quiz.
+    /// Gets all questions for a quiz. Admin and Teacher (for quizzes they manage) see all;
+    /// students may read when they have an exam assignment for this quiz. Deactivated questions are omitted for students.
     /// </summary>
     [HttpGet("{quizId:long}/questions")]
-    [AdminOrTeacher]
+    [StudentAccess]
     public async Task<ActionResult<List<QuizQuestion>>> GetQuestions(
         long quizId,
         [FromQuery] bool includeDeactivated = false,

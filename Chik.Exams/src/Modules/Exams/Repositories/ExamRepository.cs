@@ -44,6 +44,14 @@ public class ExamRepository(
         return await query.FirstOrDefaultAsync(e => e.Id == id);
     }
 
+    public async Task<bool> UserHasAssignedExamForQuiz(long userId, long quizId)
+    {
+        logger.LogInformation($"{nameof(ExamRepository)}.{nameof(UserHasAssignedExamForQuiz)} ({userId}, {quizId})");
+        using var dbContext = _dbContextFactory.CreateDbContext();
+        return await dbContext.Exams.AsNoTracking()
+            .AnyAsync(e => e.UserId == userId && e.QuizId == quizId);
+    }
+
     public async Task<List<ExamDbo>> GetByUserId(long userId)
     {
         logger.LogInformation($"{nameof(ExamRepository)}.{nameof(GetByUserId)} ({userId})");

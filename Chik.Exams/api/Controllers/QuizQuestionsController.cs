@@ -14,10 +14,10 @@ public class QuizQuestionsController : ControllerBase
     }
 
     /// <summary>
-    /// Gets a quiz question by ID.
+    /// Gets a quiz question by ID. Same visibility rules as listing questions by quiz.
     /// </summary>
     [HttpGet("{id:long}")]
-    [AdminOrTeacher]
+    [StudentAccess]
     public async Task<ActionResult<QuizQuestion>> Get(long id, [FromServices] Auth auth)
     {
         var question = await _quizQuestionService.Get(auth, id);
