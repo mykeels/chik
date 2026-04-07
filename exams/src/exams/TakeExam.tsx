@@ -28,6 +28,11 @@ const QUESTION_TYPES = {
 
 type Option = { text: string; isCorrect: boolean };
 
+const DEFAULT_TRUE_FALSE_OPTIONS: Option[] = [
+  { text: 'True', isCorrect: false },
+  { text: 'False', isCorrect: false },
+];
+
 const parseOptions = (properties: unknown): Option[] => {
   try {
     const p = typeof properties === 'string' ? JSON.parse(properties) : properties;
@@ -35,6 +40,20 @@ const parseOptions = (properties: unknown): Option[] => {
   } catch {
     return [];
   }
+};
+
+/** Single-choice and true-or-false UI options; T/F questions from YAML only have `answer`, not `options`. */
+const getSingleChoiceLikeOptions = (typeId: number, properties: unknown): Option[] => {
+  const parsed = parseOptions(properties);
+  if (typeId === QUESTION_TYPES.TRUE_OR_FALSE && parsed.length === 0) {
+    return DEFAULT_TRUE_FALSE_OPTIONS;
+  }
+  return parsed;
+};
+
+const isTrueFalseOptionSelected = (stored: string | undefined, optionText: string): boolean => {
+  if (stored === undefined || stored === '') return false;
+  return stored.trim().toLowerCase() === optionText.trim().toLowerCase();
 };
 
 const parseDurationToSeconds = (duration: string | null | undefined): number | null => {
@@ -222,8 +241,11 @@ export const TakeExam = ({
           {(currentQuestion.typeId === QUESTION_TYPES.SINGLE_CHOICE ||
             currentQuestion.typeId === QUESTION_TYPES.TRUE_OR_FALSE) && (
             <div className="flex flex-col gap-2">
-              {parseOptions(currentQuestion.properties).map((opt, idx) => {
-                const isSelected = localAnswers[currentQuestion.id] === opt.text;
+              {getSingleChoiceLikeOptions(currentQuestion.typeId, currentQuestion.properties).map((opt, idx) => {
+                const isSelected =
+                  currentQuestion.typeId === QUESTION_TYPES.TRUE_OR_FALSE
+                    ? isTrueFalseOptionSelected(localAnswers[currentQuestion.id], opt.text)
+                    : localAnswers[currentQuestion.id] === opt.text;
                 return (
                   <label
                     key={idx}
