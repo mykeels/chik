@@ -223,7 +223,7 @@ export const ExamReview = ({
                   </div>
                 )}
 
-                {manual && (
+                {(
                   <div className="flex flex-col gap-2 mt-2">
                     <div className="flex gap-3 items-end">
                       <TextField
