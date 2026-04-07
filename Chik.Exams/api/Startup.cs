@@ -58,18 +58,14 @@ public class Startup
                 policy.AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials()
-                    .WithOrigins(
-                        "http://localhost",
-                        "http://localhost:5174",
-                        "http://localhost:6006",
-                        "https://www.chik.ng",
-                        "https://chik.ng",
-                        "https://beta.chik.ng",
-                        "https://exams.chik.ng"
-                    );
+                    .SetIsOriginAllowed(IsAllowedCorsOrigin);
             });
         });
-        services.AddControllers();
+        services.AddControllers()
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
         services.AddChikExams(_configuration);
 
         // Add services to the container.
@@ -96,6 +92,7 @@ public class Startup
             options.SchemaFilter<EnumDescriptionSchemaFilter>();
             options.SchemaFilter<NullableReferenceSchemaFilter>();
             options.SchemaFilter<NullableEnumSchemaFilter>();
+            options.SchemaFilter<QuestionTypeSchemaFilter>();
             options.NonNullableReferenceTypesAsRequired();
         });
         services.AddHealthChecks()
@@ -150,6 +147,9 @@ public class Startup
             }
         }
 
+        // Routing must run before CORS so preflight and API requests get the correct pipeline;
+        // CORS must run before auth so OPTIONS preflight is not rejected by the fallback auth policy.
+        app.UseRouting();
         app.UseCors();
         // app.UseHttpsRedirection();
         app.UseAuthentication();
@@ -158,6 +158,29 @@ public class Startup
         // Map default endpoints (health checks, etc.)
         app.MapDefaultEndpoints();
         app.MapControllers();
+    }
+
+    /// <summary>
+    /// Allows credentialed cross-origin requests from local dev (any port) and production hosts.
+    /// </summary>
+    private static bool IsAllowedCorsOrigin(string? origin)
+    {
+        if (string.IsNullOrEmpty(origin))
+            return false;
+        if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+            return false;
+
+        if (uri.Host is "localhost" or "127.0.0.1")
+            return true;
+
+        return origin switch
+        {
+            "https://www.chik.ng" => true,
+            "https://chik.ng" => true,
+            "https://beta.chik.ng" => true,
+            "https://exams.chik.ng" => true,
+            _ => false,
+        };
     }
 }
 

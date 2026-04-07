@@ -163,3 +163,27 @@ export const updateExam = async (
 export const scoreAnswer = async (answerId: number, score: number, comment?: string) => {
   return await api.ExamAnswers_ExaminerScore({ score, comment: comment ?? undefined }, { params: { id: answerId } });
 }
+
+export const exportQuiz = async (id: number): Promise<void> => {
+  const response = await api.axios.get(`${apiRootUrl}/api/quizzes/${id}/export`, {
+    responseType: 'blob',
+  });
+  const disposition: string = response.headers['content-disposition'] ?? '';
+  const filename = disposition.match(/filename="?([^";\n]+)"?/i)?.[1] ?? `quiz-${id}.zip`;
+  const url = URL.createObjectURL(new Blob([response.data], { type: 'application/zip' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+export const importQuiz = async (file: File, examinerId?: number) => {
+  const formData = new FormData();
+  formData.append('file', file, file.name);
+  if (examinerId !== undefined) formData.append('examinerId', String(examinerId));
+  const response = await api.axios.post<types.Quiz>(`${apiRootUrl}/api/quizzes/import`, formData);
+  return response.data;
+}

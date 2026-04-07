@@ -1,0 +1,329 @@
+title: Grade 1 English
+description: A 30-question English quiz covering letters, phonics, basic vocabulary, and simple sentences for Grade 1 students.
+duration: "00:45:00"
+questions:
+  - prompt: Which letter comes after "D" in the alphabet?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: C
+          isCorrect: false
+        - text: E
+          isCorrect: true
+        - text: F
+          isCorrect: false
+        - text: B
+          isCorrect: false
+
+  - prompt: Which of these is a vowel?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: B
+          isCorrect: false
+        - text: T
+          isCorrect: false
+        - text: O
+          isCorrect: true
+        - text: K
+          isCorrect: false
+
+  - prompt: Which word rhymes with "cat"?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: dog
+          isCorrect: false
+        - text: hat
+          isCorrect: true
+        - text: sun
+          isCorrect: false
+        - text: big
+          isCorrect: false
+
+  - prompt: The sun rises in the _____.
+    type: fill-in-the-blank
+    score: 2
+    properties: {}
+
+  - prompt: Which word is the opposite of "big"?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: tall
+          isCorrect: false
+        - text: wide
+          isCorrect: false
+        - text: small
+          isCorrect: true
+        - text: heavy
+          isCorrect: false
+
+  - prompt: "A dog says: ____."
+    type: fill-in-the-blank
+    score: 1
+    properties: {}
+
+  - prompt: Which of these words starts with the letter "S"?
+    type: multiple-choice
+    score: 2
+    properties:
+      options:
+        - text: sun
+          isCorrect: true
+        - text: ball
+          isCorrect: false
+        - text: snake
+          isCorrect: true
+        - text: tree
+          isCorrect: false
+
+  - prompt: "A cat is an animal."
+    type: true-or-false
+    score: 1
+    properties:
+      answer: true
+
+  - prompt: How many letters are in the word "BOOK"?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "3"
+          isCorrect: false
+        - text: "4"
+          isCorrect: true
+        - text: "5"
+          isCorrect: false
+        - text: "2"
+          isCorrect: false
+
+  - prompt: Which sentence is correct?
+    type: single-choice
+    score: 2
+    properties:
+      options:
+        - text: She go to school.
+          isCorrect: false
+        - text: She goes to school.
+          isCorrect: true
+        - text: She going school.
+          isCorrect: false
+        - text: She gone school.
+          isCorrect: false
+
+  - prompt: What is the first letter of the word "apple"?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: P
+          isCorrect: false
+        - text: E
+          isCorrect: false
+        - text: A
+          isCorrect: true
+        - text: L
+          isCorrect: false
+
+  - prompt: Which word names a colour?
+    type: multiple-choice
+    score: 2
+    properties:
+      options:
+        - text: blue
+          isCorrect: true
+        - text: run
+          isCorrect: false
+        - text: red
+          isCorrect: true
+        - text: jump
+          isCorrect: false
+
+  - prompt: "Birds can fly."
+    type: true-or-false
+    score: 1
+    properties:
+      answer: true
+
+  - prompt: Choose the correct word to complete the sentence. "I ___ happy."
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: are
+          isCorrect: false
+        - text: am
+          isCorrect: true
+        - text: is
+          isCorrect: false
+        - text: be
+          isCorrect: false
+
+  - prompt: Which word is a number?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: apple
+          isCorrect: false
+        - text: jump
+          isCorrect: false
+        - text: five
+          isCorrect: true
+        - text: green
+          isCorrect: false
+
+  - prompt: How do you spell the sound a cow makes?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: Woof
+          isCorrect: false
+        - text: Moo
+          isCorrect: true
+        - text: Meow
+          isCorrect: false
+        - text: Quack
+          isCorrect: false
+
+  - prompt: "Fish live in water."
+    type: true-or-false
+    score: 1
+    properties:
+      answer: true
+
+  - prompt: Which word names an animal?
+    type: multiple-choice
+    score: 2
+    properties:
+      options:
+        - text: lion
+          isCorrect: true
+        - text: chair
+          isCorrect: false
+        - text: frog
+          isCorrect: true
+        - text: pen
+          isCorrect: false
+
+  - prompt: Put the words in order to make a sentence. "plays / she / ball"
+    type: short-answer
+    score: 2
+    properties: {}
+
+  - prompt: Which letter is missing? A, B, C, ___, E
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: F
+          isCorrect: false
+        - text: G
+          isCorrect: false
+        - text: D
+          isCorrect: true
+        - text: H
+          isCorrect: false
+
+  - prompt: Which word means the same as "happy"?
+    type: single-choice
+    score: 2
+    properties:
+      options:
+        - text: sad
+          isCorrect: false
+        - text: angry
+          isCorrect: false
+        - text: joyful
+          isCorrect: true
+        - text: tired
+          isCorrect: false
+
+  - prompt: "The moon comes out at night."
+    type: true-or-false
+    score: 1
+    properties:
+      answer: true
+
+  - prompt: Which words rhyme with "sun"?
+    type: multiple-choice
+    score: 2
+    properties:
+      options:
+        - text: fun
+          isCorrect: true
+        - text: run
+          isCorrect: true
+        - text: sit
+          isCorrect: false
+        - text: big
+          isCorrect: false
+
+  - prompt: What do we call the words "a", "an", and "the"?
+    type: single-choice
+    score: 2
+    properties:
+      options:
+        - text: Verbs
+          isCorrect: false
+        - text: Nouns
+          isCorrect: false
+        - text: Articles
+          isCorrect: true
+        - text: Adjectives
+          isCorrect: false
+
+  - prompt: Write one sentence about your favourite animal.
+    type: essay
+    score: 3
+    properties: {}
+
+  - prompt: "Pen starts with the letter 'P'."
+    type: true-or-false
+    score: 1
+    properties:
+      answer: true
+
+  - prompt: Which word is a describing word (adjective)?
+    type: single-choice
+    score: 2
+    properties:
+      options:
+        - text: run
+          isCorrect: false
+        - text: tall
+          isCorrect: true
+        - text: book
+          isCorrect: false
+        - text: eat
+          isCorrect: false
+
+  - prompt: "My name is ___."
+    type: fill-in-the-blank
+    score: 1
+    properties: {}
+
+  - prompt: Which of these is a complete sentence?
+    type: single-choice
+    score: 2
+    properties:
+      options:
+        - text: The big
+          isCorrect: false
+        - text: Runs fast
+          isCorrect: false
+        - text: The dog runs fast.
+          isCorrect: true
+        - text: Fast dog the
+          isCorrect: false
+
+  - prompt: Write three words that start with the letter "B".
+    type: short-answer
+    score: 3
+    properties: {}

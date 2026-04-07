@@ -1,0 +1,347 @@
+title: Grade 1 Math
+description: A 30-question Math quiz covering counting, addition, subtraction, shapes, and basic number concepts for Grade 1 students.
+duration: "00:45:00"
+questions:
+  - prompt: What is 2 + 3?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "4"
+          isCorrect: false
+        - text: "5"
+          isCorrect: true
+        - text: "6"
+          isCorrect: false
+        - text: "3"
+          isCorrect: false
+
+  - prompt: What is 7 - 4?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "2"
+          isCorrect: false
+        - text: "4"
+          isCorrect: false
+        - text: "3"
+          isCorrect: true
+        - text: "1"
+          isCorrect: false
+
+  - prompt: How many sides does a triangle have?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "2"
+          isCorrect: false
+        - text: "4"
+          isCorrect: false
+        - text: "3"
+          isCorrect: true
+        - text: "5"
+          isCorrect: false
+
+  - prompt: Count the stars and write the number. ★ ★ ★ ★ ★ ★
+    type: fill-in-the-blank
+    score: 1
+    properties: {}
+
+  - prompt: Which number comes after 9?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "8"
+          isCorrect: false
+        - text: "11"
+          isCorrect: false
+        - text: "10"
+          isCorrect: true
+        - text: "7"
+          isCorrect: false
+
+  - prompt: "5 is greater than 3."
+    type: true-or-false
+    score: 1
+    properties:
+      answer: true
+
+  - prompt: What is 1 + 1?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "3"
+          isCorrect: false
+        - text: "2"
+          isCorrect: true
+        - text: "1"
+          isCorrect: false
+        - text: "4"
+          isCorrect: false
+
+  - prompt: Which shapes have 4 sides?
+    type: multiple-choice
+    score: 2
+    properties:
+      options:
+        - text: Square
+          isCorrect: true
+        - text: Triangle
+          isCorrect: false
+        - text: Rectangle
+          isCorrect: true
+        - text: Circle
+          isCorrect: false
+
+  - prompt: What is 10 - 6?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "3"
+          isCorrect: false
+        - text: "5"
+          isCorrect: false
+        - text: "4"
+          isCorrect: true
+        - text: "6"
+          isCorrect: false
+
+  - prompt: Which number is the smallest?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "7"
+          isCorrect: false
+        - text: "2"
+          isCorrect: true
+        - text: "5"
+          isCorrect: false
+        - text: "9"
+          isCorrect: false
+
+  - prompt: "0 + 5 = 5"
+    type: true-or-false
+    score: 1
+    properties:
+      answer: true
+
+  - prompt: What is 4 + 4?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "6"
+          isCorrect: false
+        - text: "9"
+          isCorrect: false
+        - text: "8"
+          isCorrect: true
+        - text: "7"
+          isCorrect: false
+
+  - prompt: How many fingers are on one hand?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "4"
+          isCorrect: false
+        - text: "6"
+          isCorrect: false
+        - text: "5"
+          isCorrect: true
+        - text: "10"
+          isCorrect: false
+
+  - prompt: Which numbers are less than 5?
+    type: multiple-choice
+    score: 2
+    properties:
+      options:
+        - text: "1"
+          isCorrect: true
+        - text: "3"
+          isCorrect: true
+        - text: "5"
+          isCorrect: false
+        - text: "7"
+          isCorrect: false
+
+  - prompt: What is 6 + 2?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "7"
+          isCorrect: false
+        - text: "8"
+          isCorrect: true
+        - text: "9"
+          isCorrect: false
+        - text: "6"
+          isCorrect: false
+
+  - prompt: "A circle has corners."
+    type: true-or-false
+    score: 1
+    properties:
+      answer: false
+
+  - prompt: What number comes before 7?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "8"
+          isCorrect: false
+        - text: "5"
+          isCorrect: false
+        - text: "6"
+          isCorrect: true
+        - text: "9"
+          isCorrect: false
+
+  - prompt: What is 9 - 3?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "5"
+          isCorrect: false
+        - text: "7"
+          isCorrect: false
+        - text: "6"
+          isCorrect: true
+        - text: "4"
+          isCorrect: false
+
+  - prompt: Write the missing number. 1, 2, 3, ___, 5
+    type: fill-in-the-blank
+    score: 1
+    properties: {}
+
+  - prompt: How many sides does a square have?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "3"
+          isCorrect: false
+        - text: "5"
+          isCorrect: false
+        - text: "4"
+          isCorrect: true
+        - text: "6"
+          isCorrect: false
+
+  - prompt: "10 - 10 = 1"
+    type: true-or-false
+    score: 1
+    properties:
+      answer: false
+
+  - prompt: What is 3 + 5?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "7"
+          isCorrect: false
+        - text: "9"
+          isCorrect: false
+        - text: "8"
+          isCorrect: true
+        - text: "6"
+          isCorrect: false
+
+  - prompt: Which numbers are even?
+    type: multiple-choice
+    score: 2
+    properties:
+      options:
+        - text: "2"
+          isCorrect: true
+        - text: "3"
+          isCorrect: false
+        - text: "4"
+          isCorrect: true
+        - text: "7"
+          isCorrect: false
+
+  - prompt: How many legs does a dog have?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "2"
+          isCorrect: false
+        - text: "6"
+          isCorrect: false
+        - text: "4"
+          isCorrect: true
+        - text: "8"
+          isCorrect: false
+
+  - prompt: Write the number that is 1 more than 9.
+    type: fill-in-the-blank
+    score: 1
+    properties: {}
+
+  - prompt: "3 + 4 = 7"
+    type: true-or-false
+    score: 1
+    properties:
+      answer: true
+
+  - prompt: Which shape is round?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: Square
+          isCorrect: false
+        - text: Triangle
+          isCorrect: false
+        - text: Circle
+          isCorrect: true
+        - text: Rectangle
+          isCorrect: false
+
+  - prompt: What is 5 + 5?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "9"
+          isCorrect: false
+        - text: "11"
+          isCorrect: false
+        - text: "10"
+          isCorrect: true
+        - text: "8"
+          isCorrect: false
+
+  - prompt: Draw or describe what you see when you count from 1 to 5. What pattern do you notice?
+    type: essay
+    score: 3
+    properties: {}
+
+  - prompt: What is 8 - 5?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: "2"
+          isCorrect: false
+        - text: "4"
+          isCorrect: false
+        - text: "3"
+          isCorrect: true
+        - text: "5"
+          isCorrect: false

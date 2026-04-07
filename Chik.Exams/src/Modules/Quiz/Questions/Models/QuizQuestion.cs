@@ -143,8 +143,8 @@ public record QuizQuestion(
                 "single-choice" => new SingleChoice(jsonObject["options"].ToObject<List<Option>>(serializer)),
                 "multiple-choice" => new MultipleChoice(jsonObject["options"].ToObject<List<Option>>(serializer)),
                 "fill-in-the-blank" => new FillInTheBlank(jsonObject["acceptedAnswers"].ToObject<List<string>>(serializer)),
-                "essay" => new Essay(jsonObject["minWords"].ToObject<int>(serializer), jsonObject["maxWords"].ToObject<int>(serializer)),
-                "short-answer" => new ShortAnswer(jsonObject["acceptedAnswers"].ToObject<List<string>>(serializer), jsonObject["maxLength"].ToObject<int>(serializer)),
+                "essay" => new Essay(jsonObject["minWords"].ToObject<int?>(serializer), jsonObject["maxWords"].ToObject<int?>(serializer)),
+                "short-answer" => new ShortAnswer(jsonObject["acceptedAnswers"].ToObject<List<string>>(serializer), jsonObject["maxLength"].ToObject<int?>(serializer)),
                 "true-or-false" => new TrueOrFalse(jsonObject["correctAnswer"].ToObject<bool>(serializer)),
                 _ => throw new Newtonsoft.Json.JsonSerializationException($"Unknown question type: {type}")
             };
@@ -157,7 +157,37 @@ public record QuizQuestion(
             QuestionType? value,
             Newtonsoft.Json.JsonSerializer serializer)
         {
-            serializer.Serialize(writer, value, value?.GetType());
+            if (value is null) { writer.WriteNull(); return; }
+
+            // Cannot call serializer.Serialize(writer, value, value.GetType()) here — all concrete
+            // subtypes inherit [JsonConverter] from QuestionType, so Newtonsoft.Json would invoke
+            // this converter again and detect a self-referencing loop.
+            // Instead, build the JObject manually for each concrete type.
+            var jo = new Newtonsoft.Json.Linq.JObject { ["type"] = value.Type };
+            switch (value)
+            {
+                case SingleChoice sc:
+                    jo["options"] = Newtonsoft.Json.Linq.JArray.FromObject(sc.Options, serializer);
+                    break;
+                case MultipleChoice mc:
+                    jo["options"] = Newtonsoft.Json.Linq.JArray.FromObject(mc.Options, serializer);
+                    break;
+                case FillInTheBlank fitb:
+                    jo["acceptedAnswers"] = Newtonsoft.Json.Linq.JArray.FromObject(fitb.AcceptedAnswers, serializer);
+                    break;
+                case Essay e:
+                    jo["minWords"] = e.MinWords.HasValue ? (Newtonsoft.Json.Linq.JToken)e.MinWords.Value : Newtonsoft.Json.Linq.JValue.CreateNull();
+                    jo["maxWords"] = e.MaxWords.HasValue ? (Newtonsoft.Json.Linq.JToken)e.MaxWords.Value : Newtonsoft.Json.Linq.JValue.CreateNull();
+                    break;
+                case ShortAnswer sa:
+                    jo["acceptedAnswers"] = Newtonsoft.Json.Linq.JArray.FromObject(sa.AcceptedAnswers ?? [], serializer);
+                    jo["maxLength"] = sa.MaxLength.HasValue ? (Newtonsoft.Json.Linq.JToken)sa.MaxLength.Value : Newtonsoft.Json.Linq.JValue.CreateNull();
+                    break;
+                case TrueOrFalse tof:
+                    jo["correctAnswer"] = tof.CorrectAnswer;
+                    break;
+            }
+            jo.WriteTo(writer);
         }
     }
 }

@@ -10,9 +10,10 @@ public interface IQuizImportExportService
     Task<(byte[] ZipBytes, string FileName)> ExportQuiz(Auth auth, long quizId);
 
     /// <summary>
-    /// Parses a ZIP archive from a stream, validates the YAML, creates the quiz and all questions.
+    /// Parses a ZIP or YAML file from a stream, validates the content, creates the quiz and all questions.
+    /// Pass the original filename so the service can detect ZIP vs YAML by extension.
     /// Returns the created Quiz with Questions populated.
     /// Throws ValidationException with a descriptive message on any structural error.
     /// </summary>
-    Task<Quiz> ImportQuiz(Auth auth, Stream zipStream, long? examinerId);
+    Task<Quiz> ImportQuiz(Auth auth, Stream fileStream, string fileName, long? examinerId);
 }

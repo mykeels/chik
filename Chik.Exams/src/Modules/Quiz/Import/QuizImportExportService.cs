@@ -75,13 +75,31 @@ internal class QuizImportExportService(
         }
     }
 
-    public async Task<Quiz> ImportQuiz(Auth auth, Stream zipStream, long? examinerId)
+    public async Task<Quiz> ImportQuiz(Auth auth, Stream fileStream, string fileName, long? examinerId)
     {
-        logger.LogInformation($"{nameof(QuizImportExportService)}.{nameof(ImportQuiz)} ({auth.Id})");
+        logger.LogInformation($"{nameof(QuizImportExportService)}.{nameof(ImportQuiz)} ({auth.Id}, {fileName})");
 
         if (!auth.IsAdmin() && !auth.IsTeacher())
             throw new UnauthorizedAccessException("Only Admin or Teacher can import quizzes");
 
+        bool isYaml = fileName.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase)
+            || fileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase);
+
+        string yamlText = isYaml
+            ? await ImportFromYamlStream(fileStream)
+            : await ImportFromZipStream(fileStream);
+
+        return await CreateQuizFromYaml(auth, yamlText, examinerId);
+    }
+
+    private static async Task<string> ImportFromYamlStream(Stream stream)
+    {
+        using var reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: true);
+        return await reader.ReadToEndAsync();
+    }
+
+    private async Task<string> ImportFromZipStream(Stream zipStream)
+    {
         string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         string tempZipRelative = $"quizzes/imports/{timestamp}.zip";
         string extractedRelative = $"quizzes/imports/{timestamp}";
@@ -105,66 +123,69 @@ internal class QuizImportExportService(
             if (!File.Exists(yamlFilePath))
                 throw new ValidationException("ZIP archive must contain 'index.yaml' at the root");
 
-            string yamlText = await File.ReadAllTextAsync(yamlFilePath);
-
-            var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .IgnoreUnmatchedProperties()
-                .Build();
-
-            QuizYamlDocument document;
-            try
-            {
-                document = deserializer.Deserialize<QuizYamlDocument>(yamlText);
-            }
-            catch (Exception ex)
-            {
-                throw new ValidationException($"index.yaml is malformed: {ex.Message}");
-            }
-
-            ValidateDocument(document);
-
-            var duration = QuizPortMapper.FromDurationString(document.Duration);
-
-            var quiz = await quizService.Create(auth, new Quiz.Create(
-                document.Title,
-                document.Description ?? string.Empty,
-                auth.Id,
-                examinerId,
-                duration
-            ));
-
-            var createdQuestions = new List<QuizQuestion>();
-            for (int i = 0; i < document.Questions.Count; i++)
-            {
-                var yamlQ = document.Questions[i];
-                int typeId = QuizPortMapper.ToTypeId(yamlQ.Type);
-                string propertiesJson = QuizPortMapper.ToInternalProperties(yamlQ);
-                var questionDbo = await questionRepository.Create(new QuizQuestion.Create(
-                    quiz.Id,
-                    yamlQ.Prompt,
-                    typeId,
-                    propertiesJson,
-                    yamlQ.Score,
-                    Order: i + 1
-                ));
-                createdQuestions.Add(questionDbo.ToModel());
-            }
-
-            await auditLogService.Create(auth, new AuditLog.Create<object>(
-                $"{nameof(QuizImportExportService)}.{nameof(ImportQuiz)}",
-                quiz.Id,
-                new { QuizId = quiz.Id, QuestionCount = createdQuestions.Count }
-            ));
-
-            quiz.Questions = createdQuestions;
-            return quiz;
+            return await File.ReadAllTextAsync(yamlFilePath);
         }
         finally
         {
             await fileStorage.DeleteFileAsync(tempZipRelative);
             await fileStorage.DeleteFolderAsync(extractedRelative);
         }
+    }
+
+    private async Task<Quiz> CreateQuizFromYaml(Auth auth, string yamlText, long? examinerId)
+    {
+        var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .IgnoreUnmatchedProperties()
+            .Build();
+
+        QuizYamlDocument document;
+        try
+        {
+            document = deserializer.Deserialize<QuizYamlDocument>(yamlText);
+        }
+        catch (Exception ex)
+        {
+            throw new ValidationException($"YAML is malformed: {ex.Message}");
+        }
+
+        ValidateDocument(document);
+
+        var duration = QuizPortMapper.FromDurationString(document.Duration);
+
+        var quiz = await quizService.Create(auth, new Quiz.Create(
+            document.Title,
+            document.Description ?? string.Empty,
+            auth.Id,
+            examinerId,
+            duration
+        ));
+
+        var createdQuestions = new List<QuizQuestion>();
+        for (int i = 0; i < document.Questions.Count; i++)
+        {
+            var yamlQ = document.Questions[i];
+            int typeId = QuizPortMapper.ToTypeId(yamlQ.Type);
+            string propertiesJson = QuizPortMapper.ToInternalProperties(yamlQ);
+            var questionDbo = await questionRepository.Create(new QuizQuestion.Create(
+                quiz.Id,
+                yamlQ.Prompt,
+                typeId,
+                propertiesJson,
+                yamlQ.Score,
+                Order: i + 1
+            ));
+            createdQuestions.Add(questionDbo.ToModel());
+        }
+
+        await auditLogService.Create(auth, new AuditLog.Create<object>(
+            $"{nameof(QuizImportExportService)}.{nameof(ImportQuiz)}",
+            quiz.Id,
+            new { QuizId = quiz.Id, QuestionCount = createdQuestions.Count }
+        ));
+
+        quiz.Questions = createdQuestions;
+        return quiz;
     }
 
     private static void ValidateDocument(QuizYamlDocument document)

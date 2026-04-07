@@ -300,6 +300,11 @@
         "operationId": "Auth_Login",
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.LoginRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.LoginRequest"
@@ -369,6 +374,11 @@
         "operationId": "Auth_ChangePassword",
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.ChangePasswordRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.ChangePasswordRequest"
@@ -475,6 +485,11 @@
         ],
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.UpdateExamAnswerRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.UpdateExamAnswerRequest"
@@ -533,6 +548,11 @@
         ],
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.ScoreAnswerRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.ScoreAnswerRequest"
@@ -737,6 +757,11 @@
         "operationId": "Exams_Create",
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.CreateExamRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.CreateExamRequest"
@@ -840,6 +865,11 @@
         ],
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.UpdateExamRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.UpdateExamRequest"
@@ -996,6 +1026,11 @@
         ],
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.MarkExamRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.MarkExamRequest"
@@ -1463,6 +1498,11 @@
         ],
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.SubmitAnswerRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.SubmitAnswerRequest"
@@ -1558,6 +1598,11 @@
         ],
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.UpdateQuizQuestionRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.UpdateQuizQuestionRequest"
@@ -1804,6 +1849,11 @@
         "operationId": "Quizzes_Create",
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.CreateQuizRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.CreateQuizRequest"
@@ -2047,6 +2097,11 @@
         ],
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.UpdateQuizRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.UpdateQuizRequest"
@@ -2256,6 +2311,11 @@
         ],
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.CreateQuizQuestionRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.CreateQuizQuestionRequest"
@@ -2314,6 +2374,11 @@
         ],
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.ReorderQuestionsRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.ReorderQuestionsRequest"
@@ -2344,6 +2409,11 @@
         "operationId": "Users_Create",
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.CreateUserRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.CreateUserRequest"
@@ -2550,6 +2620,11 @@
         ],
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.UpdateUserRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.UpdateUserRequest"
@@ -2628,6 +2703,11 @@
         ],
         "requestBody": {
           "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.ChangePasswordRequest"
+              }
+            },
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Api.ChangePasswordRequest"
@@ -3419,7 +3499,8 @@
             "type": "string",
             "nullable": true
           }
-        }
+        },
+        "additionalProperties": {}
       },
       "QuizQuestionType": {
         "required": ["createdAt", "description", "id", "name"],

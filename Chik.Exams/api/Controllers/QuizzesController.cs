@@ -135,15 +135,18 @@ public class QuizzesController : ControllerBase
         [FromServices] Auth auth)
     {
         if (file is null || file.Length == 0)
-            return BadRequest(new { Message = "A ZIP file must be provided in the 'file' field" });
+            return BadRequest(new { Message = "A ZIP or YAML file must be provided in the 'file' field" });
 
         bool isZip = file.FileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
             || file.ContentType is "application/zip" or "application/octet-stream";
-        if (!isZip)
-            return BadRequest(new { Message = "Uploaded file must be a ZIP archive" });
+        bool isYaml = file.FileName.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase)
+            || file.FileName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
+            || file.ContentType is "application/x-yaml" or "text/yaml" or "text/plain";
+        if (!isZip && !isYaml)
+            return BadRequest(new { Message = "Uploaded file must be a ZIP archive or a YAML file" });
 
         using var stream = file.OpenReadStream();
-        var quiz = await _quizImportExportService.ImportQuiz(auth, stream, examinerId);
+        var quiz = await _quizImportExportService.ImportQuiz(auth, stream, file.FileName, examinerId);
 
         _logger.LogInformation("Quiz '{Title}' imported by {Creator}", quiz.Title, auth.Username);
         return CreatedAtAction(nameof(Get), new { id = quiz.Id }, quiz);
