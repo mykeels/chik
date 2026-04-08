@@ -1,4 +1,5 @@
 import { Outlet, NavLink, useNavigate } from 'react-router';
+import { DocumentTitle } from './DocumentTitle';
 import { useAuth } from '@/auth';
 import { enums } from '@/services/chikexams.service';
 import { BookOpen, Users, FileText, ClipboardList, ScrollText, LogOut, Key } from 'lucide-react';
@@ -31,6 +32,7 @@ export const ShellLayout = () => {
 
   return (
     <div className="flex flex-col h-screen" style={{ backgroundColor: '#EBF2FA' }}>
+      <DocumentTitle />
       {/* Top bar */}
       <header
         className="flex items-center justify-between px-6 py-3 shadow-sm flex-shrink-0"

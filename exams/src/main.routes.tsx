@@ -27,46 +27,57 @@ export const routes = [
       {
         path: '/users',
         element: <Users />,
+        handle: { title: 'Users' },
       },
       {
         path: '/audit-logs',
         element: <AuditLogs />,
+        handle: { title: 'Audit Logs' },
       },
       {
         path: '/quizzes',
         element: <Quizzes />,
+        handle: { title: 'Quizzes' },
       },
       {
         path: '/quizzes/new',
         element: <QuizEditor />,
+        handle: { title: 'New Quiz' },
       },
       {
         path: '/quizzes/:id/edit',
         element: <QuizEditor />,
+        handle: { title: 'Edit Quiz' },
       },
       {
         path: '/exams',
         element: <Exams />,
+        handle: { title: 'Exams' },
       },
       {
         path: '/exams/:id',
         element: <ExamReview />,
+        handle: { title: 'Exam Review' },
       },
       {
         path: '/my-exams',
         element: <MyExams />,
+        handle: { title: 'My Exams' },
       },
       {
         path: '/exams/:id/take',
         element: <TakeExam />,
+        handle: { title: 'Take Exam' },
       },
       {
         path: '/exams/:id/review',
         element: <StudentExamReview />,
+        handle: { title: 'Student Exam Review' },
       },
       {
         path: '/settings/password',
         element: <ChangePassword />,
+        handle: { title: 'Change Password' },
       },
     ],
   },
@@ -77,5 +88,6 @@ export const routes = [
         <Login />
       </AppContexts>
     ),
+    handle: { title: 'Login' },
   },
 ];

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { DocumentTitle } from '@/shell/DocumentTitle';
 import { useForm } from 'react-hook-form';
 import { ioc } from '@/utils/ioc';
 import * as chikexamsService from '@/services/chikexams.service';
@@ -46,6 +47,7 @@ export const Login = ({
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#EBF2FA' }}>
+      <DocumentTitle />
       <div className="bg-white rounded-2xl shadow-lg p-10 w-full max-w-sm">
         <div className="flex flex-col items-center mb-8">
           <div
