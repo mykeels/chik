@@ -1,7 +1,7 @@
 {
   "name": "chik-exams",
   "private": true,
-  "version": "0.0.8",
+  "version": "0.0.9",
   "type": "module",
   "engines": {
     "node": ">=18",
@@ -27,7 +27,7 @@
     "dev": "vite --port 5174",
     "start": "npm run dev",
     "build:federation": "onchange -i ** --exclude dist --exclude node_modules --exclude package.json -- vite build",
-    "build": "tsc -b && npx cross-env VITE_API_ROOT_URL=https://api.dailybiblecomics.com vite build",
+    "build": "tsc -b && npx cross-env VITE_API_ROOT_URL=https://api.chik.ng vite build",
     "ts": "tsc -b",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
