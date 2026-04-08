@@ -51,10 +51,12 @@ type Story = StoryObj<typeof QuizEditor>;
 export const EditExisting: Story = {
   args: {
     createQuiz: async (body) => ({ ...mockQuiz, ...body }),
-    updateQuiz: async (id, body) => ({ ...mockQuiz, ...body }),
+    updateQuiz: async (_id, body) => ({ ...mockQuiz, ...body }),
     getQuizQuestions: async () => mockQuestions,
-    createQuizQuestion: async (quizId, body) => ({ id: 99, quizId, ...body, order: 3, isActive: true, createdAt: new Date().toISOString() }),
-    updateQuizQuestion: async (id, body) => ({ id, ...body, quizId: 1, order: 1, isActive: true, createdAt: new Date().toISOString() }),
+    createQuizQuestion: async (quizId, body) =>
+      ({ id: 99, quizId, ...body, order: 3, isActive: true, createdAt: new Date().toISOString() }) as any,
+    updateQuizQuestion: async (id, body) =>
+      ({ id, ...body, quizId: 1, order: 1, isActive: true, createdAt: new Date().toISOString() }) as any,
     deactivateQuestion: async () => {},
     reactivateQuestion: async () => {},
     reorderQuestions: async () => {},

@@ -179,6 +179,7 @@ public class Startup
             "https://chik.ng" => true,
             "https://beta.chik.ng" => true,
             "https://exams.chik.ng" => true,
+            "https://chikexams.pages.dev" => true,
             _ => false,
         };
     }

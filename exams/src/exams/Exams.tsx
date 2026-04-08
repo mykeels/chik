@@ -5,7 +5,7 @@ import { useCacheUpdate } from '@/hooks/useCacheUpdate';
 import { toast } from 'react-toastify';
 import { ioc } from '@/utils/ioc';
 import * as chikexamsService from '@/services/chikexams.service';
-import { types } from '@/services/chikexams.service';
+import type { types } from 'chikexams-client';
 import { useExams } from '@/services/chikexams.hooks';
 import { CacheKeys } from '@/utils/cache-keys.utils';
 import { AssignExamModal } from './AssignExamModal';
@@ -25,7 +25,7 @@ import {
 
 type ExamStatus = 'all' | 'pending' | 'in-progress' | 'submitted' | 'examined';
 
-const getExamStatus = (exam: types['Exam']): ExamStatus => {
+const getExamStatus = (exam: types.Exam): ExamStatus => {
   if (!exam.isStarted) return 'pending';
   if (exam.isStarted && !exam.isEnded) return 'in-progress';
   if (exam.isEnded && !exam.isMarked) return 'submitted';
@@ -70,7 +70,7 @@ export const Exams = ({
   const [statusFilter, setStatusFilter] = useState<ExamStatus>('all');
   const [search, setSearch] = useState('');
   const [assignOpen, setAssignOpen] = useState(false);
-  const [cancelTarget, setCancelTarget] = useState<types['Exam'] | null>(null);
+  const [cancelTarget, setCancelTarget] = useState<types.Exam | null>(null);
 
   const { data: exams, isLoading } = useExams({
     params: {

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ioc } from '@/utils/ioc';
 import * as chikexamsService from '@/services/chikexams.service';
-import { types } from '@/services/chikexams.service';
 import { useAuditLogs } from '@/services/chikexams.hooks';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { CircularProgress } from '@mui/material';
@@ -22,8 +21,8 @@ export const AuditLogs = ({
     params: {
       Page: page,
       PageSize: PAGE_SIZE,
-      From: fromDate || undefined,
-      To: toDate || undefined,
+      'DateRange.From': fromDate || undefined,
+      'DateRange.To': toDate || undefined,
     },
     searchAuditLogs,
   });

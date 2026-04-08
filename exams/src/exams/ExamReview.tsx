@@ -91,9 +91,6 @@ export const ExamReview = ({
     return <div className="text-center py-16 text-sm" style={{ color: '#6B7280' }}>Exam not found.</div>;
   }
 
-  const getAnswerForQuestion = (questionId: number) =>
-    (answers ?? []).find((a) => a.questionId === questionId);
-
   const getScoreForQuestion = (questionId: number) =>
     scores?.answerScores?.find((s) => s.questionId === questionId);
 

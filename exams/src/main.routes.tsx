@@ -1,4 +1,3 @@
-import { Outlet } from 'react-router';
 import { AppContexts } from './main.context';
 import { Login } from './auth/Login';
 import { AuthProvider } from './auth';

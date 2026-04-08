@@ -36,6 +36,9 @@ const IocKeys = {
   getExamHistory: 'getExamHistory',
   updateExam: 'updateExam',
   scoreAnswer: 'scoreAnswer',
+  isServerDown: 'isServerDown',
+  exportQuiz: 'exportQuiz',
+  importQuiz: 'importQuiz',
 } as const;
 const IocValues = {} as Record<keyof typeof IocKeys, IocValue>;
 

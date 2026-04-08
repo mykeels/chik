@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { types } from '@/services/chikexams.service';
+import type { types } from 'chikexams-client';
 import {
   Dialog,
   DialogTitle,
@@ -67,7 +67,7 @@ type Props = {
     properties: string;
     order?: number;
   }) => void;
-  initialData?: Partial<types['QuizQuestion']>;
+  initialData?: Partial<types.QuizQuestion>;
   existingCount?: number;
   isLoading?: boolean;
 };
