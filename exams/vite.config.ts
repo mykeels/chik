@@ -4,6 +4,8 @@ import federation from '@originjs/vite-plugin-federation';
 import { VitePWA } from 'vite-plugin-pwa';
 import rawPlugin from 'vite-raw-plugin';
 import * as pkg from './package.json';
+import path from 'path';
+import fs from 'fs';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -22,18 +24,18 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       react(),
-      // {
-      //   name: 'emit-version.json-file',
-      //   buildStart() {
-      //     const outputFolders = [path.join(__dirname, './dist'), path.join(__dirname, './public')];
-      //     for (const outputFolder of outputFolders) {
-      //       fs.writeFileSync(
-      //         path.join(outputFolder, 'version.json'),
-      //         JSON.stringify({ version: pkg.version }, null, 2)
-      //       );
-      //     }
-      //   },
-      // },
+      {
+        name: 'emit-version.json-file',
+        buildStart() {
+          const outputFolders = [path.join(__dirname, './dist'), path.join(__dirname, './public')];
+          for (const outputFolder of outputFolders) {
+            fs.writeFileSync(
+              path.join(outputFolder, 'version.json'),
+              JSON.stringify({ version: pkg.version }, null, 2)
+            );
+          }
+        },
+      },
       ...(process.env.STORYBOOK
         ? []
         : [
