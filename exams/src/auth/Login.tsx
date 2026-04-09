@@ -38,7 +38,8 @@ export const Login = ({
       } else {
         navigate('/');
       }
-    } catch {
+    } catch (error) {
+      console.error(error, String(error));
       setError('Invalid username or password. Please try again.');
     } finally {
       setIsLoading(false);

@@ -6,6 +6,7 @@ import { BookOpen, Users, FileText, ClipboardList, ScrollText, LogOut, Key } fro
 import { useState } from 'react';
 import { AppContexts } from '@/main.context';
 import { AuthProvider } from '@/auth';
+import { DetectNewVersion } from '@/detect-new-version';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -173,6 +174,8 @@ export const ShellLayout = () => {
         <main className="flex-1 overflow-auto p-6">
           <Outlet />
         </main>
+
+        <DetectNewVersion />
       </div>
     </div>
   );

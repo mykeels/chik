@@ -40,13 +40,13 @@ export default defineConfig(({ mode }) => {
             VitePWA({
               registerType: 'autoUpdate',
               manifest: {
-                name: 'Daily Bible Comics',
-                short_name: 'Daily Bible Comics',
-                description: 'Daily Bible Comics',
+                name: 'Chik Exams',
+                short_name: 'Chik Exams',
+                description: 'Chik Exams',
                 theme_color: '#000000',
                 background_color: '#000000',
                 display: 'fullscreen',
-                categories: ['bible', 'comics', 'devotional'],
+                categories: ['education', 'exams', 'school'],
                 screenshots: [],
                 icons: [
                   {

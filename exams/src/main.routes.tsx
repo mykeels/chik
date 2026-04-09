@@ -12,6 +12,7 @@ import { MyExams } from './exams/MyExams';
 import { TakeExam } from './exams/TakeExam';
 import { StudentExamReview } from './exams/StudentExamReview';
 import { ChangePassword } from './settings/ChangePassword';
+import { Home } from './home';
 
 export const routes = [
   {
@@ -78,6 +79,11 @@ export const routes = [
         path: '/settings/password',
         element: <ChangePassword />,
         handle: { title: 'Change Password' },
+      },
+      {
+        path: '/',
+        element: <Home />,
+        handle: { title: 'Home' },
       },
     ],
   },
