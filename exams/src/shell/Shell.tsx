@@ -16,6 +16,96 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   }`;
 
 const activeStyle = { backgroundColor: '#314CB6' };
+const inactiveStyle = { color: '#27272a' };
+
+const Menu = ({
+  isAdmin,
+  isTeacher,
+  isStudent,
+}: {
+  isAdmin: boolean;
+  isTeacher: boolean;
+  isStudent: boolean;
+}) => {
+  return (
+    <>
+      {isAdmin && (
+        <>
+          <NavLink
+            to="/users"
+            className={navLinkClass}
+            style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
+          >
+            <Users size={16} />
+            Users
+          </NavLink>
+          <NavLink
+            to="/quizzes"
+            className={navLinkClass}
+            style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
+          >
+            <FileText size={16} />
+            Quizzes
+          </NavLink>
+          <NavLink
+            to="/exams"
+            className={navLinkClass}
+            style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
+          >
+            <ClipboardList size={16} />
+            Exams
+          </NavLink>
+          <NavLink
+            to="/audit-logs"
+            className={navLinkClass}
+            style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
+          >
+            <ScrollText size={16} />
+            Audit Logs
+          </NavLink>
+        </>
+      )}
+      {isTeacher && !isAdmin && (
+        <>
+          <NavLink
+            to="/quizzes"
+            className={navLinkClass}
+            style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
+          >
+            <FileText size={16} />
+            Quizzes
+          </NavLink>
+          <NavLink
+            to="/exams"
+            className={navLinkClass}
+            style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
+          >
+            <ClipboardList size={16} />
+            Exams
+          </NavLink>
+          <NavLink
+            to="/users?role=students"
+            className={navLinkClass}
+            style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
+          >
+            <Users size={16} />
+            Students
+          </NavLink>
+        </>
+      )}
+      {isStudent && !isAdmin && !isTeacher && (
+        <NavLink
+          to="/my-exams"
+          className={navLinkClass}
+          style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
+        >
+          <ClipboardList size={16} />
+          My Exams
+        </NavLink>
+      )}
+    </>
+  )
+}
 
 export const ShellLayout = () => {
   const { profile, logout, isLoggingOut } = useAuth();
@@ -32,14 +122,14 @@ export const ShellLayout = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen" style={{ backgroundColor: '#EBF2FA' }}>
+    <div className="flex flex-col h-[100dvh]" style={{ backgroundColor: '#EBF2FA' }}>
       <DocumentTitle />
       {/* Top bar */}
       <header
         className="flex items-center justify-between px-6 py-3 shadow-sm flex-shrink-0"
         style={{ backgroundColor: '#211A1E' }}
       >
-        <div className="flex items-center gap-2">
+        <div className="items-center gap-2 hidden md:flex">
           <div
             className="w-8 h-8 rounded-full flex items-center justify-center"
             style={{ backgroundColor: '#314CB6' }}
@@ -49,7 +139,7 @@ export const ShellLayout = () => {
           <span className="text-white font-bold text-lg">Chik.Exams</span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between gap-3 grow">
           <div className="relative">
             <button
               className="flex items-center gap-2 text-white text-sm px-3 py-1 rounded-lg hover:bg-white/10 transition-colors"
@@ -60,7 +150,7 @@ export const ShellLayout = () => {
             </button>
             {userMenuOpen && (
               <div
-                className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg py-1 z-50"
+                className="absolute left-0 mt-1 w-48 bg-white rounded-lg shadow-lg py-1 z-50"
                 style={{ border: '1px solid #E5E7EB' }}
               >
                 <button
@@ -74,6 +164,9 @@ export const ShellLayout = () => {
                   <Key size={14} />
                   Change Password
                 </button>
+                <div className='flex flex-col gap-2' style={{ color: '#211A1E' }}>
+                  <Menu isAdmin={isAdmin} isTeacher={isTeacher} isStudent={isStudent} />
+                </div>
               </div>
             )}
           </div>
@@ -91,7 +184,7 @@ export const ShellLayout = () => {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <aside
-          className="w-56 flex-shrink-0 flex flex-col py-4 px-3 gap-1"
+          className="w-56 flex-shrink-0 flex-col py-4 px-3 gap-1 hidden md:flex"
           style={{ backgroundColor: '#27272a' }}
         >
           {isAdmin && (
