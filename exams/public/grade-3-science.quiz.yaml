@@ -7,13 +7,13 @@ questions:
     score: 2
     properties:
       options:
-        - text: Sunlight
+        - text: "Sunlight"
           isCorrect: true
-        - text: Water
+        - text: "Water"
           isCorrect: true
-        - text: Air
+        - text: "Air"
           isCorrect: true
-        - text: Rocks
+        - text: "Rocks"
           isCorrect: false
 
   - prompt: Which part of the plant makes food?
@@ -21,27 +21,27 @@ questions:
     score: 1
     properties:
       options:
-        - text: Root
+        - text: "Root"
           isCorrect: false
-        - text: Stem
+        - text: "Stem"
           isCorrect: false
-        - text: Leaf
+        - text: "Leaf"
           isCorrect: true
-        - text: Flower
+        - text: "Flower"
           isCorrect: false
 
-  - prompt: Animals that eat only plants are called:
+  - prompt: "Animals that eat only plants are called:"
     type: single-choice
     score: 1
     properties:
       options:
-        - text: Carnivores
+        - text: "Carnivores"
           isCorrect: false
-        - text: Herbivores
+        - text: "Herbivores"
           isCorrect: true
-        - text: Omnivores
+        - text: "Omnivores"
           isCorrect: false
-        - text: Predators
+        - text: "Predators"
           isCorrect: false
 
   - prompt: Which of these are states of matter?
@@ -49,27 +49,27 @@ questions:
     score: 2
     properties:
       options:
-        - text: Solid
+        - text: "Solid"
           isCorrect: true
-        - text: Liquid
+        - text: "Liquid"
           isCorrect: true
-        - text: Gas
+        - text: "Gas"
           isCorrect: true
-        - text: Energy
+        - text: "Energy"
           isCorrect: false
 
-  - prompt: Water changing into ice is called:
+  - prompt: "Water changing into ice is called:"
     type: single-choice
     score: 1
     properties:
       options:
-        - text: Melting
+        - text: "Melting"
           isCorrect: false
-        - text: Freezing
+        - text: "Freezing"
           isCorrect: true
-        - text: Boiling
+        - text: "Boiling"
           isCorrect: false
-        - text: Evaporating
+        - text: "Evaporating"
           isCorrect: false
 
   - prompt: Write one source of energy we get from nature.
@@ -88,13 +88,13 @@ questions:
     score: 2
     properties:
       options:
-        - text: Fish
+        - text: "Fish"
           isCorrect: true
-        - text: Frog
+        - text: "Frog"
           isCorrect: true
-        - text: Lion
+        - text: "Lion"
           isCorrect: false
-        - text: Shark
+        - text: "Shark"
           isCorrect: true
 
   - prompt: What is the main gas that humans breathe in to live?
@@ -102,13 +102,13 @@ questions:
     score: 1
     properties:
       options:
-        - text: Carbon dioxide
+        - text: "Carbon dioxide"
           isCorrect: false
-        - text: Oxygen
+        - text: "Oxygen"
           isCorrect: true
-        - text: Nitrogen
+        - text: "Nitrogen"
           isCorrect: false
-        - text: Helium
+        - text: "Helium"
           isCorrect: false
 
   - prompt: Why should we take care of the environment?
