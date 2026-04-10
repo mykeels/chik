@@ -1,0 +1,117 @@
+title: Grade 3 Science Test
+description: A 10-question quiz covering plants, animals, matter, energy, and the environment for Grade 3 students.
+duration: "00:20:00"
+questions:
+  - prompt: What do plants need to make their own food?
+    type: multiple-choice
+    score: 2
+    properties:
+      options:
+        - text: Sunlight
+          isCorrect: true
+        - text: Water
+          isCorrect: true
+        - text: Air
+          isCorrect: true
+        - text: Rocks
+          isCorrect: false
+
+  - prompt: Which part of the plant makes food?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: Root
+          isCorrect: false
+        - text: Stem
+          isCorrect: false
+        - text: Leaf
+          isCorrect: true
+        - text: Flower
+          isCorrect: false
+
+  - prompt: Animals that eat only plants are called:
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: Carnivores
+          isCorrect: false
+        - text: Herbivores
+          isCorrect: true
+        - text: Omnivores
+          isCorrect: false
+        - text: Predators
+          isCorrect: false
+
+  - prompt: Which of these are states of matter?
+    type: multiple-choice
+    score: 2
+    properties:
+      options:
+        - text: Solid
+          isCorrect: true
+        - text: Liquid
+          isCorrect: true
+        - text: Gas
+          isCorrect: true
+        - text: Energy
+          isCorrect: false
+
+  - prompt: Water changing into ice is called:
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: Melting
+          isCorrect: false
+        - text: Freezing
+          isCorrect: true
+        - text: Boiling
+          isCorrect: false
+        - text: Evaporating
+          isCorrect: false
+
+  - prompt: Write one source of energy we get from nature.
+    type: short-answer
+    score: 2
+    properties: {}
+
+  - prompt: The Sun is the main source of energy for Earth.
+    type: true-or-false
+    score: 1
+    properties:
+      answer: true
+
+  - prompt: Which of these animals live in water?
+    type: multiple-choice
+    score: 2
+    properties:
+      options:
+        - text: Fish
+          isCorrect: true
+        - text: Frog
+          isCorrect: true
+        - text: Lion
+          isCorrect: false
+        - text: Shark
+          isCorrect: true
+
+  - prompt: What is the main gas that humans breathe in to live?
+    type: single-choice
+    score: 1
+    properties:
+      options:
+        - text: Carbon dioxide
+          isCorrect: false
+        - text: Oxygen
+          isCorrect: true
+        - text: Nitrogen
+          isCorrect: false
+        - text: Helium
+          isCorrect: false
+
+  - prompt: Why should we take care of the environment?
+    type: essay
+    score: 3
+    properties: {}

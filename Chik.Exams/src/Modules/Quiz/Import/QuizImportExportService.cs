@@ -137,6 +137,7 @@ internal class QuizImportExportService(
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .IgnoreUnmatchedProperties()
+            .WithAttemptingUnquotedStringTypeDeserialization()
             .Build();
 
         QuizYamlDocument document;
