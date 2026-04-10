@@ -119,7 +119,7 @@ export const Quizzes = ({
             onClick={() => navigate('/quizzes/new')}
             sx={{ backgroundColor: '#314CB6', '&:hover': { backgroundColor: '#2a3f9e' } }}
           >
-            New Quiz
+            New <span className="hidden md:inline">Quiz</span>
           </Button>
         </div>
       </div>
