@@ -149,25 +149,28 @@ export const ShellLayout = () => {
               <span className="text-xs">▾</span>
             </button>
             {userMenuOpen && (
-              <div
-                className="absolute left-0 mt-1 w-48 bg-white rounded-lg shadow-lg py-1 z-50"
-                style={{ border: '1px solid #E5E7EB' }}
-              >
-                <button
-                  className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-slate-50 text-left"
-                  style={{ color: '#211A1E' }}
-                  onClick={() => {
-                    setUserMenuOpen(false);
-                    navigate('/settings/password');
-                  }}
+              <>
+                <div className="fixed top-0 left-0 w-full h-full bg-black/50 z-50" onClick={() => setUserMenuOpen(false)}></div>
+                <div
+                  className="absolute left-0 mt-1 w-48 bg-white rounded-lg shadow-lg py-1 z-50"
+                  style={{ border: '1px solid #E5E7EB' }}
                 >
-                  <Key size={14} />
-                  Change Password
-                </button>
-                <div className='flex flex-col gap-2' style={{ color: '#211A1E' }}>
-                  <Menu isAdmin={isAdmin} isTeacher={isTeacher} isStudent={isStudent} />
+                  <button
+                    className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-slate-50 text-left"
+                    style={{ color: '#211A1E' }}
+                    onClick={() => {
+                      setUserMenuOpen(false);
+                      navigate('/settings/password');
+                    }}
+                  >
+                    <Key size={14} />
+                    Change Password
+                  </button>
+                  <div className='flex flex-col gap-2' style={{ color: '#211A1E' }}>
+                    <Menu isAdmin={isAdmin} isTeacher={isTeacher} isStudent={isStudent} />
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </div>
           <button
