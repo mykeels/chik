@@ -41,12 +41,20 @@ export const searchUsers = async (queries?: QueryParamsOf<typeof api.Users_Searc
   return await api.Users_Search({ queries });
 }
 
-export const createUser = async (body: { username: string; password: string; roles: enums.UserRole_Values[] }) => {
+export const createUser = async (body: { username: string; password: string; roles: enums.UserRole_Values[]; classId?: number | null; classIds?: number[] | null }) => {
   return await api.Users_Create(body);
 }
 
-export const updateUser = async (id: number, body: { username?: string; password?: string; roles?: enums.UserRole_Values[] }) => {
+export const updateUser = async (id: number, body: { username?: string; password?: string; roles?: enums.UserRole_Values[]; classId?: number | null; classIds?: number[] | null }) => {
   return await api.Users_Update(body, { params: { id } });
+}
+
+export const listClasses = async () => {
+  return await api.Classes_List();
+}
+
+export const assignExamToClass = async (classId: number, quizId: number) => {
+  return await api.Exams_AssignToClass({ classId, quizId });
 }
 
 export const deleteUser = async (id: number) => {

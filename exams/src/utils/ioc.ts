@@ -39,6 +39,8 @@ const IocKeys = {
   isServerDown: 'isServerDown',
   exportQuiz: 'exportQuiz',
   importQuiz: 'importQuiz',
+  listClasses: 'listClasses',
+  assignExamToClass: 'assignExamToClass',
 } as const;
 const IocValues = {} as Record<keyof typeof IocKeys, IocValue>;
 

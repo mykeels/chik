@@ -175,6 +175,20 @@ export const usePendingExams = ({
   });
 };
 
+// List classes
+export const useClasses = ({
+  listClasses = ioc((keys) => keys.listClasses) || chikexamsService.listClasses,
+}: {
+  listClasses?: typeof chikexamsService.listClasses;
+} = {}) => {
+  return useQuery({
+    queryKey: [CacheKeys.listClasses],
+    queryFn: async () => await listClasses(),
+    staleTime: ONE_HOUR,
+    cacheTime: ONE_HOUR,
+  });
+};
+
 // Get exam history (student)
 export const useExamHistory = ({
   getExamHistory = ioc((keys) => keys.getExamHistory) || chikexamsService.getExamHistory,

@@ -55,15 +55,19 @@ const StatusBadge = ({ status }: { status: ExamStatus }) => {
 export const Exams = ({
   searchExams = ioc((keys) => keys.searchExams) || chikexamsService.searchExams,
   createExam = ioc((keys) => keys.createExam) || chikexamsService.createExam,
+  assignExamToClass = ioc((keys) => keys.assignExamToClass) || chikexamsService.assignExamToClass,
   cancelExam = ioc((keys) => keys.cancelExam) || chikexamsService.cancelExam,
   searchUsers = ioc((keys) => keys.searchUsers) || chikexamsService.searchUsers,
   searchQuizzes = ioc((keys) => keys.searchQuizzes) || chikexamsService.searchQuizzes,
+  listClasses = ioc((keys) => keys.listClasses) || chikexamsService.listClasses,
 }: {
   searchExams?: typeof chikexamsService.searchExams;
   createExam?: typeof chikexamsService.createExam;
+  assignExamToClass?: typeof chikexamsService.assignExamToClass;
   cancelExam?: typeof chikexamsService.cancelExam;
   searchUsers?: typeof chikexamsService.searchUsers;
   searchQuizzes?: typeof chikexamsService.searchQuizzes;
+  listClasses?: typeof chikexamsService.listClasses;
 }) => {
   const navigate = useNavigate();
   const examsCache = useCacheUpdate(CacheKeys.searchExams);
@@ -91,7 +95,21 @@ export const Exams = ({
     return true;
   });
 
-  const createMutation = useMutation({
+  const assignToClassMutation = useMutation({
+    mutationFn: async ({ classId, quizId }: { classId: number; quizId: number }) => {
+      await assignExamToClass(classId, quizId);
+    },
+    onSuccess: () => {
+      toast.success('Exam assigned to class');
+      examsCache.invalidateAndRefetch();
+      setAssignOpen(false);
+    },
+    onError: () => {
+      toast.error('Failed to assign exam');
+    },
+  });
+
+  const assignToStudentsMutation = useMutation({
     mutationFn: async ({ userIds, quizId }: { userIds: number[]; quizId: number }) => {
       await Promise.all(userIds.map((userId) => createExam(userId, quizId)));
     },
@@ -248,10 +266,12 @@ export const Exams = ({
       <AssignExamModal
         open={assignOpen}
         onClose={() => setAssignOpen(false)}
-        onAssign={(userIds, quizId) => createMutation.mutate({ userIds, quizId })}
-        isLoading={createMutation.isLoading}
+        onAssignToClass={(classId, quizId) => assignToClassMutation.mutate({ classId, quizId })}
+        onAssignToStudents={(userIds, quizId) => assignToStudentsMutation.mutate({ userIds, quizId })}
+        isLoading={assignToClassMutation.isLoading || assignToStudentsMutation.isLoading}
         searchUsers={searchUsers}
         searchQuizzes={searchQuizzes}
+        listClasses={listClasses}
       />
 
       <Dialog open={!!cancelTarget} onClose={() => setCancelTarget(null)} maxWidth="xs" fullWidth>

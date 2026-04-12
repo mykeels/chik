@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { useCacheUpdate } from '@/hooks/useCacheUpdate';
 import { toast } from 'react-toastify';
 import { ioc } from '@/utils/ioc';
 import * as chikexamsService from '@/services/chikexams.service';
 import { enums, types } from '@/services/chikexams.service';
-import { useUsers } from '@/services/chikexams.hooks';
+import { useUsers, useClasses } from '@/services/chikexams.hooks';
 import { CacheKeys } from '@/utils/cache-keys.utils';
 import { Search, Plus, Edit, ChevronDown } from 'lucide-react';
 import {
@@ -21,6 +21,11 @@ import {
   Menu,
   MenuItem,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  Autocomplete,
+  FormHelperText,
 } from '@mui/material';
 
 type UserTab = 'all' | 'teachers' | 'students';
@@ -29,6 +34,8 @@ type UserModalMode = 'create-teacher' | 'create-student' | 'edit';
 type UserFormData = {
   username: string;
   password: string;
+  classId: number | '';
+  classIds: number[];
 };
 
 const getRoleLabel = (roles: types.UserRole[] | null | undefined) => {
@@ -47,10 +54,12 @@ export const Users = ({
   searchUsers = ioc((keys) => keys.searchUsers) || chikexamsService.searchUsers,
   createUser = ioc((keys) => keys.createUser) || chikexamsService.createUser,
   updateUser = ioc((keys) => keys.updateUser) || chikexamsService.updateUser,
+  listClasses = ioc((keys) => keys.listClasses) || chikexamsService.listClasses,
 }: {
   searchUsers?: typeof chikexamsService.searchUsers;
   createUser?: typeof chikexamsService.createUser;
   updateUser?: typeof chikexamsService.updateUser;
+  listClasses?: typeof chikexamsService.listClasses;
 }) => {
   const usersCache = useCacheUpdate(CacheKeys.searchUsers);
   const [tab, setTab] = useState<UserTab>('all');
@@ -60,11 +69,11 @@ export const Users = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const { data: users, isLoading } = useUsers({
-    params: {
-      Username: search || undefined,
-    },
+    params: { Username: search || undefined },
     searchUsers,
   });
+
+  const { data: classes = [] } = useClasses({ listClasses });
 
   const filteredUsers = (users ?? []).filter((u) => {
     if (tab === 'teachers') return u.roles?.includes(enums.UserRole.Teacher);
@@ -72,13 +81,27 @@ export const Users = ({
     return true;
   });
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<UserFormData>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm<UserFormData>({ defaultValues: { username: '', password: '', classId: '', classIds: [] } });
+
+  const isStudent = modalMode === 'create-student' || (modalMode === 'edit' && editingUser?.roles?.includes(enums.UserRole.Student));
+  const isTeacher = modalMode === 'create-teacher' || (modalMode === 'edit' && editingUser?.roles?.includes(enums.UserRole.Teacher));
 
   const createMutation = useMutation({
     mutationFn: async (data: UserFormData) => {
-      const role =
-        modalMode === 'create-teacher' ? enums.UserRole.Teacher : enums.UserRole.Student;
-      return await createUser({ username: data.username, password: data.password, roles: [role] });
+      const role = modalMode === 'create-teacher' ? enums.UserRole.Teacher : enums.UserRole.Student;
+      return await createUser({
+        username: data.username,
+        password: data.password,
+        roles: [role],
+        classId: role === enums.UserRole.Student ? Number(data.classId) : undefined,
+        classIds: role === enums.UserRole.Teacher && data.classIds.length > 0 ? data.classIds : undefined,
+      });
     },
     onSuccess: () => {
       toast.success('User created successfully');
@@ -93,7 +116,11 @@ export const Users = ({
   const updateMutation = useMutation({
     mutationFn: async (data: UserFormData) => {
       if (!editingUser) return;
-      return await updateUser(editingUser.id, { username: data.username });
+      return await updateUser(editingUser.id, {
+        username: data.username,
+        classId: isStudent ? Number(data.classId) : undefined,
+        classIds: isTeacher && data.classIds.length > 0 ? data.classIds : undefined,
+      });
     },
     onSuccess: () => {
       toast.success('User updated successfully');
@@ -108,13 +135,18 @@ export const Users = ({
   const closeModal = () => {
     setModalMode(null);
     setEditingUser(null);
-    reset();
+    reset({ username: '', password: '', classId: '', classIds: [] });
   };
 
   const openEdit = (user: types.User) => {
     setEditingUser(user);
     setModalMode('edit');
-    reset({ username: user.username ?? '' });
+    reset({
+      username: user.username ?? '',
+      password: '',
+      classId: user.student?.class?.id ?? '',
+      classIds: user.teacher?.classes?.map((c) => c.id) ?? [],
+    });
   };
 
   const onSubmit = (data: UserFormData) => {
@@ -166,7 +198,7 @@ export const Users = ({
               onClick={() => {
                 setAnchorEl(null);
                 setModalMode('create-teacher');
-                reset({ username: '', password: '' });
+                reset({ username: '', password: '', classId: '', classIds: [] });
               }}
             >
               New Teacher
@@ -175,7 +207,7 @@ export const Users = ({
               onClick={() => {
                 setAnchorEl(null);
                 setModalMode('create-student');
-                reset({ username: '', password: '' });
+                reset({ username: '', password: '', classId: '', classIds: [] });
               }}
             >
               New Student
@@ -214,6 +246,7 @@ export const Users = ({
               <tr style={{ borderTop: '1px solid #E5E7EB', borderBottom: '1px solid #E5E7EB' }}>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase" style={{ color: '#6B7280' }}>Username</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase" style={{ color: '#6B7280' }}>Roles</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase" style={{ color: '#6B7280' }}>Class</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase" style={{ color: '#6B7280' }}>Created</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase" style={{ color: '#6B7280' }}>Actions</th>
               </tr>
@@ -221,13 +254,13 @@ export const Users = ({
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center">
+                  <td colSpan={5} className="px-4 py-8 text-center">
                     <CircularProgress size={24} />
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center text-sm" style={{ color: '#6B7280' }}>
+                  <td colSpan={5} className="px-4 py-8 text-center text-sm" style={{ color: '#6B7280' }}>
                     No users found
                   </td>
                 </tr>
@@ -243,6 +276,11 @@ export const Users = ({
                     </td>
                     <td className="px-4 py-3 text-sm" style={{ color: '#6B7280' }}>
                       {getRoleLabel(user.roles)}
+                    </td>
+                    <td className="px-4 py-3 text-sm" style={{ color: '#6B7280' }}>
+                      {user.student?.class?.name ??
+                        user.teacher?.classes?.map((c) => c.name).join(', ') ??
+                        '—'}
                     </td>
                     <td className="px-4 py-3 text-sm" style={{ color: '#6B7280' }}>
                       {new Date(user.createdAt).toLocaleDateString()}
@@ -296,6 +334,54 @@ export const Users = ({
               value={roleForModal}
               InputProps={{ readOnly: true }}
             />
+            {isStudent && (
+              <FormControl fullWidth size="small" error={!!errors.classId}>
+                <InputLabel>Class</InputLabel>
+                <Controller
+                  control={control}
+                  name="classId"
+                  rules={{ required: 'Class is required' }}
+                  render={({ field }) => (
+                    <Select label="Class" {...field}>
+                      <MenuItem value="" disabled>Select class</MenuItem>
+                      {classes.map((c) => (
+                        <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+                {errors.classId && <FormHelperText>{errors.classId.message}</FormHelperText>}
+              </FormControl>
+            )}
+            {isTeacher && (
+              <Controller
+                control={control}
+                name="classIds"
+                render={({ field: { onChange, value: selectedIds, ref, onBlur, name } }) => (
+                  <Autocomplete
+                    multiple
+                    options={classes}
+                    getOptionLabel={(option) => option.name ?? ''}
+                    isOptionEqualToValue={(a, b) => a.id === b.id}
+                    value={selectedIds
+                      .map((id) => classes.find((c) => c.id === id))
+                      .filter((c): c is (typeof classes)[number] => c != null)}
+                    onChange={(_, selected) => onChange(selected.map((c) => c.id))}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        name={name}
+                        label="Classes"
+                        size="small"
+                        inputRef={ref}
+                        onBlur={onBlur}
+                      />
+                    )}
+                    size="small"
+                  />
+                )}
+              />
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={closeModal} color="inherit">Cancel</Button>

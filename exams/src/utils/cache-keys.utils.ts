@@ -11,4 +11,5 @@ export const CacheKeys = {
   getExamScores: 'getExamScores',
   getPendingExams: 'getPendingExams',
   getExamHistory: 'getExamHistory',
+  listClasses: 'listClasses',
 } as const;
