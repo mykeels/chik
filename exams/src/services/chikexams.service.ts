@@ -41,11 +41,11 @@ export const searchUsers = async (queries?: QueryParamsOf<typeof api.Users_Searc
   return await api.Users_Search({ queries });
 }
 
-export const createUser = async (body: { username: string; password: string; roles: enums.UserRole_Values[]; classId?: number | null; classIds?: number[] | null }) => {
+export const createUser = async (body: { username: string; password: string; roles: enums.UserRole_Values[]; classId?: number; classIds?: number[] }) => {
   return await api.Users_Create(body);
 }
 
-export const updateUser = async (id: number, body: { username?: string; password?: string; roles?: enums.UserRole_Values[]; classId?: number | null; classIds?: number[] | null }) => {
+export const updateUser = async (id: number, body: { username?: string; password?: string; roles?: enums.UserRole_Values[]; classId?: number; classIds?: number[] }) => {
   return await api.Users_Update(body, { params: { id } });
 }
 
