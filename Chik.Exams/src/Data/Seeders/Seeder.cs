@@ -125,7 +125,7 @@ public static class Seeder
 
             foreach (var quiz in quizzes)
             {
-                var exam = await examService.Create(teacher1Auth, new Exam.Create(
+                var exam = await examService.Create(adminAuth, new Exam.Create(
                     student.Id,
                     quiz.Id,
                     teacher1Auth.Id,
