@@ -5,6 +5,7 @@ public record Exam(
     long UserId,
     long QuizId,
     long CreatorId,
+    int StudentClassId,
     DateTime? StartedAt,
     DateTime? EndedAt,
     int? Score,
@@ -18,6 +19,7 @@ public record Exam(
     public Quiz? Quiz { get; set; }
     public User? Creator { get; set; }
     public User? Examiner { get; set; }
+    public Class? StudentClass { get; set; }
     public List<ExamAnswer>? Answers { get; set; }
 
     public bool IsStarted => StartedAt is not null;
@@ -27,7 +29,8 @@ public record Exam(
     public record Create(
         long UserId,
         long QuizId,
-        long CreatorId
+        long CreatorId,
+        int StudentClassId
     );
 
     public record Update(
@@ -53,6 +56,7 @@ public record Exam(
         bool? IncludeQuiz = null,
         bool? IncludeCreator = null,
         bool? IncludeExaminer = null,
-        bool? IncludeAnswers = null
+        bool? IncludeAnswers = null,
+        bool? IncludeStudentClass = null
     );
 }

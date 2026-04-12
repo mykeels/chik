@@ -1,4 +1,3 @@
-using Chik.Exams.Exams.Repositories;
 
 namespace Chik.Exams.Tests.Exams;
 
@@ -20,7 +19,7 @@ public class Exam_EndTests
     public async Task End_WithStartedExam_ShouldSetEndedAt()
     {
         // Arrange
-        var created = await _repository.Create(new Exam.Create(1, 1, 2));
+        var created = await _repository.Create(new Exam.Create(1, 1, 2, 0));
         await _repository.Start(created.Id);
 
         // Act
@@ -34,7 +33,7 @@ public class Exam_EndTests
     public async Task End_WithNotStartedExam_ShouldThrowException()
     {
         // Arrange
-        var created = await _repository.Create(new Exam.Create(1, 1, 2));
+        var created = await _repository.Create(new Exam.Create(1, 1, 2, 0));
 
         // Act & Assert
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
@@ -45,7 +44,7 @@ public class Exam_EndTests
     public async Task End_WithAlreadyEndedExam_ShouldThrowException()
     {
         // Arrange
-        var created = await _repository.Create(new Exam.Create(1, 1, 2));
+        var created = await _repository.Create(new Exam.Create(1, 1, 2, 0));
         await _repository.Start(created.Id);
         await _repository.End(created.Id);
 

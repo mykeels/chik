@@ -1,3 +1,4 @@
+
 using Chik.Exams.Logins.Repositories;
 
 namespace Chik.Exams.Tests.Services;
@@ -5,6 +6,7 @@ namespace Chik.Exams.Tests.Services;
 [TestFixture]
 public class LoginServiceTests
 {
+    private Mock<IJwtService> _jwtServiceMock = null!;
     private Mock<ILoginRepository> _loginRepositoryMock = null!;
     private Mock<IUserRepository> _userRepositoryMock = null!;
     private Mock<ILogger<LoginService>> _loggerMock = null!;
@@ -17,10 +19,16 @@ public class LoginServiceTests
     [SetUp]
     public void SetUp()
     {
+        _jwtServiceMock = new Mock<IJwtService>();
         _loginRepositoryMock = new Mock<ILoginRepository>();
         _userRepositoryMock = new Mock<IUserRepository>();
         _loggerMock = new Mock<ILogger<LoginService>>();
-        _service = new LoginService(_loginRepositoryMock.Object, _userRepositoryMock.Object, _loggerMock.Object);
+        _service = new LoginService(
+_jwtServiceMock.Object,
+    TestUtils.TimeProvider,
+            _loginRepositoryMock.Object, 
+            _userRepositoryMock.Object, 
+            _loggerMock.Object);
     }
 
     #region Authenticate Tests

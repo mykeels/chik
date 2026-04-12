@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Chik.Exams;
 
 public record User(
@@ -9,6 +11,8 @@ public record User(
 )
 {
     public DateTime? LastLogin { get; set; }
+    public Student? Student { get; set; }
+    public Teacher? Teacher { get; set; }
     public static List<UserRole> RolesOf(params UserRole[] roles)
     {
         return roles.ToList();
@@ -18,21 +22,27 @@ public record User(
 
     public bool IsAdmin() => HasRole(UserRole.Admin);
 
+    [MemberNotNullWhen(true, nameof(Teacher))]
     public bool IsTeacher() => HasRole(UserRole.Teacher);
 
+    [MemberNotNullWhen(true, nameof(Student))]
     public bool IsStudent() => HasRole(UserRole.Student);
 
     public record Create(
         string Username,
         [property: Newtonsoft.Json.JsonIgnore] string Password,
-        List<UserRole> Roles
+        List<UserRole> Roles,
+        int? ClassId = null,
+        List<int>? ClassIds = null
     );
 
     public record Update(
         long Id,
         string? Username = null,
         string? Password = null,
-        List<UserRole>? Roles = null
+        List<UserRole>? Roles = null,
+        int? ClassId = null,
+        List<int>? ClassIds = null
     );
 
     public record Filter(

@@ -29,6 +29,7 @@ public static class ChikExamsExtensions
         services.AddLogin();
         services.AddQuiz();
         services.AddUser();
+        services.AddClass();
         services.AddServerError();
         return services;
     }

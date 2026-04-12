@@ -1,4 +1,3 @@
-using Chik.Exams.Quizzes.Questions.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chik.Exams.Tests.QuizQuestions;

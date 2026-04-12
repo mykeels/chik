@@ -1,4 +1,3 @@
-using Chik.Exams.Exams.Repositories;
 
 namespace Chik.Exams.Tests.Exams;
 
@@ -20,7 +19,7 @@ public class Exam_StartTests
     public async Task Start_WithValidExam_ShouldSetStartedAt()
     {
         // Arrange
-        var created = await _repository.Create(new Exam.Create(1, 1, 2));
+        var created = await _repository.Create(new Exam.Create(1, 1, 2, 0));
 
         // Act
         var result = await _repository.Start(created.Id);
@@ -33,7 +32,7 @@ public class Exam_StartTests
     public async Task Start_WithAlreadyStartedExam_ShouldThrowException()
     {
         // Arrange
-        var created = await _repository.Create(new Exam.Create(1, 1, 2));
+        var created = await _repository.Create(new Exam.Create(1, 1, 2, 0));
         await _repository.Start(created.Id);
 
         // Act & Assert

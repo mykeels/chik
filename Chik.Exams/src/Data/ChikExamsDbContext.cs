@@ -28,6 +28,8 @@ public class ChikExamsDbContext : DbContext
     public DbSet<IpAddressLocationDbo> IpAddressLocations { get; set; }
     public DbSet<LoginDbo> Logins { get; set; }
     public DbSet<ServerErrorDbo> ServerErrors { get; set; }
+    public DbSet<ClassDbo> Classes { get; set; }
+    public DbSet<UserClassDbo> UserClasses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -44,6 +46,8 @@ public class ChikExamsDbContext : DbContext
         AddIpAddressLocation(modelBuilder);
         AddLogin(modelBuilder);
         AddServerError(modelBuilder);
+        AddClass(modelBuilder);
+        AddUserClass(modelBuilder);
 
         // Configure relationships
         AddUserRelationships(modelBuilder);
@@ -51,6 +55,7 @@ public class ChikExamsDbContext : DbContext
         AddQuizQuestionRelationships(modelBuilder);
         AddQuizQuestionTypeRelationships(modelBuilder);
         AddExamRelationships(modelBuilder);
+        AddClassRelationships(modelBuilder);
         AddExamAnswerRelationships(modelBuilder);
         AddAuditLogRelationships(modelBuilder);
         AddIpAddressLocationRelationships(modelBuilder);
@@ -76,6 +81,37 @@ public class ChikExamsDbContext : DbContext
             entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
 
             entity.HasIndex(e => e.Username).IsUnique();
+        });
+    }
+
+    private void AddClass(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ClassDbo>(entity =>
+        {
+            entity.ToTable("classes");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+            entity.Property(e => e.Name).HasColumnName("name").IsRequired().HasMaxLength(255);
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").IsRequired();
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+
+            entity.HasIndex(e => e.Name);
+        });
+    }
+
+    private void AddUserClass(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<UserClassDbo>(entity =>
+        {
+            entity.ToTable("user_classes");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+            entity.Property(e => e.UserId).HasColumnName("user_id").IsRequired();
+            entity.Property(e => e.ClassId).HasColumnName("class_id").IsRequired();
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at").IsRequired();
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+
+            entity.HasIndex(e => new { e.UserId, e.ClassId }).IsUnique();
         });
     }
 
@@ -155,6 +191,7 @@ public class ChikExamsDbContext : DbContext
             entity.Property(e => e.UserId).HasColumnName("user_id").IsRequired();
             entity.Property(e => e.QuizId).HasColumnName("quiz_id").IsRequired();
             entity.Property(e => e.CreatorId).HasColumnName("creator_id").IsRequired();
+            entity.Property(e => e.StudentClassId).HasColumnName("student_class_id").IsRequired();
             entity.Property(e => e.StartedAt).HasColumnName("started_at");
             entity.Property(e => e.EndedAt).HasColumnName("ended_at");
             entity.Property(e => e.Score).HasColumnName("score");
@@ -331,6 +368,11 @@ public class ChikExamsDbContext : DbContext
                 .WithOne(e => e.Examiner)
                 .HasForeignKey(e => e.ExaminerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasMany(e => e.UserClasses)
+                .WithOne(e => e.User)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 
@@ -385,6 +427,22 @@ public class ChikExamsDbContext : DbContext
                 .WithOne(e => e.Exam)
                 .HasForeignKey(e => e.ExamId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.StudentClass)
+                .WithMany(c => c!.Exams)
+                .HasForeignKey(e => e.StudentClassId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+
+    private void AddClassRelationships(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ClassDbo>(entity =>
+        {
+            entity.HasMany(e => e.UserClasses)
+                .WithOne(e => e.Class)
+                .HasForeignKey(e => e.ClassId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 

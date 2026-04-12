@@ -1,4 +1,3 @@
-using Chik.Exams.Exams.Repositories;
 
 namespace Chik.Exams.Tests.Exams;
 
@@ -20,7 +19,7 @@ public class Exam_MarkTests
     public async Task Mark_WithValidData_ShouldSetScoreAndExaminer()
     {
         // Arrange
-        var created = await _repository.Create(new Exam.Create(1, 1, 2));
+        var created = await _repository.Create(new Exam.Create(1, 1, 2, 0));
 
         // Act
         var result = await _repository.Mark(created.Id, score: 85, examinerId: 3, comment: "Good work!");

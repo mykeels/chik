@@ -85,6 +85,22 @@ public static class TestUtils
     }
 
     /// <summary>
+    /// Creates a test class in the database and returns it.
+    /// </summary>
+    public static async Task<ClassDbo> CreateTestClass(IDbContextFactory<ChikExamsDbContext> factory, string name = "Test Class")
+    {
+        using var dbContext = factory.CreateDbContext();
+        var cls = new ClassDbo
+        {
+            Name = name,
+            CreatedAt = DateTime.UtcNow
+        };
+        await dbContext.Classes.AddAsync(cls);
+        await dbContext.SaveChangesAsync();
+        return cls;
+    }
+
+    /// <summary>
     /// Creates a test exam in the database and returns it.
     /// </summary>
     public static async Task<ExamDbo> CreateTestExam(IDbContextFactory<ChikExamsDbContext> factory, long userId, long quizId, long creatorId)

@@ -1,4 +1,3 @@
-using Chik.Exams.Exams.Repositories;
 
 namespace Chik.Exams.Tests.Exams;
 
@@ -20,8 +19,8 @@ public class Exam_SearchTests
     public async Task Search_WithNoFilter_ShouldReturnAllExams()
     {
         // Arrange
-        await _repository.Create(new Exam.Create(1, 1, 2));
-        await _repository.Create(new Exam.Create(2, 2, 2));
+        await _repository.Create(new Exam.Create(1, 1, 2, 0));
+        await _repository.Create(new Exam.Create(2, 2, 2, 0));
 
         // Act
         var result = await _repository.Search();
@@ -34,8 +33,8 @@ public class Exam_SearchTests
     public async Task Search_WithUserIdFilter_ShouldReturnFilteredExams()
     {
         // Arrange
-        await _repository.Create(new Exam.Create(1, 1, 2));
-        await _repository.Create(new Exam.Create(2, 1, 2));
+        await _repository.Create(new Exam.Create(1, 1, 2, 0));
+        await _repository.Create(new Exam.Create(2, 1, 2, 0));
 
         // Act
         var result = await _repository.Search(new Exam.Filter(UserId: 1));
@@ -48,8 +47,8 @@ public class Exam_SearchTests
     public async Task Search_WithIsStartedFilter_ShouldReturnFilteredExams()
     {
         // Arrange
-        var exam1 = await _repository.Create(new Exam.Create(1, 1, 2));
-        await _repository.Create(new Exam.Create(2, 1, 2));
+        var exam1 = await _repository.Create(new Exam.Create(1, 1, 2, 0));
+        await _repository.Create(new Exam.Create(2, 1, 2, 0));
         await _repository.Start(exam1.Id);
 
         // Act
@@ -67,7 +66,7 @@ public class Exam_SearchTests
         // Arrange
         for (int i = 0; i < 10; i++)
         {
-            await _repository.Create(new Exam.Create(i, 1, 2));
+            await _repository.Create(new Exam.Create(i, 1, 2, 0));
         }
 
         // Act

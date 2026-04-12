@@ -1,4 +1,3 @@
-using Chik.Exams.Exams.Repositories;
 
 namespace Chik.Exams.Tests.Exams;
 
@@ -20,7 +19,7 @@ public class Exam_DeleteTests
     public async Task Delete_WithExistingId_ShouldDeleteExam()
     {
         // Arrange
-        var created = await _repository.Create(new Exam.Create(1, 1, 2));
+        var created = await _repository.Create(new Exam.Create(1, 1, 2, 0));
 
         // Act
         await _repository.Delete(created.Id);

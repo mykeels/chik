@@ -8,4 +8,6 @@ public interface IUserRepository
     Task<UserDbo> Update(long id, User.Update user);
     Task<Paginated<UserDbo>> Search(User.Filter? filter = null, PaginationOptions? pagination = null);
     Task Delete(long id);
+    Task<List<long>> GetStudentUserIdsInClass(int classId);
+    Task<int?> GetStudentClassIdForUser(long userId);
 }

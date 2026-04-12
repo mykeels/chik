@@ -1,4 +1,3 @@
-using Chik.Exams.Quizzes.QuestionTypes.Repositories;
 
 namespace Chik.Exams.Tests.QuizQuestionTypes;
 
@@ -19,10 +18,7 @@ public class QuizQuestionType_GetByNameTests
     [Test]
     public async Task GetByName_WithExistingName_ShouldReturnQuestionType()
     {
-        // Arrange
-        await _repository.Create(new QuizQuestionType.Create("Multiple Choice", "Description"));
-
-        // Act
+        // Act (uses seeded "Multiple Choice" type)
         var result = await _repository.GetByName("Multiple Choice");
 
         // Assert

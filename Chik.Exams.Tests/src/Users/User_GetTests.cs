@@ -1,4 +1,3 @@
-using Chik.Exams.Users.Repositories;
 
 namespace Chik.Exams.Tests.Users;
 

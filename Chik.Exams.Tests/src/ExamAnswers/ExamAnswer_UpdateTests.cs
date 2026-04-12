@@ -1,4 +1,3 @@
-using Chik.Exams.Exams.ExamAnswers.Repositories;
 
 namespace Chik.Exams.Tests.ExamAnswers;
 

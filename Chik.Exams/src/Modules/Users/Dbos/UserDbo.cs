@@ -17,6 +17,8 @@ public class UserDbo
     public virtual List<ExamDbo>? ExaminedExams { get; set; }
     public virtual List<ExamAnswerDbo>? ExaminedAnswers { get; set; }
     public virtual List<LoginDbo>? Logins { get; set; }
+    /// <summary>Class membership: one row for students (enforced in app), many for teachers.</summary>
+    public virtual List<UserClassDbo>? UserClasses { get; set; }
 
     public static implicit operator UserDbo(User user) => new()
     {
@@ -27,11 +29,17 @@ public class UserDbo
         UpdatedAt = user.UpdatedAt
     };
 
-    public Auth ToModel() => new(
-        Id,
-        Username,
-        UserRoleExtensions.FromInt32(Roles),
-        CreatedAt,
-        UpdatedAt
-    );
+    public User ToModel()
+    {
+        var user = new User(Id, Username, Roles.ToEnumList<UserRole>(), CreatedAt, UpdatedAt);
+        if ((Roles & (int)UserRole.Student) != 0 && UserClasses is { Count: > 0 })
+        {
+            var uc = UserClasses.OrderBy(x => x.Id).First();
+            if (uc.Class is not null)
+                user.Student = new Student(uc.Class.ToModel());
+        }
+        if ((Roles & (int)UserRole.Teacher) != 0 && UserClasses is { Count: > 0 })
+            user.Teacher = new Teacher(UserClasses.Where(uc => uc.Class is not null).Select(uc => uc.Class!.ToModel()).ToList());
+        return user;
+    }
 }

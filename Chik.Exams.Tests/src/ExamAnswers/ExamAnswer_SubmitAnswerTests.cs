@@ -1,4 +1,3 @@
-using Chik.Exams.Exams.ExamAnswers.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chik.Exams.Tests.ExamAnswers;

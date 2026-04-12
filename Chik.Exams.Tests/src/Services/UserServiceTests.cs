@@ -4,6 +4,7 @@ namespace Chik.Exams.Tests.Services;
 public class UserServiceTests
 {
     private Mock<IUserRepository> _userRepositoryMock = null!;
+    private Mock<IClassRepository> _classRepositoryMock = null!;
     private Mock<IAuditLogService> _auditLogServiceMock = null!;
     private Mock<ILogger<UserService>> _loggerMock = null!;
     private UserService _service = null!;
@@ -16,9 +17,10 @@ public class UserServiceTests
     public void SetUp()
     {
         _userRepositoryMock = new Mock<IUserRepository>();
+        _classRepositoryMock = new Mock<IClassRepository>();
         _auditLogServiceMock = new Mock<IAuditLogService>();
         _loggerMock = new Mock<ILogger<UserService>>();
-        _service = new UserService(_userRepositoryMock.Object, _auditLogServiceMock.Object, _loggerMock.Object);
+        _service = new UserService(_userRepositoryMock.Object, _classRepositoryMock.Object, _auditLogServiceMock.Object, _loggerMock.Object);
     }
 
     #region Create Tests
@@ -44,8 +46,9 @@ public class UserServiceTests
     public async Task Create_AsTeacher_WithStudentRole_ShouldSucceed()
     {
         // Arrange
-        var createUser = new User.Create("newstudent", "password123", [UserRole.Student]);
+        var createUser = new User.Create("newstudent", "password123", [UserRole.Student], ClassId: 1);
         var createdDbo = new UserDbo { Id = 10, Username = "newstudent", Roles = UserRole.Student.ToInt32(), CreatedAt = DateTime.UtcNow };
+        _classRepositoryMock.Setup(r => r.GetClassIdsForTeacher(2L)).ReturnsAsync(new List<int> { 1 });
         _userRepositoryMock.Setup(r => r.Create(createUser)).ReturnsAsync(createdDbo);
 
         // Act

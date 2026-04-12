@@ -1,5 +1,3 @@
-using Chik.Exams.Exams.Repositories;
-
 namespace Chik.Exams.Tests.Exams;
 
 [TestFixture]
@@ -20,7 +18,7 @@ public class Exam_CreateTests
     public async Task Create_WithValidData_ShouldCreateExam()
     {
         // Arrange
-        var create = new Exam.Create(UserId: 1, QuizId: 1, CreatorId: 2);
+        var create = new Exam.Create(UserId: 1, QuizId: 1, CreatorId: 2, StudentClassId: 1);
 
         // Act
         var result = await _repository.Create(create);

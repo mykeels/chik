@@ -1,4 +1,3 @@
-using Chik.Exams.Quizzes.Repositories;
 
 namespace Chik.Exams.Tests.Quizzes;
 

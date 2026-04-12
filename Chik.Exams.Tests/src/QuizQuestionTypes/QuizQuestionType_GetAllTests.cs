@@ -1,4 +1,3 @@
-using Chik.Exams.Quizzes.QuestionTypes.Repositories;
 
 namespace Chik.Exams.Tests.QuizQuestionTypes;
 
@@ -19,25 +18,23 @@ public class QuizQuestionType_GetAllTests
     [Test]
     public async Task GetAll_ShouldReturnAllQuestionTypes()
     {
-        // Arrange
-        await _repository.Create(new QuizQuestionType.Create("Multiple Choice", "Description"));
-        await _repository.Create(new QuizQuestionType.Create("Single Choice", "Description"));
-        await _repository.Create(new QuizQuestionType.Create("Essay", "Description"));
-
-        // Act
+        // Act (DB is seeded with 6 types: Multiple Choice, Single Choice, Fill in the Blank, Essay, Short Answer, True or False)
         var result = await _repository.GetAll();
 
         // Assert
-        Assert.That(result, Has.Count.EqualTo(3));
+        Assert.That(result, Has.Count.EqualTo(6));
     }
 
     [Test]
-    public async Task GetAll_WithNoTypes_ShouldReturnEmptyList()
+    public async Task GetAll_WithAdditionalType_ShouldIncludeIt()
     {
+        // Arrange
+        await _repository.Create(new QuizQuestionType.Create("Test Type", "Description"));
+
         // Act
         var result = await _repository.GetAll();
 
         // Assert
-        Assert.That(result, Is.Empty);
+        Assert.That(result, Has.Count.EqualTo(7));
     }
 }

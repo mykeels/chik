@@ -1,4 +1,3 @@
-using Chik.Exams.Quizzes.QuestionTypes.Repositories;
 
 namespace Chik.Exams.Tests.QuizQuestionTypes;
 
@@ -20,7 +19,7 @@ public class QuizQuestionType_UpdateTests
     public async Task Update_WithValidData_ShouldUpdateQuestionType()
     {
         // Arrange
-        var created = await _repository.Create(new QuizQuestionType.Create("Multiple Choice", "Old description"));
+        var created = await _repository.Create(new QuizQuestionType.Create("Test Type", "Old description"));
 
         // Act
         var result = await _repository.Update(created.Id, new QuizQuestionType.Update(created.Id, Description: "New description"));

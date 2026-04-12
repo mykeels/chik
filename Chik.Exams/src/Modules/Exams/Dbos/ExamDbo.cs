@@ -6,6 +6,7 @@ public class ExamDbo
     public long UserId { get; set; }
     public long QuizId { get; set; }
     public long CreatorId { get; set; }
+    public int StudentClassId { get; set; }
     public DateTime? StartedAt { get; set; }
     public DateTime? EndedAt { get; set; }
     public int? Score { get; set; }
@@ -17,6 +18,7 @@ public class ExamDbo
     // Navigation properties
     public virtual UserDbo? User { get; set; }
     public virtual QuizDbo? Quiz { get; set; }
+    public virtual ClassDbo? StudentClass { get; set; }
     public virtual UserDbo? Creator { get; set; }
     public virtual UserDbo? Examiner { get; set; }
     public virtual List<ExamAnswerDbo>? Answers { get; set; }
@@ -27,6 +29,7 @@ public class ExamDbo
         UserId = exam.UserId,
         QuizId = exam.QuizId,
         CreatorId = exam.CreatorId,
+        StudentClassId = exam.StudentClassId,
         StartedAt = exam.StartedAt,
         EndedAt = exam.EndedAt,
         Score = exam.Score,
@@ -41,6 +44,7 @@ public class ExamDbo
         UserId,
         QuizId,
         CreatorId,
+        StudentClassId,
         StartedAt,
         EndedAt,
         Score,
@@ -52,6 +56,7 @@ public class ExamDbo
     {
         User = User?.ToModel(),
         Quiz = Quiz?.ToModel(),
+        StudentClass = StudentClass?.ToModel(),
         Creator = Creator?.ToModel(),
         Examiner = Examiner?.ToModel(),
         Answers = Answers?.Select(a => a.ToModel()).ToList()

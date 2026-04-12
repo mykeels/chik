@@ -19,6 +19,7 @@ public class ExamRepository(
             UserId = exam.UserId,
             QuizId = exam.QuizId,
             CreatorId = exam.CreatorId,
+            StudentClassId = exam.StudentClassId,
             CreatedAt = timeProvider.GetUtcNow().DateTime
         };
 
@@ -34,7 +35,8 @@ public class ExamRepository(
 
         IQueryable<ExamDbo> query = dbContext.Exams.AsNoTracking()
             .Include(e => e.Quiz)
-            .Include(e => e.User);
+            .Include(e => e.User)
+            .Include(e => e.StudentClass);
 
         if (includeAnswers)
         {
@@ -291,6 +293,11 @@ public class ExamRepository(
         if (filter.IncludeAnswers == true)
         {
             query = query.Include(e => e.Answers);
+        }
+
+        if (filter.IncludeStudentClass == true)
+        {
+            query = query.Include(e => e.StudentClass);
         }
 
         if (filter.DateRange?.From is not null)

@@ -1,4 +1,3 @@
-using Chik.Exams.Quizzes.QuestionTypes.Repositories;
 
 namespace Chik.Exams.Tests.QuizQuestionTypes;
 
@@ -19,26 +18,22 @@ public class QuizQuestionType_SearchTests
     [Test]
     public async Task Search_WithNoFilter_ShouldReturnAllQuestionTypes()
     {
-        // Arrange
-        await _repository.Create(new QuizQuestionType.Create("Multiple Choice", "Description"));
-        await _repository.Create(new QuizQuestionType.Create("Single Choice", "Description"));
-
-        // Act
+        // Act (DB is seeded with 6 types)
         var result = await _repository.Search();
 
         // Assert
-        Assert.That(result.Items, Has.Count.EqualTo(2));
+        Assert.That(result.Items, Has.Count.EqualTo(6));
     }
 
     [Test]
     public async Task Search_WithNameFilter_ShouldReturnFilteredQuestionTypes()
     {
         // Arrange
-        await _repository.Create(new QuizQuestionType.Create("Multiple Choice", "Description"));
-        await _repository.Create(new QuizQuestionType.Create("Single Choice", "Description"));
+        await _repository.Create(new QuizQuestionType.Create("Test Multiple", "Description"));
+        await _repository.Create(new QuizQuestionType.Create("Test Single", "Description"));
 
         // Act
-        var result = await _repository.Search(new QuizQuestionType.Filter(Name: "Multiple"));
+        var result = await _repository.Search(new QuizQuestionType.Filter(Name: "Test Multiple"));
 
         // Assert
         Assert.That(result.Items, Has.Count.EqualTo(1));

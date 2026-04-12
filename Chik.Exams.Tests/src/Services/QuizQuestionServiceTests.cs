@@ -5,6 +5,7 @@ public class QuizQuestionServiceTests
 {
     private Mock<IQuizQuestionRepository> _questionRepositoryMock = null!;
     private Mock<IQuizRepository> _quizRepositoryMock = null!;
+    private Mock<IExamRepository> _examRepositoryMock = null!;
     private Mock<IAuditLogService> _auditLogServiceMock = null!;
     private Mock<ILogger<QuizQuestionService>> _loggerMock = null!;
     private QuizQuestionService _service = null!;
@@ -23,11 +24,13 @@ public class QuizQuestionServiceTests
     {
         _questionRepositoryMock = new Mock<IQuizQuestionRepository>();
         _quizRepositoryMock = new Mock<IQuizRepository>();
+        _examRepositoryMock = new Mock<IExamRepository>();
         _auditLogServiceMock = new Mock<IAuditLogService>();
         _loggerMock = new Mock<ILogger<QuizQuestionService>>();
         _service = new QuizQuestionService(
             _questionRepositoryMock.Object,
             _quizRepositoryMock.Object,
+            _examRepositoryMock.Object,
             _auditLogServiceMock.Object,
             _loggerMock.Object);
     }

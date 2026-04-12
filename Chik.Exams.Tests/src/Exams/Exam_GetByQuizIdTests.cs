@@ -1,4 +1,3 @@
-using Chik.Exams.Exams.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chik.Exams.Tests.Exams;
@@ -29,9 +28,9 @@ public class Exam_GetByQuizIdTests
         var quiz1 = await TestUtils.CreateTestQuiz(_factory, creator.Id, "Quiz 1");
         var quiz2 = await TestUtils.CreateTestQuiz(_factory, creator.Id, "Quiz 2");
         
-        await _repository.Create(new Exam.Create(user1.Id, quiz1.Id, creator.Id));
-        await _repository.Create(new Exam.Create(user2.Id, quiz1.Id, creator.Id));
-        await _repository.Create(new Exam.Create(user3.Id, quiz2.Id, creator.Id));
+        await _repository.Create(new Exam.Create(user1.Id, quiz1.Id, creator.Id, 0));
+        await _repository.Create(new Exam.Create(user2.Id, quiz1.Id, creator.Id, 0));
+        await _repository.Create(new Exam.Create(user3.Id, quiz2.Id, creator.Id, 0));
 
         // Act
         var result = await _repository.GetByQuizId(quiz1.Id);

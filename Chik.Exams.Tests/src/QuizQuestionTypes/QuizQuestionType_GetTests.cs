@@ -1,4 +1,3 @@
-using Chik.Exams.Quizzes.QuestionTypes.Repositories;
 
 namespace Chik.Exams.Tests.QuizQuestionTypes;
 
@@ -20,7 +19,7 @@ public class QuizQuestionType_GetTests
     public async Task Get_WithExistingId_ShouldReturnQuestionType()
     {
         // Arrange
-        var created = await _repository.Create(new QuizQuestionType.Create("Multiple Choice", "Description"));
+        var created = await _repository.Create(new QuizQuestionType.Create("Test Type", "Description"));
 
         // Act
         var result = await _repository.Get(created.Id);

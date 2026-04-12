@@ -4,6 +4,7 @@ namespace Chik.Exams;
 
 internal class UserService(
     IUserRepository repository,
+    IClassRepository classRepository,
     IAuditLogService auditLogService,
     ILogger<UserService> logger
 ) : IUserService
@@ -26,6 +27,16 @@ internal class UserService(
             {
                 throw new UnauthorizedAccessException("Teachers can only create Student users");
             }
+        }
+
+        if (user.Roles.Any(r => r == UserRole.Student) && user.ClassId is null)
+            throw new ArgumentException("ClassId is required when creating a student user", nameof(user));
+
+        if (auth.IsTeacher() && !auth.IsAdmin() && user.ClassId is not null)
+        {
+            var teacherClasses = await classRepository.GetClassIdsForTeacher(auth.Id);
+            if (!teacherClasses.Contains(user.ClassId.Value))
+                throw new UnauthorizedAccessException("You can only assign students to classes you teach");
         }
 
         var userDbo = await repository.Create(user);
@@ -69,6 +80,12 @@ internal class UserService(
         {
             throw new UnauthorizedAccessException("Only Admin can change user roles");
         }
+
+        if (user.ClassId is not null && !auth.IsAdmin())
+            throw new UnauthorizedAccessException("Only Admin can change student class membership");
+
+        if (user.ClassIds is not null && !auth.IsAdmin())
+            throw new UnauthorizedAccessException("Only Admin can change teacher class assignments");
 
         var userDbo = await repository.Update(user.Id, user);
         await auditLogService.Create(
@@ -160,7 +177,7 @@ internal class UserService(
 
         var paginated = await repository.Search(filter, pagination);
         return new Paginated<User>(
-            paginated.Items.Select(dbo => (User)dbo!.ToModel()).ToList(),
+            paginated.Items.Select(dbo => dbo!.ToModel()).ToList(),
             paginated.TotalCount,
             pagination,
             async options => await Search(auth, filter, options)

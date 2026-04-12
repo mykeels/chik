@@ -27,7 +27,9 @@ public class UsersController : ControllerBase
         var user = await _userService.Create(auth, new User.Create(
             request.Username,
             request.Password,
-            request.Roles));
+            request.Roles,
+            request.ClassId,
+            request.ClassIds));
 
         _logger.LogInformation("User {Username} created by {Creator}", user.Username, auth.Username);
         return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
@@ -60,7 +62,9 @@ public class UsersController : ControllerBase
             id,
             request.Username,
             request.Password,
-            request.Roles));
+            request.Roles,
+            request.ClassId,
+            request.ClassIds));
 
         return Ok(user);
     }
@@ -110,7 +114,9 @@ public class UsersController : ControllerBase
 public record CreateUserRequest(
     [Required] string Username,
     [Required] string Password,
-    [Required] List<UserRole> Roles
+    [Required] List<UserRole> Roles,
+    int? ClassId = null,
+    List<int>? ClassIds = null
 );
 
 /// <summary>
@@ -119,5 +125,7 @@ public record CreateUserRequest(
 public record UpdateUserRequest(
     string? Username = null,
     string? Password = null,
-    List<UserRole>? Roles = null
+    List<UserRole>? Roles = null,
+    int? ClassId = null,
+    List<int>? ClassIds = null
 );

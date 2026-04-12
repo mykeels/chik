@@ -7,7 +7,7 @@
       "name": "Chik.Exams",
       "email": "support@chik.ng"
     },
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   "paths": {
     "/": {
@@ -431,6 +431,132 @@
         }
       }
     },
+    "/api/classes": {
+      "get": {
+        "tags": ["Classes"],
+        "operationId": "Classes_List",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Class"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Class"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Class"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Classes"],
+        "operationId": "Classes_Create",
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.CreateClassRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.CreateClassRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.CreateClassRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.CreateClassRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Class"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Class"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Class"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/classes/{id}": {
+      "get": {
+        "tags": ["Classes"],
+        "operationId": "Classes_Get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Class"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Class"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Class"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/exam-answers/{id}": {
       "get": {
         "tags": ["ExamAnswers"],
@@ -796,6 +922,67 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Exam"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exams/assign-to-class": {
+      "post": {
+        "tags": ["Exams"],
+        "operationId": "Exams_AssignToClass",
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.AssignExamsToClassRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.AssignExamsToClassRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.AssignExamsToClassRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Api.AssignExamsToClassRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exam"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exam"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exam"
+                  }
                 }
               }
             }
@@ -1364,6 +1551,13 @@
           },
           {
             "name": "IncludeAnswers",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeStudentClass",
             "in": "query",
             "schema": {
               "type": "boolean"
@@ -2763,6 +2957,20 @@
           }
         }
       },
+      "Api.AssignExamsToClassRequest": {
+        "required": ["classId", "quizId"],
+        "type": "object",
+        "properties": {
+          "classId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quizId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
       "Api.ChangePasswordRequest": {
         "required": ["currentPassword", "newPassword"],
         "type": "object",
@@ -2772,6 +2980,16 @@
             "nullable": true
           },
           "newPassword": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Api.CreateClassRequest": {
+        "required": ["name"],
+        "type": "object",
+        "properties": {
+          "name": {
             "type": "string",
             "nullable": true
           }
@@ -2857,6 +3075,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/UserRole"
+            },
+            "nullable": true
+          },
+          "classId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "classIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
             },
             "nullable": true
           }
@@ -3063,6 +3294,19 @@
               "$ref": "#/components/schemas/UserRole"
             },
             "nullable": true
+          },
+          "classId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "classIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
           }
         }
       },
@@ -3111,6 +3355,29 @@
           }
         }
       },
+      "Class": {
+        "required": ["createdAt", "id", "name"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
       "Exam": {
         "required": [
           "createdAt",
@@ -3120,6 +3387,7 @@
           "isMarked",
           "isStarted",
           "quizId",
+          "studentClassId",
           "userId"
         ],
         "type": "object",
@@ -3139,6 +3407,10 @@
           "creatorId": {
             "type": "integer",
             "format": "int64"
+          },
+          "studentClassId": {
+            "type": "integer",
+            "format": "int32"
           },
           "startedAt": {
             "type": "string",
@@ -3201,6 +3473,14 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/User"
+              }
+            ],
+            "nullable": true
+          },
+          "studentClass": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Class"
               }
             ],
             "nullable": true
@@ -3536,6 +3816,32 @@
           }
         }
       },
+      "Student": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Class"
+              }
+            ],
+            "nullable": true
+          }
+        }
+      },
+      "Teacher": {
+        "required": ["classes"],
+        "type": "object",
+        "properties": {
+          "classes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Class"
+            },
+            "nullable": true
+          }
+        }
+      },
       "User": {
         "required": ["createdAt", "id", "roles", "username"],
         "type": "object",
@@ -3567,6 +3873,22 @@
           "lastLogin": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          },
+          "student": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Student"
+              }
+            ],
+            "nullable": true
+          },
+          "teacher": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Teacher"
+              }
+            ],
             "nullable": true
           }
         }

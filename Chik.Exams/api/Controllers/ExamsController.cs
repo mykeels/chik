@@ -32,10 +32,27 @@ public class ExamsController : ControllerBase
         var exam = await _examService.Create(auth, new Exam.Create(
             request.UserId,
             request.QuizId,
-            auth.Id));
+            auth.Id,
+            StudentClassId: 0));
 
         _logger.LogInformation("Exam created for user {UserId} by {Creator}", request.UserId, auth.Username);
         return CreatedAtAction(nameof(Get), new { id = exam.Id }, exam);
+    }
+
+    /// <summary>
+    /// Assigns a quiz to all students in a class. Admin and Teacher can assign; teachers only to classes they teach.
+    /// </summary>
+    [HttpPost("assign-to-class")]
+    [AdminOrTeacher]
+    public async Task<ActionResult<List<Exam>>> AssignToClass(
+        [FromBody] AssignExamsToClassRequest request,
+        [FromServices] Auth auth)
+    {
+        var exams = await _examService.AssignToClass(auth, request.ClassId, request.QuizId);
+        _logger.LogInformation(
+            "Assigned quiz {QuizId} to class {ClassId} for {Count} students by {User}",
+            request.QuizId, request.ClassId, exams.Count, auth.Username);
+        return Ok(exams);
     }
 
     /// <summary>
@@ -233,6 +250,11 @@ public class ExamsController : ControllerBase
 /// </summary>
 public record CreateExamRequest(
     [Required] long UserId,
+    [Required] long QuizId
+);
+
+public record AssignExamsToClassRequest(
+    [Required] int ClassId,
     [Required] long QuizId
 );
 

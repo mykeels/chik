@@ -1,4 +1,3 @@
-using Chik.Exams.Quizzes.QuestionTypes.Repositories;
 
 namespace Chik.Exams.Tests.QuizQuestionTypes;
 
@@ -20,7 +19,7 @@ public class QuizQuestionType_DeleteTests
     public async Task Delete_WithExistingId_ShouldDeleteQuestionType()
     {
         // Arrange
-        var created = await _repository.Create(new QuizQuestionType.Create("Multiple Choice", "Description"));
+        var created = await _repository.Create(new QuizQuestionType.Create("Test Type", "Description"));
 
         // Act
         await _repository.Delete(created.Id);

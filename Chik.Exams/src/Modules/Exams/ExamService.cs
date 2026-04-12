@@ -7,6 +7,8 @@ internal class ExamService(
     IExamAnswerRepository answerRepository,
     IQuizRepository quizRepository,
     IQuizQuestionRepository questionRepository,
+    IUserRepository userRepository,
+    IClassRepository classRepository,
     IAuditLogService auditLogService,
     ILogger<ExamService> logger
 ) : IExamService
@@ -23,16 +25,72 @@ internal class ExamService(
             throw new UnauthorizedAccessException("Only Admin or Teacher can create exams");
         }
 
-        var examDbo = await repository.Create(exam);
+        var targetUser = await userRepository.Get(exam.UserId);
+        if (targetUser is null)
+            throw new KeyNotFoundException($"User with id '{exam.UserId}' was not found");
+        if ((targetUser.Roles & (int)UserRole.Student) == 0)
+            throw new InvalidOperationException("Exams can only be assigned to users with the Student role");
+        var studentClassId = await userRepository.GetStudentClassIdForUser(exam.UserId);
+        if (studentClassId is null)
+            throw new InvalidOperationException("Student must belong to a class before an exam can be assigned");
+
+        if (auth.IsTeacher() && !auth.IsAdmin())
+        {
+            var teacherClasses = await classRepository.GetClassIdsForTeacher(auth.Id);
+            if (!teacherClasses.Contains(studentClassId.Value))
+                throw new UnauthorizedAccessException("You can only assign exams to students in classes you teach");
+        }
+
+        var create = exam with { StudentClassId = studentClassId.Value };
+        var examDbo = await repository.Create(create);
         await auditLogService.Create(
             auth,
             new AuditLog.Create<Exam.Create>(
                 $"{nameof(ExamService)}.{nameof(Create)}",
                 examDbo.Id,
-                exam
+                create
             )
         );
         return examDbo!.ToModel();
+    }
+
+    public async Task<List<Exam>> AssignToClass(Auth auth, int classId, long quizId)
+    {
+        logger.LogInformation($"{nameof(ExamService)}.{nameof(AssignToClass)} ({auth.Id}, class {classId}, quiz {quizId})");
+
+        if (!auth.IsAdmin() && !auth.IsTeacher())
+            throw new UnauthorizedAccessException("Only Admin or Teacher can assign exams");
+
+        if (await classRepository.Get(classId) is null)
+            throw new KeyNotFoundException($"Class with id '{classId}' was not found");
+
+        if (auth.IsTeacher() && !auth.IsAdmin())
+        {
+            var teacherClasses = await classRepository.GetClassIdsForTeacher(auth.Id);
+            if (!teacherClasses.Contains(classId))
+                throw new UnauthorizedAccessException("You can only assign exams to classes you teach");
+        }
+
+        var studentIds = await userRepository.GetStudentUserIdsInClass(classId);
+        var results = new List<Exam>();
+        foreach (var studentId in studentIds)
+        {
+            if (await repository.UserHasAssignedExamForQuiz(studentId, quizId))
+                continue;
+
+            var examDbo = await repository.Create(new Exam.Create(studentId, quizId, auth.Id, classId));
+            await auditLogService.Create(
+                auth,
+                new AuditLog.Create<Exam.Create>(
+                    $"{nameof(ExamService)}.{nameof(AssignToClass)}",
+                    examDbo.Id,
+                    new Exam.Create(studentId, quizId, auth.Id, classId)
+                )
+            );
+            results.Add(examDbo.ToModel());
+        }
+
+        return results;
     }
 
     public async Task<Exam?> Get(Auth auth, long id, bool includeAnswers = false)
@@ -409,7 +467,8 @@ internal class ExamService(
         var filter = new Exam.Filter(
             UserId: targetStudentId,
             IsStarted: false,
-            IncludeQuiz: true
+            IncludeQuiz: true,
+            IncludeStudentClass: true
         );
         var paginated = await repository.Search(filter, new PaginationOptions(1, 100));
         return paginated.Items.Select(dbo => dbo!.ToModel()).ToList();
@@ -433,7 +492,8 @@ internal class ExamService(
         var filter = new Exam.Filter(
             UserId: targetStudentId,
             IsEnded: true,
-            IncludeQuiz: true
+            IncludeQuiz: true,
+            IncludeStudentClass: true
         );
         var paginated = await repository.Search(filter, new PaginationOptions(1, 100));
         return paginated.Items.Select(dbo => dbo!.ToModel()).ToList();
@@ -445,6 +505,7 @@ internal class ExamService(
         
         filter ??= new Exam.Filter();
         pagination ??= new PaginationOptions();
+        filter = filter with { IncludeStudentClass = true };
 
         // Authorization: Admin sees all, Teacher sees their created/examined exams, Student sees their own
         if (!auth.IsAdmin())

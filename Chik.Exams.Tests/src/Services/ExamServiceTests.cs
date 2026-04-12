@@ -7,6 +7,8 @@ public class ExamServiceTests
     private Mock<IExamAnswerRepository> _answerRepositoryMock = null!;
     private Mock<IQuizRepository> _quizRepositoryMock = null!;
     private Mock<IQuizQuestionRepository> _questionRepositoryMock = null!;
+    private Mock<IUserRepository> _userRepositoryMock = null!;
+    private Mock<IClassRepository> _classRepositoryMock = null!;
     private Mock<IAuditLogService> _auditLogServiceMock = null!;
     private Mock<ILogger<ExamService>> _loggerMock = null!;
     private ExamService _service = null!;
@@ -23,6 +25,8 @@ public class ExamServiceTests
         _answerRepositoryMock = new Mock<IExamAnswerRepository>();
         _quizRepositoryMock = new Mock<IQuizRepository>();
         _questionRepositoryMock = new Mock<IQuizQuestionRepository>();
+        _userRepositoryMock = new Mock<IUserRepository>();
+        _classRepositoryMock = new Mock<IClassRepository>();
         _auditLogServiceMock = new Mock<IAuditLogService>();
         _loggerMock = new Mock<ILogger<ExamService>>();
         _service = new ExamService(
@@ -30,6 +34,8 @@ public class ExamServiceTests
             _answerRepositoryMock.Object,
             _quizRepositoryMock.Object,
             _questionRepositoryMock.Object,
+            _userRepositoryMock.Object,
+            _classRepositoryMock.Object,
             _auditLogServiceMock.Object,
             _loggerMock.Object);
     }
@@ -40,9 +46,11 @@ public class ExamServiceTests
     public async Task Create_AsAdmin_ShouldSucceed()
     {
         // Arrange
-        var createExam = new Exam.Create(3, 10, 1); // Student 3 takes Quiz 10, created by Admin 1
-        var createdDbo = new ExamDbo { Id = 100, UserId = 3, QuizId = 10, CreatorId = 1, CreatedAt = DateTime.UtcNow };
-        _examRepositoryMock.Setup(r => r.Create(createExam)).ReturnsAsync(createdDbo);
+        var createExam = new Exam.Create(3, 10, 1, 1); // Student 3 takes Quiz 10, created by Admin 1
+        var createdDbo = new ExamDbo { Id = 100, UserId = 3, QuizId = 10, CreatorId = 1, StudentClassId = 1, CreatedAt = DateTime.UtcNow };
+        _userRepositoryMock.Setup(r => r.Get(3L)).ReturnsAsync(new UserDbo { Id = 3, Username = "student", Roles = (int)UserRole.Student, CreatedAt = DateTime.UtcNow });
+        _userRepositoryMock.Setup(r => r.GetStudentClassIdForUser(3L)).ReturnsAsync(1);
+        _examRepositoryMock.Setup(r => r.Create(It.IsAny<Exam.Create>())).ReturnsAsync(createdDbo);
 
         // Act
         var result = await _service.Create(AdminUser, createExam);
@@ -56,9 +64,12 @@ public class ExamServiceTests
     public async Task Create_AsTeacher_ShouldSucceed()
     {
         // Arrange
-        var createExam = new Exam.Create(3, 10, 2);
-        var createdDbo = new ExamDbo { Id = 100, UserId = 3, QuizId = 10, CreatorId = 2, CreatedAt = DateTime.UtcNow };
-        _examRepositoryMock.Setup(r => r.Create(createExam)).ReturnsAsync(createdDbo);
+        var createExam = new Exam.Create(3, 10, 2, 0);
+        var createdDbo = new ExamDbo { Id = 100, UserId = 3, QuizId = 10, CreatorId = 2, StudentClassId = 1, CreatedAt = DateTime.UtcNow };
+        _userRepositoryMock.Setup(r => r.Get(3L)).ReturnsAsync(new UserDbo { Id = 3, Username = "student", Roles = (int)UserRole.Student, CreatedAt = DateTime.UtcNow });
+        _userRepositoryMock.Setup(r => r.GetStudentClassIdForUser(3L)).ReturnsAsync(1);
+        _classRepositoryMock.Setup(r => r.GetClassIdsForTeacher(2L)).ReturnsAsync(new List<int> { 1 });
+        _examRepositoryMock.Setup(r => r.Create(It.IsAny<Exam.Create>())).ReturnsAsync(createdDbo);
 
         // Act
         var result = await _service.Create(TeacherUser, createExam);
@@ -71,7 +82,7 @@ public class ExamServiceTests
     public void Create_AsStudent_ShouldThrow()
     {
         // Arrange
-        var createExam = new Exam.Create(3, 10, 3);
+        var createExam = new Exam.Create(3, 10, 3, 0);
 
         // Act & Assert
         var ex = Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>

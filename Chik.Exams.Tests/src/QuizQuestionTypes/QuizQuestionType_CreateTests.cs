@@ -1,4 +1,3 @@
-using Chik.Exams.Quizzes.QuestionTypes.Repositories;
 
 namespace Chik.Exams.Tests.QuizQuestionTypes;
 
@@ -20,24 +19,24 @@ public class QuizQuestionType_CreateTests
     public async Task Create_WithValidData_ShouldCreateQuestionType()
     {
         // Arrange
-        var create = new QuizQuestionType.Create("Multiple Choice", "Select one or more options");
+        var create = new QuizQuestionType.Create("Test Type", "Select one or more options");
 
         // Act
         var result = await _repository.Create(create);
 
         // Assert
         Assert.That(result, Is.Not.Null);
-        Assert.That(result.Name, Is.EqualTo("Multiple Choice"));
+        Assert.That(result.Name, Is.EqualTo("Test Type"));
     }
 
     [Test]
     public async Task Create_WithDuplicateName_ShouldThrowException()
     {
         // Arrange
-        await _repository.Create(new QuizQuestionType.Create("Multiple Choice", "Description"));
+        await _repository.Create(new QuizQuestionType.Create("Test Type", "Description"));
 
         // Act & Assert
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            await _repository.Create(new QuizQuestionType.Create("Multiple Choice", "Another description")));
+            await _repository.Create(new QuizQuestionType.Create("Test Type", "Another description")));
     }
 }

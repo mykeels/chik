@@ -13,6 +13,11 @@ public interface IExamService
     Task<Exam> Create(Auth auth, Exam.Create exam);
 
     /// <summary>
+    /// Assigns a quiz to every student in a class (skips students who already have that quiz assigned).
+    /// </summary>
+    Task<List<Exam>> AssignToClass(Auth auth, int classId, long quizId);
+
+    /// <summary>
     /// Gets an exam by ID. Admin sees all, Teacher sees their created exams, Student sees their own exams.
     /// </summary>
     Task<Exam?> Get(Auth auth, long id, bool includeAnswers = false);

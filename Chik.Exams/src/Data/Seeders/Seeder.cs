@@ -10,6 +10,7 @@ public static class Seeder
     public static async Task Seed(IServiceProvider services)
     {
         var userService = services.GetRequiredService<IUserService>();
+        var classService = services.GetRequiredService<IClassService>();
         var quizService = services.GetRequiredService<IQuizService>();
         var quizQuestionService = services.GetRequiredService<IQuizQuestionService>();
         var quizQuestionTypeRepository = services.GetRequiredService<IQuizQuestionTypeRepository>();
@@ -28,6 +29,11 @@ public static class Seeder
             [UserRole.Admin]
         ));
 
+        await ClassSeeder.Seed(services);
+
+        var classes = await classService.List(adminAuth);
+        var allClassIds = classes.Select(c => c.Id).ToList();
+
         // seed 3 teachers
         var teachers = new List<User>();
         for (int i = 1; i <= 3; i++)
@@ -35,7 +41,8 @@ public static class Seeder
             var teacher = await userService.Create(adminAuth, new User.Create(
                 $"teacher{i}",
                 "teacher123",
-                [UserRole.Teacher]
+                [UserRole.Teacher],
+                ClassIds: allClassIds.GetRange(i % allClassIds.Count, 1)
             ));
             teachers.Add(teacher);
         }
@@ -47,7 +54,8 @@ public static class Seeder
             var student = await userService.Create(adminAuth, new User.Create(
                 $"student{i}",
                 "student123",
-                [UserRole.Student]
+                [UserRole.Student],
+                ClassId: allClassIds[i % allClassIds.Count]
             ));
             students.Add(student);
         }
@@ -120,8 +128,8 @@ public static class Seeder
                 var exam = await examService.Create(teacher1Auth, new Exam.Create(
                     student.Id,
                     quiz.Id,
-                    teacher1Auth.Id
-                ));
+                    teacher1Auth.Id,
+                    0));
 
                 // start the exam
                 exam = await examService.Start(studentAuth, exam.Id);

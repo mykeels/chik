@@ -1,4 +1,3 @@
-using Chik.Exams.AuditLogs.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chik.Exams.Tests.AuditLogs;
