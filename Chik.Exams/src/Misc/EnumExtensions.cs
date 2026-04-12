@@ -14,4 +14,25 @@ public static class EnumExtensions
     {
         return enumValue.GetType().GetMember(enumValue.ToString()).FirstOrDefault()?.GetCustomAttribute<DescriptionAttribute>()?.Description ?? string.Empty;
     }
+
+    public static int ToInt32<TEnum>(this List<TEnum> roles) where TEnum : struct, Enum
+    {
+        // use bitmask to convert the roles to an integer
+        int result = 0;
+        foreach (var role in roles)
+        {
+            result |= Convert.ToInt32(role);
+        }
+        return result;
+    }
+
+    public static List<TEnum> FromInt32<TEnum>(int value) where TEnum : struct, Enum
+    {
+        return Enum.GetValues<TEnum>().Where(role => (value & Convert.ToInt32(role)) == Convert.ToInt32(role)).ToList();
+    }
+
+    public static List<TEnum> ToEnumList<TEnum>(this int value) where TEnum : struct, Enum
+    {
+        return Enum.GetValues<TEnum>().Where(role => (value & Convert.ToInt32(role)) == Convert.ToInt32(role)).ToList();
+    }
 }
